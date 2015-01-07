@@ -2,13 +2,28 @@
 
 var Box = require('../models/box');
 var Post = require('../models/post');
+var key = require('../lib/key_gen');
 
 module.exports = function(app, jwtAuth) {
+  app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {email: req.user.email}}})
+    .populate('thread')
+    .exec(function(err, data) {
+      if(err) {
+        console.log(err);
+        return res.status(500).send('Cannot retrieve box');
+      }
+      res.json(data);
+    });
+  });
+  
+  // get index
   app.get('/api/boxes', jwtAuth, function(req, res) {
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
       if (err) {
         console.log(err);
-        return res.status(500).send('Cannot retrieve threads');
+        return res.status(500).send('Cannot retrieve boxes');
       }
       var response = [];
       data.forEach(function(box) {
@@ -30,6 +45,7 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
+  //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     var post = new Post(req.body.post);
     post.save(function(err) { //TODO: might need to return id
@@ -41,6 +57,7 @@ module.exports = function(app, jwtAuth) {
     var box = new Box();
     try {
       box.subject = req.body.subject;
+      box.boxKey = key();
       box.members = [{email: req.user.email, unread: 0}];
       req.body.members.forEach(function(member) {
         box.members.push({email: member, unread: 0});
@@ -49,6 +66,7 @@ module.exports = function(app, jwtAuth) {
     } catch (err) {
       return res.status(400).send('invalid input');
     }
+    console.log(box);
     box.save(function(err) {
       if (err) {
         console.log(err);

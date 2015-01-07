@@ -11,6 +11,7 @@ var appUrl = 'http://localhost:3000';
 
 describe('box routes', function() {
   var jwtToken;
+  var boxKey;
 
   before(function(done) {
     chai.request(appUrl)
@@ -49,6 +50,18 @@ describe('box routes', function() {
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(Array.isArray(res.body)).to.be.true;
+      boxKey = res.body[0].boxKey;
+      done();
+    });
+  });
+  
+  it('should get a single box', function(done) {
+    chai.request(appUrl)
+    .get('/api/boxes/' + boxKey)
+    .set({jwt: jwtToken})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body.thread[0].by).to.eql('flybox4real');
       done();
     });
   });

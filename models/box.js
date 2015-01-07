@@ -7,7 +7,7 @@ var boxSchema = mongoose.Schema({
   boxKey: String,
   members: [{email: String, urlKey: String, unread: Number}],
   date: {type: Date, default: Date.now},
-  thread: [mongoose.Schema.Types.ObjectId]
+  thread: [{type:mongoose.Schema.Types.ObjectId, ref: 'Post'}]
 });
 
 module.exports = mongoose.model('Box', boxSchema);
