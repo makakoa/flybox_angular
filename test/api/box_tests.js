@@ -54,7 +54,7 @@ describe('box routes', function() {
       done();
     });
   });
-  
+
   it('should get a single box', function(done) {
     chai.request(appUrl)
     .get('/api/boxes/' + boxKey)

@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URL ||
 
 require('./lib/passport')(passport);
 var jwtAuth = require('./lib/jwt_auth')(app.get('jwtSecret'));
-require('./routes/user_routes')(app, passport, jwtAuth);
+require('./routes/user_routes')(app, passport);
 require('./routes/box_routes')(app, jwtAuth);
 
 app.listen(port, function() {

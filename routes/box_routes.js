@@ -10,14 +10,14 @@ module.exports = function(app, jwtAuth) {
               members: {$elemMatch: {email: req.user.email}}})
     .populate('thread')
     .exec(function(err, data) {
-      if(err) {
+      if (err) {
         console.log(err);
         return res.status(500).send('Cannot retrieve box');
       }
       res.json(data);
     });
   });
-  
+
   // get index
   app.get('/api/boxes', jwtAuth, function(req, res) {
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
@@ -48,7 +48,7 @@ module.exports = function(app, jwtAuth) {
   //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     var post = new Post(req.body.post);
-    post.save(function(err) { //TODO: might need to return id
+    post.save(function(err) {
       if (err) {
         console.log(err);
         return res.status(500).send('there was an error');
@@ -66,7 +66,6 @@ module.exports = function(app, jwtAuth) {
     } catch (err) {
       return res.status(400).send('invalid input');
     }
-    console.log(box);
     box.save(function(err) {
       if (err) {
         console.log(err);
