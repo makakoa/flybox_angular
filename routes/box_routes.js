@@ -47,7 +47,9 @@ module.exports = function(app, jwtAuth) {
 
   //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
-    var post = new Post(req.body.post);
+    console.log('post route hit');
+    var post = new Post();
+    post.content = req.body.post;
     post.save(function(err) {
       if (err) {
         console.log(err);
@@ -71,6 +73,7 @@ module.exports = function(app, jwtAuth) {
         console.log(err);
         return res.status(500).send('there was an error');
       }
+      console.log('box posted');
       res.json({msg: 'sent!'});
     });
   });

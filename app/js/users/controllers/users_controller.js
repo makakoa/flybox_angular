@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = function (app) {
+module.exports = function(app) {
   app.controller('UsersCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
-    function ($scope, $http, $base64, $cookies, $location) {
+    function($scope, $http, $base64, $cookies, $location) {
 
       $scope.signingUp = false;
       $scope.signingIn = false;
@@ -12,24 +12,24 @@ module.exports = function (app) {
         $location.path('/inbox');
       }
 
-      $scope.logIn = function () {
+      $scope.logIn = function() {
         $scope.errors = null;
         $http.defaults.headers.common.Authorization = 'Basic ' + $base64.encode($scope.user.email + ':' + $scope.user.password);
         $http({
           method: 'GET',
           url: '/api/users'
         })
-          .success(function (data) {
+          .success(function(data) {
             $cookies.jwt = data.jwt;
             $location.path('/inbox');
           })
-          .error(function (data) {
+          .error(function(data) {
             console.log('err', data);
             $scope.errors = data;
           });
       };
 
-      $scope.signUp = function () {
+      $scope.signUp = function() {
         $scope.errors = null;
         if ($scope.newUser.password !== $scope.newUser.passwordConfirmation) $scope.errors = 'passwords do not match';
         if (!$scope.newUser.email) $scope.errors = 'did not specify an email';
@@ -40,14 +40,14 @@ module.exports = function (app) {
           url: '/api/users',
           data: $scope.newUser
         })
-          .success(function (data) {
+          .success(function(data) {
             $cookies.jwt = data.jwt;
             $location.path('/inbox');
           })
-          .error(function (data) {
+          .error(function(data) {
             console.log('err', data);
             $scope.errors = data;
           });
       };
-  }]);
+    }]);
 };
