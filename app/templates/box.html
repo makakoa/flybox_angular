@@ -1,0 +1,16 @@
+<header>
+</header>
+
+<main>
+  <h1 data-ng-model="box">{{box.subject}}</h1>
+  <h2 data-ng-model="box">{{box.date | date}}</h2>
+  <section ng-repeat="post in box.thread">
+    <p class='email'>{{post.by}}</p>
+    <p class='date'>{{post.date | date}}</p>
+      <br>
+      <p>{{post.content}}</p>
+  </section>
+  <textarea data-ng-model='newPost.text' type='text' placeholder=' Write a Comment' id='commentBox' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
+  <button data-ng-click='makeComment()' id='send'>Send</button>
+
+</main>

@@ -1,0 +1,17 @@
+<header>
+</header>
+
+<main>
+  <div class='checkedNames'></div>
+  <section data-ng-repeat='box in boxes | orderBy:"date":true'>
+    <span>
+      <input type='checkbox' name='mail' value='openMail'>
+      <label></label>
+    </span>
+    <div class='pars' data-ng-click='goToBox(box.boxKey, box.userKey)'>
+      <p>{{box.email}}</p>
+      <p>{{box.subject}}</p>
+      <p>{{box.date | date}} and {{box.date | date:'hh:mm'}}</p>
+    </div>
+  </section>
+</main>
