@@ -6,7 +6,9 @@ module.exports = function(app) {
       var boxKey = $routeParams.boxId;
       var userId = $routeParams.userId;
       if (!userId) userId = '';
-      (function() {
+      var username;
+
+      $scope.index = function() {
         $http({
           method: 'GET',
           url: '/api/boxes/' + boxKey,
@@ -16,38 +18,40 @@ module.exports = function(app) {
           $scope.box = {
             subject: data.subject,
             date: data.date,
-            members: data.members,
-            thread: data.thread
+            members: data.members
           };
+          $scope.posts = data.thread;
         }); // TODO: add error catch
-      })();
+      };
+
+      $scope.index();
 
       socket.on('init', function(data) {
-        $scope.name = data.name;
-        $scope.users = data.users;
+        username = data.name;
+        console.log('connected');
       });
 
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
       });
 
-      $scope.makeComment = function() {
+      $scope.reply = function() {
         if ($scope.newPost.text === '') return;
         socket.emit('send:post', {
-          message: $scope.newPost.text,
-          boxKey: boxKey,
-          userId: userId
+          content: $scope.newPost.content,
+          by: username,
+          box: boxKey
         });
         var tempPost = $scope.newPost;
-        tempPost.author = 'me';
-        tempPost.time = Date.now();
+        tempPost.by = 'me';
+        tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
       };
 
       $scope.checkIfEnter = function(event) {
         if (event === 13) {
-          $scope.makeComment();
+          $scope.reply();
         }
       };
 
