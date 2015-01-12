@@ -3,10 +3,16 @@
 module.exports = function(app) {
   app.controller('BoxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', '$routeParams', 'socket',
     function($scope, $http, $base64, $cookies, $location, $routeParams, socket) {
-      var boxId = 'sampleBoxKey' || $routeParams.boxId;
-      var userId = 'sampleUserKey' || $routeParams.userId;
+      var boxKey = $routeParams.boxId;
+      var userId = $routeParams.userId;
+      if (!userId) userId = '';
       (function() {
-        $http.get('/api/n/' + boxId + '/' + userId).success(function(data) {
+        $http({
+          method: 'GET',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function(data) {
           $scope.box = {
             subject: data.subject,
             date: data.date,
@@ -29,7 +35,7 @@ module.exports = function(app) {
         if ($scope.newPost.text === '') return;
         socket.emit('send:post', {
           message: $scope.newPost.text,
-          boxKey: boxId,
+          boxKey: boxKey,
           userId: userId
         });
         var tempPost = $scope.newPost;
