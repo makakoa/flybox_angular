@@ -6,13 +6,50 @@
 
 <main>
   <div data-ng-model='user'>
-    <h2>Account</h2>
+    <h2>Flybox Account</h2>
     <h3>Login</h3>
     <p>Username: {{user.email}}</p>
-    <p>Password: <button>Change</button></p>
+    <p>Password: ********<button>Change</button></p>
     <h3>Email Accounts</h3>
-    <div data-ng-repeat='smtp in smtps'>
+    <div data-ng-repeat='smtp in user.smtps'>
+      <p>Host:</p>
+      <p data-ng-show='!smtp.editing'>{{smtp.host}}</p>
+      <input data-ng-show='smtp.editing' data-ng-model='smtp.host'/>
+      <br>
+      <p>Port:</p>
+      <p data-ng-show='!smtp.editing'>{{smtp.port}}</p>
+      <input data-ng-show='smtp.editing' data-ng-model='smtp.port' type='Number'/>
+      <br>
+      <p>Username:</p>
+      <p data-ng-show='!smtp.editing'>{{smtp.username}}</p>
+      <input data-ng-show='smtp.editing' data-ng-model='smtp.username'/>
+      <br>
+      <p>Password:</p>
+      <p data-ng-show='!smtp.editing'>{{smtp.password}}</p>
+      <input data-ng-show='smtp.editing' data-ng-model='smtp.password'/>
+      <br>
+      <button data-ng-show='smtp.editing' data-ng-click='edit(smtp)'>Save</button>
+      <button data-ng-click='smtp.editing=!smtp.editing'>{{smtp.editing ? 'Cancel':'Edit'}}</button>
+      <button data-ng-click='delete(smtp)'>Delete</button>
     </div>
-    <p></p>
+
+    <p data-ng-show='!adding'>{{user.smtps ? 'Expand your Flybox, add another account':'You have no email accounts set up'}}</p>
+    <div data-ng-show='adding'>
+      <p>Host:</p>
+      <input data-ng-model='newSmtp.host'/>
+      <br>
+      <p>Port:</p>
+      <input type='Number' data-ng-model='newSmtp.port'/>
+      <br>
+      <p>Username:</p>
+      <input data-ng-model='newSmtp.username'/>
+      <br>
+      <p>Password:</p>
+      <input data-ng-model='newSmtp.password'/>
+      <br>
+    </div>
+
+    <button data-ng-show='adding' data-ng-click='add()'>Save</button>
+    <button data-ng-click='adding=!adding'>{{adding ? 'Cancel':'Add'}}</button>
   </div>
 </main>
