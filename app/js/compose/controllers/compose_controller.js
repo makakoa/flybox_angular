@@ -22,6 +22,7 @@ module.exports = function(app) {
         .error(function(data) {
           console.log(data);
         });
+        return $location.path('/');
       };
 
       $scope.logOut = function() {

@@ -10,7 +10,9 @@
     <h3>Login</h3>
     <p>Username: {{user.email}}</p>
     <p>Password: <button>Change</button></p>
-    <h3>SMTP</h3>
+    <h3>Email Accounts</h3>
+    <div data-ng-repeat='smtp in smtps'>
+    </div>
     <p></p>
   </div>
 </main>
