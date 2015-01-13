@@ -21,6 +21,9 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/login.html',
       controller: 'UsersCtrl'
     })
+    .when('/landing', {
+      templateUrl: 'templates/landing.html'
+    })
     .when('/inbox/', {
       templateUrl: 'templates/inbox.html',
       controller: 'InboxCtrl'

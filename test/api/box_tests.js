@@ -30,7 +30,6 @@ describe('box routes', function() {
     .post('/api/boxes')
     .set({jwt: jwtToken})
     .send({post: {
-            by: 'flybox4real',
             content: 'Hey, you there!'
            },
            subject: 'Test greetings',
@@ -61,7 +60,7 @@ describe('box routes', function() {
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(res.body.thread[0].by).to.eql('flybox4real');
+      expect(res.body.box.thread[0].by).to.eql('flybox4real@gmail.com');
       done();
     });
   });

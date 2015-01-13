@@ -32,18 +32,11 @@ module.exports = function(app, jwtAuth) {
       }
       var response = [];
       data.forEach(function(box) {
-        var key;
-        box.members.forEach(function(member) {
-          if (req.user.email === member.email) {
-            key = member.urlKey;
-          }
-        });
         response.push({
           email: box.members[0].email,
           subject: box.subject,
           date: box.date,
-          boxKey: box.boxKey,
-          userKey: key
+          boxKey: box.boxKey
         });
       });
       res.json(response);
