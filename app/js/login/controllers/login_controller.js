@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('UsersCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
+  app.controller('LoginCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
     function($scope, $http, $base64, $cookies, $location) {
 
       $scope.signingUp = false;

@@ -10,8 +10,9 @@ require('angular-socket-io');
 var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford.socket-io']);
 
 require('./services/socket_service')(app);
-require('./users/users')(app);
+require('./login/login')(app);
 require('./inbox/inbox')(app);
+require('./account/account')(app);
 require('./compose/compose')(app);
 require('./box/box')(app);
 
@@ -19,7 +20,7 @@ app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {
       templateUrl: 'templates/login.html',
-      controller: 'UsersCtrl'
+      controller: 'LoginCtrl'
     })
     .when('/landing/', {
       templateUrl: 'templates/landing.html'
@@ -27,6 +28,10 @@ app.config(['$routeProvider', function($routeProvider) {
     .when('/inbox/', {
       templateUrl: 'templates/inbox.html',
       controller: 'InboxCtrl'
+    })
+    .when('/account/', {
+      templateUrl: 'templates/account.html',
+      controller: 'AccountCtrl'
     })
     .when('/compose/', {
       templateUrl: 'templates/compose.html',

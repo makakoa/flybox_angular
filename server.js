@@ -23,6 +23,7 @@ require('./lib/passport')(passport);
 var jwtAuth = require('./lib/jwt_auth')(app.get('jwtSecret'));
 require('./routes/user_routes')(app, passport);
 require('./routes/box_routes')(app, jwtAuth);
+require('./routes/account_routes')(app, jwtAuth);
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
