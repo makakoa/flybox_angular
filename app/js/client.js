@@ -18,7 +18,8 @@ require('./box/box')(app);
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {
-      templateUrl: 'templates/login.html'
+      templateUrl: 'templates/login.html',
+      controller: 'UsersCtrl'
     })
     .when('/inbox/', {
       templateUrl: 'templates/inbox.html',
@@ -28,7 +29,7 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/compose.html',
       controller: 'ComposeCtrl'
     })
-    .when('/n/:boxId/:userId/', {
+    .when('/box/:boxId/', {
       templateUrl: 'templates/box.html',
       controller: 'BoxCtrl'
     })

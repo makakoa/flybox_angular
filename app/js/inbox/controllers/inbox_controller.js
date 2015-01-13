@@ -13,16 +13,7 @@ module.exports = function(app) {
 
       $scope.logOut = function() {
         delete $cookies.jwt;
-        delete $cookies.smtpSet;
         return $location.path('/');
-      };
-
-      $scope.settings = function() {
-        return $location.path('/settings');
-      };
-
-      $scope.goToInbox = function() {
-        return $location.path('/inbox');
       };
 
       var getBoxes = function() {
@@ -44,8 +35,8 @@ module.exports = function(app) {
       };
       getBoxes();
 
-      $scope.goToBox = function(boxKey, creatorKey) {
-        return $location.path('/n/' + boxKey + '/' + creatorKey);
+      $scope.goToBox = function(boxKey) {
+        return $location.path('/box/' + boxKey);
       };
     }]);
 };

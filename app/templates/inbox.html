@@ -1,18 +1,14 @@
 <header>
-  <h1>flybox</h1>
-  <a href='#/compose'>compose</a>
+  <h1>Flybox</h1>
+  <a href='#/compose'>Compose</a>
 </header>
 
 <main>
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
-    <span>
-      <input type='checkbox' name='mail' value='openMail'>
-      <label></label>
-    </span>
-    <div class='pars' data-ng-click='goToBox(box.boxKey, box.userKey)'>
-      <p>{{box.email}}</p>
+    <div class='well' data-ng-click='goToBox(box.boxKey)'>
       <p>{{box.subject}}</p>
-      <p>{{box.date | date}} and {{box.date | date:'hh:mm'}}</p>
+      <p>{{box.email}}</p>
+      <p>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
     </div>
   </section>
 </main>

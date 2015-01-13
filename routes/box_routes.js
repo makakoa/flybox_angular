@@ -5,6 +5,7 @@ var Post = require('../models/post');
 var key = require('../lib/key_gen');
 
 module.exports = function(app, jwtAuth) {
+
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: req.user.email}}})
@@ -14,7 +15,11 @@ module.exports = function(app, jwtAuth) {
         console.log(err);
         return res.status(500).send('Cannot retrieve box');
       }
-      res.json(data);
+      var response = {
+        box: data,
+        name: req.user.email
+      };
+      res.json(response);
     });
   });
 
@@ -50,6 +55,7 @@ module.exports = function(app, jwtAuth) {
     console.log('post route hit');
     var post = new Post();
     post.content = req.body.post;
+    post.by = req.user.email;
     post.save(function(err) {
       if (err) {
         console.log(err);

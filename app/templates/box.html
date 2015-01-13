@@ -1,18 +1,27 @@
 <header>
-  <a href='#/inbox'><h1>flybox</h1></a>
-  <h2>box</h2>
+  <a href='#/inbox'><h1>Flybox</h1></a>
+  <h2 data-ng-model='username'>Hello {{username}}</h2>
 </header>
 
 <main>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
-  <section ng-repeat='post in posts'>
+  <section class='well' ng-repeat='post in posts'>
     <p class='email'>{{post.by}}</p>
     <p class='date'>{{post.date | date}}</p>
-    <p>{{post.content}}</p>
-    <br>
+    <p data-ng-show='!post.editing'>{{post.content}}</p>
+
+    <div data-ng-show='username===post.by'>
+      <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
+      <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
+      <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
+        {{post.editing ? 'Cancel':'Edit'}}</button>
+
+      <button data-ng-click='delete(post)'>Delete</button>
+    </div>
+
   </section>
-  <textarea data-ng-model='newPost.content' type='text' placeholder='Reply' id='commentBox' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
+  <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
   <button data-ng-click='reply()' id='send'>Post</button>
 
 </main>
