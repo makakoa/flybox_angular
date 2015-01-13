@@ -5,7 +5,7 @@ var Post = require('../models/post');
 var key = require('../lib/key_gen');
 
 module.exports = function(app, jwtAuth) {
-
+  // get single box
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: req.user.email}}})
@@ -20,6 +20,51 @@ module.exports = function(app, jwtAuth) {
         name: req.user.email
       };
       res.json(response);
+    });
+  });
+
+  // add member to box
+  app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Cannot retrieve box');
+      }
+      box.members.push({
+        email: req.body.email,
+        unread: 1
+      });
+      box.save(function(err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('there was an error');
+        }
+        res.json({msg: 'member added'});
+      });
+    });
+  });
+
+  // leave box
+  app.delete('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Cannot retrieve box');
+      }
+      box.members.forEach(function(member) {
+        if (member.email === req.user.email) {
+          member.remove();
+        }
+      });
+      box.save(function(err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('there was an error');
+        }
+        res.json({msg: 'left box'});
+      });
     });
   });
 
@@ -65,7 +110,7 @@ module.exports = function(app, jwtAuth) {
       box.boxKey = key();
       box.members = [{email: req.user.email, unread: 0}];
       req.body.members.forEach(function(member) {
-        box.members.push({email: member, unread: 0});
+        box.members.push({email: member, unread: 1});
       });
       box.thread = [post._id];
     } catch (err) {

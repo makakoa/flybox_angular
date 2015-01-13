@@ -26,6 +26,29 @@ module.exports = function(app) {
 
       $scope.index();
 
+      $scope.addMember = function(newMember) {
+        $http({
+          method: 'POST',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt},
+          data: newMember
+        })
+        .success(function() {
+          $scope.newMember = {};
+        });
+      };
+
+      $scope.leaveBox = function() {
+        $http({
+          method: 'DELETE',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function() {
+          return $location.path('/');
+        });
+      };
+
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
       });
