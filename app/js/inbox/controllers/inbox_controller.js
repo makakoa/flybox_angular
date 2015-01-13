@@ -26,11 +26,9 @@ module.exports = function(app) {
         })
           .success(function(data) {
             $scope.boxes = data;
-            console.log('got them Boxes', data);
           })
-          .error(function(data) {
-            console.log('err from getBoxes', data);
-            $scope.logOut();
+          .error(function(err) {
+            console.log(err);
           });
       };
       getBoxes();

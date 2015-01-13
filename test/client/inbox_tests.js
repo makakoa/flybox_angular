@@ -3,7 +3,7 @@
 require('../../app/js/client');
 require('angular-mocks');
 
-describe('Box Controller', function() {
+describe('Inbox Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
   var $scope;
@@ -16,14 +16,14 @@ describe('Box Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('BoxCtrl', {$scope: $scope});
+    var boxController = $controllerConstructor('InboxCtrl', {$scope: $scope});
     expect(typeof boxController).toBe('object');
   });
 
-  describe('box functions', function() {
+  describe('Inbox functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('BoxCtrl', {$scope: $scope});
+      $controllerConstructor('InboxCtrl', {$scope: $scope});
     }));
 
     afterEach(function() {
@@ -32,15 +32,15 @@ describe('Box Controller', function() {
     });
 
     it('should get a box from the server', function() {
-      $httpBackend.expectGET('/api/boxes/undefined').respond(200, {name: 'flyboxman', box: {
-        'subject': 'testSubject',
-        'date': '1/2/13',
-        'members': [],
-        'thread': []
-      }});
+      $httpBackend.expectGET('/api/boxes').respond(200, [{
+        email: 'testSubject',
+        date: '1/2/13',
+        subject: 'testing',
+        boxKey: 123
+      }]);
       $httpBackend.flush();
-      expect(typeof $scope.box).toBe('object');
-      expect($scope.username).toBe('flyboxman');
+      expect(typeof $scope.boxes[0]).toBe('object');
+      expect($scope.boxes.lenth).toBe(1);
     });
   });
 });
