@@ -28,7 +28,7 @@ module.exports = function(socket) {
       console.log('post saved');
     });
 
-    socket.broadcast.emit('send:post', {
+    socket.broadcast.to(socket.room).emit('send:post', {
       content: post.message,
       by: post.by,
       date: Date.now()
@@ -46,21 +46,10 @@ module.exports = function(socket) {
         console.log('saved');
       });
 
-      socket.broadcast.emit('edit:post', {
+      socket.broadcast.to(socket.room).emit('edit:post', {
         _id: post._id,
         by: post.by,
         content: post.content
-      });
-    });
-  });
-
-  socket.on('delete:post', function(data) {
-    Post.remove({_id: data._id, by: data.name}, function(err) {
-      if (err) return console.log(err);
-      console.log('removed');
-
-      socket.broadcast.emit('delete:post', {
-        _id: data._id
       });
     });
   });
