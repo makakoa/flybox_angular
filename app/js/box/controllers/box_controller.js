@@ -17,15 +17,14 @@ module.exports = function(app) {
           $scope.username = data.name;
           $scope.box = data.box;
           $scope.posts = data.box.thread;
+          socket.emit('init', {
+            name: $scope.username,
+            room: boxKey
+          });
         }); // TODO: add error catch
       };
 
       $scope.index();
-
-      socket.emit('init', {
-        name: $scope.username,
-        room: boxKey
-      });
 
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
@@ -62,9 +61,10 @@ module.exports = function(app) {
       $scope.delete = function(post) {
         socket.emit('edit:post', {
           _id: post._id,
-          content: '',
-          by: 'deleted'
+          delete: true
         });
+        post.by = 'deleted';
+        post.content = '';
       };
 
       $scope.checkIfEnter = function(event) {

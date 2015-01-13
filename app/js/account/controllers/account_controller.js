@@ -16,6 +16,7 @@ module.exports = function(app) {
         })
         .success(function(data) {
           $scope.user = data;
+          $scope.username = data.email;
         });
       };
 

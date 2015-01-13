@@ -4,17 +4,18 @@ var Box = require('../models/box');
 var Post = require('../models/post');
 
 module.exports = function(socket) {
-  var online = {};
 
   socket.on('init', function(data) {
-    online[data.name] = data.room;
+    socket.username = data.name; // should replace with jwt route
     socket.join(data.room);
+    socket.room = data.room;
+    console.log(data.name + ' joined room:' + socket.room);
   });
 
   socket.on('send:post', function(data) {
     console.log('post received');
     var post = new Post();
-    post.by = data.by;
+    post.by = socket.username;
     post.content = data.content;
     post.date = Date.now();
     post.save(function(err) {
@@ -28,9 +29,10 @@ module.exports = function(socket) {
       console.log('post saved');
     });
 
+    console.log(socket.username + ' posted in room:' + socket.room);
     socket.broadcast.to(socket.room).emit('send:post', {
-      content: post.message,
-      by: post.by,
+      content: post.content,
+      by: socket.username,
       date: Date.now()
     });
   });
@@ -38,9 +40,12 @@ module.exports = function(socket) {
   socket.on('edit:post', function(data) {
     Post.findOne({_id: data._id}, function(err, post) {
       if (err) return console.log(err);
-      if (post.by !== data.by) return console.log('access error');
+      if (post.by !== socket.username) return console.log('access error');
+      if (data.delete) {
+        post.by = 'deleted';
+        data.content = '';
+      }
       post.content = data.content;
-      post.by = data.by;
       post.save(function(err) {
         if (err) return console.log(err);
         console.log('saved');
