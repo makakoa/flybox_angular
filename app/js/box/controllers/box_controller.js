@@ -72,5 +72,10 @@ module.exports = function(app) {
           $scope.reply();
         }
       };
+
+      $scope.logOut = function() {
+        delete $cookies.jwt;
+        return $location.path('/');
+      };
     }]);
 };

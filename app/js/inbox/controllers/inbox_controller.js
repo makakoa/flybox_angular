@@ -8,15 +8,7 @@ module.exports = function(app) {
         $location.path('/');
       }
 
-      $scope.menu = true;
-      $scope.composing = true;
-
-      $scope.logOut = function() {
-        delete $cookies.jwt;
-        return $location.path('/');
-      };
-
-      var getBoxes = function() {
+      $scope.index = function() {
         $http({
           method: 'GET',
           url: '/api/boxes',
@@ -25,16 +17,23 @@ module.exports = function(app) {
           }
         })
           .success(function(data) {
-            $scope.boxes = data;
+            $scope.username = data.name;
+            $scope.boxes = data.inbox;
           })
           .error(function(err) {
             console.log(err);
           });
       };
-      getBoxes();
+
+      $scope.index();
 
       $scope.goToBox = function(boxKey) {
         return $location.path('/box/' + boxKey);
+      };
+
+      $scope.logOut = function() {
+        delete $cookies.jwt;
+        return $location.path('/');
       };
     }]);
 };

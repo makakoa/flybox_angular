@@ -30,15 +30,19 @@ module.exports = function(app, jwtAuth) {
         console.log(err);
         return res.status(500).send('Cannot retrieve boxes');
       }
-      var response = [];
+      var boxes = [];
       data.forEach(function(box) {
-        response.push({
+        boxes.push({
           email: box.members[0].email,
           subject: box.subject,
           date: box.date,
           boxKey: box.boxKey
         });
       });
+      var response = {
+        name: req.user.email,
+        inbox: boxes
+      };
       res.json(response);
     });
   });

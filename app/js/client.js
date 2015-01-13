@@ -21,7 +21,7 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/login.html',
       controller: 'UsersCtrl'
     })
-    .when('/landing', {
+    .when('/landing/', {
       templateUrl: 'templates/landing.html'
     })
     .when('/inbox/', {

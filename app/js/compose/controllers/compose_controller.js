@@ -23,5 +23,10 @@ module.exports = function(app) {
           console.log(data);
         });
       };
+
+      $scope.logOut = function() {
+        delete $cookies.jwt;
+        return $location.path('/');
+      };
     }]);
 };
