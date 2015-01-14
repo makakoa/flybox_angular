@@ -125,7 +125,7 @@ module.exports = function(app, jwtAuth) {
       console.log('box posted');
       //add checker for flybox user here
       var mailOptions = {
-        from: req.user.email,
+        from: req.user.displayName + '<' + req.user.email + '>',
         to: req.body.members,
         subject: box.subject,
         text: post.content

@@ -22,6 +22,18 @@ module.exports = function(app) {
 
       $scope.index();
 
+      $scope.setName = function() {
+        $http({
+          method: 'PUT',
+          url: '/account/name',
+          headers: {jwt: $cookies.jwt},
+          data: $scope.user
+        })
+        .success(function() {
+          $scope.user.displayName = $scope.user.newName;
+        });
+      };
+
       $scope.add = function() {
         $http({
           method: 'POST',
@@ -38,6 +50,7 @@ module.exports = function(app) {
       };
 
       $scope.edit = function(smtp) {
+        console.log(smtp);
         $http({
           method: 'PUT',
           url: '/account/smtp',
