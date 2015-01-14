@@ -123,7 +123,7 @@ module.exports = function(app, jwtAuth) {
         return res.status(500).send('there was an error');
       }
       console.log('box posted');
-
+      //add checker for flybox user here
       var mailOptions = {
         from: req.user.email,
         to: req.body.members,
