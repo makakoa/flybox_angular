@@ -3,6 +3,7 @@
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
+var mailer = require('../lib/mailer');
 
 module.exports = function(app, jwtAuth) {
   // get single box
@@ -122,6 +123,13 @@ module.exports = function(app, jwtAuth) {
         return res.status(500).send('there was an error');
       }
       console.log('box posted');
+      var mailOptions = {
+        from: req.user.email,
+        to: req.body.members,
+        subject: box.subject,
+        text: post.content
+      };
+      mailer(mailOptions, req.user.smtps[0]);
       res.json({msg: 'sent!'});
     });
   });

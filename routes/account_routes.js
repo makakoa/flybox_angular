@@ -9,12 +9,19 @@ module.exports = function(app, jwtAuth) {
     var smtp;
     try {
       smtp = {
+        service: req.body.host,
+        auth: {
+          user: req.body.username,
+          pass: req.body.password
+        }
+      };
+      /*smtp = {
         host: req.body.host,
-        post: req.body.post,
+        port: req.body.port,
         username: req.body.username,
         password: req.body.password, // TODO: add some sort of encryption
         secure: true
-      };
+      };*/
     } catch (err) {
       return res.status(500).send('there was an error adding account');
     }
@@ -31,7 +38,7 @@ module.exports = function(app, jwtAuth) {
 
   app.put('/account/smtp', jwtAuth, function(req, res) {
     req.user.smtps.id(req.body._id).host = req.body.host;
-    req.user.smtps.id(req.body._id).post = req.body.port;
+    req.user.smtps.id(req.body._id).port = req.body.port;
     req.user.smtps.id(req.body._id).username = req.body.username;
     req.user.smtps.id(req.body._id).password = req.body.password;
 
