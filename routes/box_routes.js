@@ -3,7 +3,7 @@
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
-//var mailer = require('../lib/mailer');
+var mailer = require('../lib/mailer');
 
 module.exports = function(app, jwtAuth) {
   // get single box
@@ -124,22 +124,20 @@ module.exports = function(app, jwtAuth) {
       }
       console.log('box posted');
       //add checker for flybox user here
-      /*var mailOptions = {
+      var mailOptions = {
         from: req.user.email,
         to: req.body.members,
         subject: box.subject,
         text: post.content
       };
       var smtpOptions = {
-        host: 'smtp.gmail.com',
-        secureConnection: true,
-        port: 465,
+        service: 'gmail',
         auth: {
           user: 'flybox4real@gmail.com',
           pass: 'flyboxme'
         }
       };
-      mailer(mailOptions, smtpOptions);*/
+      mailer(mailOptions, smtpOptions);
 
       res.json({msg: 'sent!'});
     });

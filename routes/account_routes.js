@@ -7,16 +7,32 @@ module.exports = function(app, jwtAuth) {
 
   app.post('/account/smtp', jwtAuth, function(req, res) {
     var smtp;
-    try {
-      smtp = {
-        host: req.body.host,
-        secureConnection: true,
-        port: req.body.port,
-        user: req.body.username,
-        pass: req.body.password // TODO: add some sort of encryption
-      };
-    } catch (err) {
-      return res.status(500).send('there was an error adding account');
+    if (req.body.service) {
+      try {
+        smtp = {
+          service: req.body.service,
+          auth: {
+            user: req.body.username,
+            pass: req.body.password // TODO: add some sort of encryption
+          }
+        };
+      } catch (err) {
+        return res.status(500).send('there was an error adding account');
+      }
+    } else {
+      try {
+        smtp = {
+          host: req.body.host,
+          secureConnection: req.body.secureConnection,
+          port: req.body.port,
+          auth: {
+            user: req.body.username,
+            pass: req.body.password // TODO: add some sort of encryption
+          }
+        };
+      } catch (err) {
+        return res.status(500).send('there was an error adding account');
+      }
     }
     req.user.smtps.push(smtp);
     req.user.save(function(err) {
@@ -30,7 +46,9 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.put('/account/smtp', jwtAuth, function(req, res) {
+    req.user.smtps.id(req.body._id).service = req.body.service;
     req.user.smtps.id(req.body._id).host = req.body.host;
+    req.user.smtps.id(req.body._id).secureConnection = req.body.secureConnection;
     req.user.smtps.id(req.body._id).port = req.body.port;
     req.user.smtps.id(req.body._id).username = req.body.username;
     req.user.smtps.id(req.body._id).password = req.body.password;

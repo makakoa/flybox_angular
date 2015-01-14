@@ -23,8 +23,6 @@ module.exports = function(app) {
       $scope.index();
 
       $scope.add = function() {
-        if (!$scope.newSmtp.host || !$scope.newSmtp.port || !$scope.newSmtp.username || !$scope.newSmtp.password)
-          return console.log('fill in all fields');
         $http({
           method: 'POST',
           url: '/account/smtp',

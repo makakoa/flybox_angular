@@ -8,15 +8,7 @@ var userSchema = mongoose.Schema({
   email: String,
   password: String,
   displayName: String,
-  smtps: [{
-    host: String,
-    secureConnection: Boolean,
-    port: Number,
-    auth: {
-      user: String,
-      pass: String
-    }
-  }]
+  smtps: [{}]
 });
 
 userSchema.methods.generateHash = function(password) {
