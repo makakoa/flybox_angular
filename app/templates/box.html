@@ -8,6 +8,8 @@
 <main>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
+  <p>Members:</p>
+  <a data-ng-repeat='member in box.members'>{{member.email}} </a>
   <input data-ng-model='newMember.email'/>
   <button data-ng-click='addMember(newMember)'>Add Member</button>
   <button data-ng-click='leaveBox()'>Leave Box</button>

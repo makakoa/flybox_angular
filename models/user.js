@@ -7,6 +7,7 @@ var jwt = require('jwt-simple');
 var userSchema = mongoose.Schema({
   email: String,
   password: String,
+  displayName: String,
   smtps: [{
     host: String,
     port: Number,

@@ -7,9 +7,16 @@
 <main>
   <div data-ng-model='user'>
     <h2>Flybox Account</h2>
+
     <h3>Login</h3>
-    <p>Username: {{user.email}}</p>
-    <p>Password: ********<button>Change</button></p>
+    <p>Username: {{user.email}}<button>Change#####</button></p>
+    <p>Password: ********<button>Change#####</button></p>
+
+    <h3>Display Name#####</h3>
+    <p data-ng-show='!editname'>{{user.displayName}}</p>
+    <input data-ng-show='editname' data-ng-model='user.newName'/>
+    <button data-ng-click='editname=!editname'>{{editname ? 'Save':'Change'}}</button>
+
     <h3>Email Accounts</h3>
     <div data-ng-repeat='smtp in user.smtps'>
       <p>Host:</p>
