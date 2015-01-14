@@ -59,5 +59,10 @@ module.exports = function(app) {
           $scope.user.smtps.splice($scope.user.smtps.indexOf(smtp), 1);
         });
       };
+
+      $scope.logOut = function() {
+        delete $cookies.jwt;
+        return $location.path('/');
+      };
     }]);
 };
