@@ -9,19 +9,12 @@ module.exports = function(app, jwtAuth) {
     var smtp;
     try {
       smtp = {
-        service: req.body.host,
-        auth: {
-          user: req.body.username,
-          pass: req.body.password
-        }
-      };
-      /*smtp = {
         host: req.body.host,
+        secureConnection: true,
         port: req.body.port,
-        username: req.body.username,
-        password: req.body.password, // TODO: add some sort of encryption
-        secure: true
-      };*/
+        user: req.body.username,
+        pass: req.body.password // TODO: add some sort of encryption
+      };
     } catch (err) {
       return res.status(500).send('there was an error adding account');
     }

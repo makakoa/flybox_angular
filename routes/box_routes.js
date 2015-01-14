@@ -123,13 +123,24 @@ module.exports = function(app, jwtAuth) {
         return res.status(500).send('there was an error');
       }
       console.log('box posted');
+
       var mailOptions = {
         from: req.user.email,
         to: req.body.members,
         subject: box.subject,
         text: post.content
       };
-      mailer(mailOptions, req.user.smtps[0]);
+      var smtpOptions = {
+        host: 'smtp.gmail.com',
+        secureConnection: true,
+        port: 465,
+        auth: {
+          user: 'flybox4real@gmail.com',
+          pass: 'flyboxme'
+        }
+      };
+      mailer(mailOptions, smtpOptions);
+
       res.json({msg: 'sent!'});
     });
   });
