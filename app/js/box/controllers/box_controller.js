@@ -49,8 +49,18 @@ module.exports = function(app) {
         });
       };
 
+      socket.on('read', function(data) {
+        $scope.box.members.forEach(function(member) {
+          if (member.email === data.by) member.unread = 0;
+        });
+      });
+
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
+        $scope.box.members.forEach(function(member) {
+          member.unread++;
+          if (member.email === post.by) member.unread = 0;
+        });
       });
 
       socket.on('edit:post', function() {
@@ -69,6 +79,10 @@ module.exports = function(app) {
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
+        $scope.box.members.forEach(function(member) {
+          member.unread++;
+          if (member.email === $scope.username) member.unread = 0;
+        });
       };
 
       $scope.edit = function(post) {

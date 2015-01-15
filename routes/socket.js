@@ -12,28 +12,48 @@ module.exports = function(socket) {
     console.log(data.name + ' joined room:' + socket.room);
   });
 
+  socket.on('read', function() {
+    socket.broadcast.to(socket.room).emit('read', {
+      by: socket.username
+    });
+
+    Box.findOne({boxKey: socket.room}, function(err, box) {
+      box.members.forEach(function(member) {
+        if (member.email === socket.username) {
+          member.unread = 0;
+        }
+      });
+      box.save(function(err) {
+        if (err) return console.log(err);
+      });
+    });
+  });
+
   socket.on('send:post', function(data) {
-    console.log('post received');
+    console.log(socket.username + ' posted in room:' + socket.room);
+    socket.broadcast.to(socket.room).emit('send:post', {
+      content: data.content,
+      by: socket.username,
+      date: Date.now()
+    });
+
     var post = new Post();
     post.by = socket.username;
     post.content = data.content;
     post.date = Date.now();
     post.save(function(err) {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      Box.findOneAndUpdate({boxKey: data.box}, {$push: {thread: post._id}}, function(err) {
+      if (err) return console.log(err);
+      Box.findOne({boxKey: data.box}, function(err, box) {
         if (err) return console.log(err);
+        box.thread.push(post._id);
+        box.members.forEach(function(member) {
+          member.unread += 1;
+          if (member.email === socket.username) member.unread = 0;
+        });
+        box.save(function(err) {
+          if (err) return console.log(err);
+        });
       });
-      console.log('post saved');
-    });
-
-    console.log(socket.username + ' posted in room:' + socket.room);
-    socket.broadcast.to(socket.room).emit('send:post', {
-      content: post.content,
-      by: socket.username,
-      date: Date.now()
     });
   });
 
