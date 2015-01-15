@@ -16,9 +16,66 @@ module.exports = function(app) {
         })
         .success(function(data) {
           $scope.user = data;
+          $scope.username = data.email;
         });
       };
 
       $scope.index();
+
+      $scope.setName = function() {
+        $http({
+          method: 'PUT',
+          url: '/account/name',
+          headers: {jwt: $cookies.jwt},
+          data: $scope.user
+        })
+        .success(function() {
+          $scope.user.displayName = $scope.user.newName;
+        });
+      };
+
+      $scope.add = function() {
+        $http({
+          method: 'POST',
+          url: '/account/smtp',
+          headers: {jwt: $cookies.jwt},
+          data: $scope.newSmtp
+        })
+        .success(function() {
+          var temp = $scope.newSmtp;
+          $scope.user.smtps.push(temp);
+          $scope.adding = false;
+          $scope.newSmtp = {};
+        });
+      };
+
+      $scope.edit = function(smtp) {
+        console.log(smtp);
+        $http({
+          method: 'PUT',
+          url: '/account/smtp',
+          headers: {jwt: $cookies.jwt},
+          data: smtp
+        })
+        .success(function() {
+          smtp.editing = false;
+        });
+      };
+
+      $scope.delete = function(smtp) {
+        $http({
+          method: 'DELETE',
+          url: '/account/smtp/' + smtp._id,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function() {
+          $scope.user.smtps.splice($scope.user.smtps.indexOf(smtp), 1);
+        });
+      };
+
+      $scope.logOut = function() {
+        delete $cookies.jwt;
+        return $location.path('/');
+      };
     }]);
 };

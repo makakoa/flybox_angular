@@ -17,18 +17,50 @@ module.exports = function(app) {
           $scope.username = data.name;
           $scope.box = data.box;
           $scope.posts = data.box.thread;
+          socket.emit('init', {
+            name: $scope.username,
+            room: boxKey
+          });
         }); // TODO: add error catch
       };
 
       $scope.index();
 
-      socket.emit('init', {
-        name: $scope.username,
-        room: boxKey
+      $scope.addMember = function(newMember) {
+        $http({
+          method: 'POST',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt},
+          data: newMember
+        })
+        .success(function() {
+          $scope.newMember = {};
+        });
+      };
+
+      $scope.leaveBox = function() {
+        $http({
+          method: 'DELETE',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function() {
+          return $location.path('/');
+        });
+      };
+
+      socket.on('read', function(data) {
+        $scope.box.members.forEach(function(member) {
+          if (member.email === data.by) member.unread = 0;
+        });
       });
 
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
+        $scope.box.members.forEach(function(member) {
+          member.unread++;
+          if (member.email === post.by) member.unread = 0;
+        });
       });
 
       socket.on('edit:post', function() {
@@ -47,6 +79,10 @@ module.exports = function(app) {
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
+        $scope.box.members.forEach(function(member) {
+          member.unread++;
+          if (member.email === $scope.username) member.unread = 0;
+        });
       };
 
       $scope.edit = function(post) {
@@ -62,9 +98,10 @@ module.exports = function(app) {
       $scope.delete = function(post) {
         socket.emit('edit:post', {
           _id: post._id,
-          content: '',
-          by: 'deleted'
+          delete: true
         });
+        post.by = 'deleted';
+        post.content = '';
       };
 
       $scope.checkIfEnter = function(event) {

@@ -3,9 +3,11 @@
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
+var mailer = require('../lib/mailer');
+var fetcher = require('../lib/fetcher');
 
 module.exports = function(app, jwtAuth) {
-
+  // get single box
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: req.user.email}}})
@@ -23,28 +25,108 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
-  // get index
+  // add member to box
+  app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Cannot retrieve box');
+      }
+      box.members.push({
+        email: req.body.email,
+        unread: 1
+      });
+      box.save(function(err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('there was an error');
+        }
+        res.json({msg: 'member added'});
+      });
+    });
+  });
+
+  // leave box
+  app.delete('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Cannot retrieve box');
+      }
+      box.members.forEach(function(member) {
+        if (member.email === req.user.email) {
+          member.remove();
+        }
+      });
+      box.save(function(err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send('there was an error');
+        }
+        res.json({msg: 'left box'});
+      });
+    });
+  });
+
+  var fillerImap = {
+    user: 'flybox4real@gmail.com',
+    password: 'flyboxme',
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true
+  };
+
+  // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
+    console.log('getting inbox for ' + req.user.email);
+    var ready = 0;
+    var boxes = [];
+    fetcher.getInbox(fillerImap, function(inbox) {
+      inbox.forEach(function(box) {
+        boxes.push({
+          email: box.from,
+          subject: box.subject,
+          date: box.date,
+          box: false
+        });
+      });
+      readycheck();
+    });
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
       if (err) {
         console.log(err);
         return res.status(500).send('Cannot retrieve boxes');
       }
-      var boxes = [];
       data.forEach(function(box) {
+        var num;
+        box.members.forEach(function(member) {
+          if (req.user.email === member.email) {
+            num = member.unread;
+            return;
+          }
+        });
         boxes.push({
           email: box.members[0].email,
           subject: box.subject,
           date: box.date,
-          boxKey: box.boxKey
+          boxKey: box.boxKey,
+          unread: num
         });
       });
-      var response = {
-        name: req.user.email,
-        inbox: boxes
-      };
-      res.json(response);
+      readycheck();
     });
+    var readycheck = function() {
+      ready++;
+      if (ready == 2) {
+        var response = {
+          name: req.user.email,
+          inbox: boxes
+        };
+        res.json(response);
+      }
+    };
   });
 
   //send box
@@ -65,7 +147,7 @@ module.exports = function(app, jwtAuth) {
       box.boxKey = key();
       box.members = [{email: req.user.email, unread: 0}];
       req.body.members.forEach(function(member) {
-        box.members.push({email: member, unread: 0});
+        box.members.push({email: member, unread: 1});
       });
       box.thread = [post._id];
     } catch (err) {
@@ -77,6 +159,22 @@ module.exports = function(app, jwtAuth) {
         return res.status(500).send('there was an error');
       }
       console.log('box posted');
+      //add checker for flybox user here
+      var mailOptions = {
+        from: req.user.displayName + '<' + req.user.email + '>',
+        to: req.body.members,
+        subject: box.subject,
+        text: post.content
+      };
+      var smtpOptions = {
+        service: 'gmail',
+        auth: {
+          user: 'flybox4real@gmail.com',
+          pass: 'flyboxme'
+        }
+      };
+      mailer(mailOptions, smtpOptions);
+
       res.json({msg: 'sent!'});
     });
   });

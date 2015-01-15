@@ -48,8 +48,8 @@ describe('box routes', function() {
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(Array.isArray(res.body)).to.be.true;
-      boxKey = res.body[0].boxKey;
+      expect(Array.isArray(res.body.inbox)).to.be.true;
+      boxKey = res.body.inbox[0].boxKey;
       done();
     });
   });
