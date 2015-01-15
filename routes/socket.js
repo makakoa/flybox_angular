@@ -23,8 +23,22 @@ module.exports = function(socket) {
         console.log(err);
         return;
       }
-      Box.findOneAndUpdate({boxKey: data.box}, {$push: {thread: post._id}}, function(err) {
+      Box.findOne({boxKey: data.box}, function(err, box) {
         if (err) return console.log(err);
+        box.thread.push(post._id);
+        var temp = box.members;
+        box.members = undefined;
+        for (var member in temp) {
+          temp[member].unread++;
+        }
+        temp[post.by].unread = 0;
+        box.members = temp;
+        box.save(function(err) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+        });
       });
       console.log('post saved');
     });

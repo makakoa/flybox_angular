@@ -16,6 +16,8 @@ module.exports = function(app) {
         .success(function(data) {
           $scope.username = data.name;
           $scope.box = data.box;
+          $scope.members = Object.keys(data.box.members);
+          console.log($scope.members);
           $scope.posts = data.box.thread;
           socket.emit('init', {
             name: $scope.username,
@@ -51,6 +53,10 @@ module.exports = function(app) {
 
       socket.on('send:post', function(post) {
         $scope.posts.push(post);
+        for (var i = 0; i < $scope.members.length; i++) {
+          $scope.box.members[$scope.members[i]].unread++;
+        }
+        $scope.box.members[post.by].unread = 0;
       });
 
       socket.on('edit:post', function() {
