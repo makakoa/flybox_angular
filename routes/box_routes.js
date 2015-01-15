@@ -4,6 +4,7 @@ var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
 var mailer = require('../lib/mailer');
+var fetcher = require('../lib/fetcher');
 
 module.exports = function(app, jwtAuth) {
   // get single box
@@ -69,14 +70,35 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
+  var fillerImap = {
+    user: 'flybox4real@gmail.com',
+    password: 'flyboxme',
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true
+  };
+
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
+    console.log('getting inbox for ' + req.user.email);
+    var ready = 0;
+    var boxes = [];
+    fetcher.getInbox(fillerImap, function(inbox) {
+      inbox.forEach(function(box) {
+        boxes.push({
+          email: box.from,
+          subject: box.subject,
+          date: box.date,
+          box: false
+        });
+      });
+      readycheck();
+    });
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
       if (err) {
         console.log(err);
         return res.status(500).send('Cannot retrieve boxes');
       }
-      var boxes = [];
       data.forEach(function(box) {
         var num;
         box.members.forEach(function(member) {
@@ -93,12 +115,18 @@ module.exports = function(app, jwtAuth) {
           unread: num
         });
       });
-      var response = {
-        name: req.user.email,
-        inbox: boxes
-      };
-      res.json(response);
+      readycheck();
     });
+    var readycheck = function() {
+      ready++;
+      if (ready == 2) {
+        var response = {
+          name: req.user.email,
+          inbox: boxes
+        };
+        res.json(response);
+      }
+    };
   });
 
   //send box
