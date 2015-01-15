@@ -27,6 +27,7 @@ module.exports = function(app) {
           .success(function(data) {
             $scope.username = data.name;
             $scope.boxes = data.inbox;
+            console.log(data.inbox);
           })
           .error(function(err) {
             console.log(err);
@@ -44,14 +45,22 @@ module.exports = function(app) {
         return $location.path('/');
       };
 
-      $scope.getBoxDetail = function() {
-        $scope.boxDetail = {
-          title: 'TITLE2!',
-          date: 'today2',
-          members: ['cam2', 'charles2'],
-          subject: 'subject2',
-          body: 'This is the body of the email2'
-        };
+      $scope.getBoxDetail = function(boxKey) {
+        $http({
+          method: 'GET',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function(data) {
+          console.log(data);
+          $scope.boxDetail = {
+            title: data.box.subject,
+            date: 'today2',
+            members: data.box.members,
+            subject: 'subject2',
+            body: data.box.thread[0].content
+          };
+        }); // TODO: add error catch
       };
     }]);
 };

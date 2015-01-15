@@ -45,7 +45,7 @@
       <div id="list" class="pure-u-1">
         <section data-ng-repeat='box in boxes | orderBy:"date":true'>
       <!-- Can add the class "email-item-unread" "email-item-selected" -->
-          <div data-ng-click='getBoxDetail()' class="email-item pure-g">
+          <div data-ng-click='getBoxDetail(box.boxKey)' class="email-item pure-g">
             <div class="pure-u">
               <img class="email-avatar" alt="Tilo Mitra&#x27;s avatar" height="64" width="64" src="../img/common/tilo-avatar.png">
             </div>
