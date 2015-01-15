@@ -2,18 +2,32 @@
 
 module.exports = function(app, jwtAuth) {
   app.get('/account/', jwtAuth, function(req, res) {
+    console.log('Getting info for ' + req.user.email);
     res.json(req.user);
   });
 
+  app.put('/account/name', jwtAuth, function(req, res) {
+    console.log('Changing ' + req.user.displayName + ' to ' + req.body.newName);
+    req.user.displayName = req.body.newName;
+    req.user.save(function(err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('there was an error');
+      }
+      res.json({msg: 'saved'});
+    });
+  });
+
   app.post('/account/smtp', jwtAuth, function(req, res) {
+    console.log('Adding smtp account for ' + req.user.email);
     var smtp;
     if (req.body.service) {
       try {
         smtp = {
           service: req.body.service,
           auth: {
-            user: req.body.username,
-            pass: req.body.password // TODO: add some sort of encryption
+            user: req.body.auth.user,
+            pass: req.body.auth.pass // TODO: add some sort of encryption
           }
         };
       } catch (err) {
@@ -26,8 +40,8 @@ module.exports = function(app, jwtAuth) {
           secureConnection: req.body.secureConnection,
           port: req.body.port,
           auth: {
-            user: req.body.username,
-            pass: req.body.password // TODO: add some sort of encryption
+            user: req.body.auth.user,
+            pass: req.body.auth.pass // TODO: add some sort of encryption
           }
         };
       } catch (err) {
@@ -46,12 +60,13 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.put('/account/smtp', jwtAuth, function(req, res) {
+    console.log('Changing smtp account for ' + req.user.email);
+    req.user.smtps.id(req.body._id).auth.user = req.body.auth.user;
+    req.user.smtps.id(req.body._id).auth.pass = req.body.auth.pass;
     req.user.smtps.id(req.body._id).service = req.body.service;
     req.user.smtps.id(req.body._id).host = req.body.host;
     req.user.smtps.id(req.body._id).secureConnection = req.body.secureConnection;
     req.user.smtps.id(req.body._id).port = req.body.port;
-    req.user.smtps.id(req.body._id).username = req.body.username;
-    req.user.smtps.id(req.body._id).password = req.body.password;
 
     req.user.save(function(err) {
       if (err) {

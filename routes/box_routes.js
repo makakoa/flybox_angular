@@ -69,7 +69,7 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
-  // get index
+  // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
       if (err) {
@@ -78,11 +78,19 @@ module.exports = function(app, jwtAuth) {
       }
       var boxes = [];
       data.forEach(function(box) {
+        var num;
+        box.members.forEach(function(member) {
+          if (req.user.email === member.email) {
+            num = member.unread;
+            return;
+          }
+        });
         boxes.push({
           email: box.members[0].email,
           subject: box.subject,
           date: box.date,
-          boxKey: box.boxKey
+          boxKey: box.boxKey,
+          unread: num
         });
       });
       var response = {
@@ -125,7 +133,7 @@ module.exports = function(app, jwtAuth) {
       console.log('box posted');
       //add checker for flybox user here
       var mailOptions = {
-        from: req.user.email,
+        from: req.user.displayName + '<' + req.user.email + '>',
         to: req.body.members,
         subject: box.subject,
         text: post.content

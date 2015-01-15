@@ -2,7 +2,7 @@
 
 module.exports = function(app) {
   app.controller('InboxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
-      function($scope, $http, $base64, $cookies, $location) {
+    function($scope, $http, $base64, $cookies, $location) {
       if (!$cookies.jwt) {
         console.log('redirecting');
         $location.path('/');
