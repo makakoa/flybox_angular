@@ -27,8 +27,8 @@ module.exports = function(app) {
 
       $scope.index();
 
-      $scope.goToBox = function(boxKey) {
-        return $location.path('/box/' + boxKey);
+      $scope.goToBox = function(boxKey, isBox) {
+        return $location.path('/box/' + boxKey + '/' + isBox);
       };
 
       $scope.logOut = function() {

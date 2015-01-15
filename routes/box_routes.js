@@ -1,5 +1,13 @@
 'use strict';
 
+var fillerImap = {
+  user: 'flybox4real@gmail.com',
+  password: 'flyboxme',
+  host: 'imap.gmail.com',
+  port: 993,
+  tls: true
+};
+
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
@@ -17,6 +25,36 @@ module.exports = function(app, jwtAuth) {
         console.log(err);
         return res.status(500).send('Cannot retrieve box');
       }
+      var response = {
+        box: data,
+        name: req.user.email
+      };
+      res.json(response);
+    });
+  });
+
+  //get single email
+  app.get('/api/email/:number', jwtAuth, function(req, res) {
+    console.log('Fetching email ' + req.params.number);
+    fetcher.getEmail(fillerImap, req.params, function(email) {
+      console.log(email);
+      var data = {
+        subject: email.subject,
+        date: email.date,
+        members: [{
+          email: email.from.address,
+          unread: 0
+        }, {
+          email: email.to.address,
+          unread: 0
+        }],
+        thread: [{
+          content: email.text,
+          by: email.from.address,
+          date: email.date
+        }],
+        boxKey: key()
+      };
       var response = {
         box: data,
         name: req.user.email
@@ -70,14 +108,6 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
-  var fillerImap = {
-    user: 'flybox4real@gmail.com',
-    password: 'flyboxme',
-    host: 'imap.gmail.com',
-    port: 993,
-    tls: true
-  };
-
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
     console.log('getting inbox for ' + req.user.email);
@@ -89,7 +119,8 @@ module.exports = function(app, jwtAuth) {
           email: box.from,
           subject: box.subject,
           date: box.date,
-          box: false
+          boxKey: box.number,
+          isBox: false
         });
       });
       readycheck();
@@ -112,7 +143,8 @@ module.exports = function(app, jwtAuth) {
           subject: box.subject,
           date: box.date,
           boxKey: box.boxKey,
-          unread: num
+          unread: num,
+          isBox: true
         });
       });
       readycheck();

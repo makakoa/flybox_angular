@@ -9,7 +9,7 @@
 
 <main>
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
-    <div class='well' data-ng-click='goToBox(box.boxKey)'>
+    <div class='well' data-ng-click='goToBox(box.boxKey, box.isBox)'>
       <p>{{box.subject}}</p>
       <p>{{box.email}}</p>
       <p>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
