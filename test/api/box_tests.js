@@ -9,7 +9,7 @@ require('../../server');
 var expect = chai.expect;
 var appUrl = 'http://localhost:3000';
 
-describe('box routes', function() {
+describe('Box routes', function() {
   var jwtToken;
   var boxKey;
 
@@ -60,7 +60,7 @@ describe('box routes', function() {
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(res.body.box.thread[0].by).to.eql('flybox4real@gmail.com');
+      expect(res.body.box.thread[0].by).to.eql('flyboxdev');
       done();
     });
   });

@@ -130,4 +130,15 @@ describe('Account Settings', function() {
       done();
     });
   });
+  
+  if('should set current smtp', function(done) {
+    chai.request(appUrl)
+    .put('/api/account/current')
+    .set({jwt: jwtToken})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body).to.have.property('set');
+      done();
+    });
+  });
 });
