@@ -6,23 +6,23 @@ module.exports = function(app) {
       var boxKey = $routeParams.boxId;
 
       $scope.index = function() {
+        console.log('GET box: ' + boxKey);
         $http({
           method: 'GET',
           url: '/api/boxes/' + boxKey,
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
-          $scope.username = data.name;
+          console.log('Box retrieved');
+          $scope.user = data.user;
           $scope.box = data.box;
           $scope.posts = data.box.thread;
           socket.emit('init', {
-            name: $scope.username,
+            name: $scope.user,
             room: boxKey
           });
-        }); // TODO: add error catch
+        });
       };
-
-      $scope.index();
 
       $scope.addMember = function(newMember) {
         $http({

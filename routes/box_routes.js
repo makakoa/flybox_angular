@@ -6,7 +6,7 @@ var fillerImap = {
   host: 'imap.gmail.com',
   port: 993,
   tls: true
-};
+}; //TODO remove
 
 var Box = require('../models/box');
 var Post = require('../models/post');
@@ -18,19 +18,15 @@ module.exports = function(app, jwtAuth) {
   // get single box
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     console.log('Getting box ' + req.params.boxKey + ' for ' + req.params.email);
-    var as = req.user.email;
-    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
+    var user = getCurrent(req.user);
     Box.findOne({boxKey: req.params.boxKey,
-              members: {$elemMatch: {email: as}}})
+              members: {$elemMatch: {email: user}}})
     .populate('thread')
     .exec(function(err, data) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('Cannot retrieve box');
-      }
+      if (err) handle(err, res);
       var response = {
         box: data,
-        name: req.user.email
+        name: user
       };
       res.json(response);
     });
@@ -38,21 +34,17 @@ module.exports = function(app, jwtAuth) {
 
   // add member to box
   app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    console.log('Adding ' + req.body.email + ' to ' + req.params.boxKey);
+    var user = getCurrent(req.user);
     Box.findOne({boxKey: req.params.boxKey,
-              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('Cannot retrieve box');
-      }
+              members: {$elemMatch: {email: user}}}, function(err, box) {
+      if (err) handle(err, res);
       box.members.push({
         email: req.body.email,
         unread: 1
       });
       box.save(function(err) {
-        if (err) {
-          console.log(err);
-          return res.status(500).send('there was an error');
-        }
+        if (err) handle(err, res);
         res.json({msg: 'member added'});
       });
     });
@@ -60,22 +52,18 @@ module.exports = function(app, jwtAuth) {
 
   // leave box
   app.delete('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    console.log(req.user.email + ' leaving ' + req.params.boxKey);
+    var user = getCurrent(req.user);
     Box.findOne({boxKey: req.params.boxKey,
-              members: {$elemMatch: {email: req.user.email}}}, function(err, box) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('Cannot retrieve box');
-      }
+              members: {$elemMatch: {email: user}}}, function(err, box) {
+      if (err) handle(err, res);
       box.members.forEach(function(member) {
-        if (member.email === req.user.email) {
+        if (member.email === user) {
           member.remove();
         }
       });
       box.save(function(err) {
-        if (err) {
-          console.log(err);
-          return res.status(500).send('there was an error');
-        }
+        if (err) handle(err, res);
         res.json({msg: 'left box'});
       });
     });
@@ -83,19 +71,15 @@ module.exports = function(app, jwtAuth) {
 
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
-    console.log('getting inbox for ' + req.user.email);
+    var user = getCurrent(req.user);
+    console.log('getting inbox for ' + user);
     var boxes = [];
-    var as = req.user.email;
-    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
-    Box.find({members: {$elemMatch: {email: as}}}, function(err, data) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('Cannot retrieve boxes');
-      }
+    Box.find({members: {$elemMatch: {email: user}}}, function(err, data) {
+      if (err) handle(err, res);
       data.forEach(function(box) {
         var num;
         box.members.forEach(function(member) {
-          if (req.user.email === member.email) {
+          if (user === member.email) {
             num = member.unread;
             return;
           }
@@ -117,8 +101,8 @@ module.exports = function(app, jwtAuth) {
         });
       }
       var response = {
-        name: req.user.email,
-        current: as,
+        user: {name: user},
+        current: user,
         accounts: accounts,
         inbox: boxes
       };
@@ -129,38 +113,31 @@ module.exports = function(app, jwtAuth) {
   //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     console.log('post route hit');
-    var as = req.user.email;
-    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
+    var user = getCurrent(req.user);
     var post = new Post();
     post.content = req.body.post;
-    post.by = as;
+    post.by = user;
     post.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
     });
     var box = new Box();
     try {
       box.subject = req.body.subject;
       box.boxKey = key();
-      box.members = [{email: as, unread: 0}];
+      box.members = [{email: user, unread: 0}];
       req.body.members.forEach(function(member) {
         box.members.push({email: member, unread: 1});
       });
       box.thread = [post._id];
     } catch (err) {
-      return res.status(400).send('invalid input');
+      handle(err, res);
     }
     box.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       console.log('box posted');
       //add checker for flybox user here
       var mailOptions = {
-        from: req.user.displayName + '<' + req.user.email + '>',
+        from: req.user.displayName + '<' + user + '>',
         to: req.body.members,
         subject: box.subject,
         text: post.content
@@ -182,16 +159,12 @@ module.exports = function(app, jwtAuth) {
   app.get('/api/emails/import', jwtAuth, function(req, res) {
     fetcher.getMail(fillerImap, function(inbox) {
       inbox.forEach(function(mail) {
-        console.log(mail);
         var post = new Post();
         post.content = mail.text;
         post.by = mail.from[0].address;
         post.date = mail.date;
         post.save(function(err) {
-          if (err) {
-            console.log(err);
-            return res.status(500).send('there was an error');
-          }
+          if (err) handle(err, res);
         });
         var box = new Box();
         try {
@@ -200,16 +173,24 @@ module.exports = function(app, jwtAuth) {
           box.members = [{email: mail.from[0].address, unread: 0}, {email: mail.to[0].address, unread: 0}];
           box.thread = [post._id];
         } catch (err) {
-          return res.status(400).send('invalid input');
+          handle(err, res);
         }
         box.save(function(err) {
-          if (err) {
-            console.log(err);
-            return res.status(500).send('there was an error');
-          }
+          if (err) handle(err, res);
           console.log('box posted to ' + mail.to[0].address);
         });
       });
     });
   });
+
+  var handle = function(err, res) {
+    console.log(err);
+    return res.status(500).send('Box Error');
+  };
+
+  var getCurrent = function(user) {
+    var currently = user.email;
+    if (user.smtps.length > 0 && user.current) currently = user.smtps[user.current].auth.user;
+    return currently;
+  };
 };
