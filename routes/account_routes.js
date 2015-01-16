@@ -18,6 +18,18 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
+  app.put('/account/current', jwtAuth, function(req, res) {
+    console.log(req.user.displayName + ' switching to ' + req.user.smtps[req.body.number].auth.user);
+    req.user.current = req.body.number;
+    req.user.save(function(err) {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('there was an error');
+      }
+      res.json({msg: 'switched to ' + req.user.smtps[req.user.current].auth.user});
+    });
+  });
+
   app.post('/account/smtp', jwtAuth, function(req, res) {
     console.log('Adding smtp account for ' + req.user.email);
     var smtp;
@@ -49,6 +61,7 @@ module.exports = function(app, jwtAuth) {
       }
     }
     req.user.smtps.push(smtp);
+    req.user.current = req.user.smtps.length - 1;
     req.user.save(function(err) {
       if (err) {
         console.log(err);

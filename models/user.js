@@ -8,6 +8,7 @@ var userSchema = mongoose.Schema({
   email: String,
   password: String,
   displayName: String,
+  current: Number,
   smtps: [{
     auth: {
       user: String,

@@ -33,36 +33,6 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
-/*  //get single email
-  app.get('/api/email/:number', jwtAuth, function(req, res) {
-    console.log('Fetching email ' + req.params.number);
-    fetcher.getEmail(fillerImap, req.params, function(email) {
-      console.log(email);
-      var data = {
-        subject: email.subject,
-        date: email.date,
-        members: [{
-          email: email.from.address,
-          unread: 0
-        }, {
-          email: email.to.address,
-          unread: 0
-        }],
-        thread: [{
-          content: email.text,
-          by: email.from.address,
-          date: email.date
-        }],
-        boxKey: key()
-      };
-      var response = {
-        box: data,
-        name: req.user.email
-      };
-      res.json(response);
-    });
-  });*/
-
   // add member to box
   app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     Box.findOne({boxKey: req.params.boxKey,
@@ -112,20 +82,9 @@ module.exports = function(app, jwtAuth) {
   app.get('/api/boxes', jwtAuth, function(req, res) {
     console.log('getting inbox for ' + req.user.email);
     var boxes = [];
-/*    var ready = 0;
-    fetcher.getInbox(fillerImap, function(inbox) {
-      inbox.forEach(function(box) {
-        boxes.push({
-          email: box.from,
-          subject: box.subject,
-          date: box.date,
-          boxKey: box.number,
-          isBox: false
-        });
-      });
-      readycheck();
-    });*/
-    Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
+    var as = req.user.email;
+    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
+    Box.find({members: {$elemMatch: {email: as}}}, function(err, data) {
       if (err) {
         console.log(err);
         return res.status(500).send('Cannot retrieve boxes');
@@ -147,23 +106,21 @@ module.exports = function(app, jwtAuth) {
           isBox: true
         });
       });
-      //readycheck();
+      var accounts = [];
+      for (var i = 0; i < req.user.smtps.length; i++) {
+        accounts.push({
+          name: req.user.smtps[i].auth.user,
+          number: i
+        });
+      }
       var response = {
         name: req.user.email,
+        current: as,
+        accounts: accounts,
         inbox: boxes
       };
       res.json(response);
     });
-/*    var readycheck = function() {
-      ready++;
-      if (ready == 2) {
-        var response = {
-          name: req.user.email,
-          inbox: boxes
-        };
-        res.json(response);
-      }
-    };*/
   });
 
   //send box
@@ -235,7 +192,7 @@ module.exports = function(app, jwtAuth) {
         try {
           box.subject = mail.subject;
           box.boxKey = key();
-          box.members = [{email: mail.from[0].address, unread: 0}, {email: req.user.email, unread: 0}];
+          box.members = [{email: mail.from[0].address, unread: 0}, {email: mail.to[0].address, unread: 0}];
           box.thread = [post._id];
         } catch (err) {
           return res.status(400).send('invalid input');
