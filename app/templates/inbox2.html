@@ -45,7 +45,8 @@
       <div id="list" class="pure-u-1">
         <section data-ng-repeat='box in boxes | orderBy:"date":true'>
       <!-- Can add the class "email-item-unread" "email-item-selected" -->
-          <div data-ng-click='getBoxDetail(box.boxKey)' class="email-item pure-g">
+          <div data-ng-click="em='email-item-selected'">
+          <div data-ng-click='getBoxDetail(box.boxKey)' class="email-item pure-g" data-ng-class="em">
             <div class="pure-u">
               <img class="email-avatar" alt="Tilo Mitra&#x27;s avatar" height="64" width="64" src="../img/common/tilo-avatar.png">
             </div>
@@ -61,6 +62,7 @@
                 {{box.date | date:'hh:mm'}} - {{box.date | date}}
               </p>
             </div>
+          </div>
           </div>
         </section>
       </div>

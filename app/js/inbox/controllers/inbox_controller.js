@@ -27,7 +27,7 @@ module.exports = function(app) {
           .success(function(data) {
             $scope.username = data.name;
             $scope.boxes = data.inbox;
-            console.log(data.inbox);
+            $scope.getBoxDetail($scope.boxes[0].boxKey);
           })
           .error(function(err) {
             console.log(err);
@@ -45,6 +45,14 @@ module.exports = function(app) {
         return $location.path('/');
       };
 
+      $scope.highlightThis = function() {
+        console.log('CLICKED');
+        /*
+        * Do this later:
+        * http://stackoverflow.com/questions/17928487/angular-js-how-to-change-an-elements-css-class-on-click-and-to-remove-all-others
+        */
+      };
+
       $scope.getBoxDetail = function(boxKey) {
         $http({
           method: 'GET',
@@ -52,15 +60,16 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
-          console.log(data);
           $scope.boxDetail = {
             title: data.box.subject,
-            date: 'today2',
+            date: data.box.date,
             members: data.box.members,
             subject: 'subject2',
             body: data.box.thread[0].content
           };
         }); // TODO: add error catch
       };
+
+      //console.log($scope.boxes[0]);
     }]);
 };
