@@ -18,6 +18,8 @@ module.exports = function(app) {
         })
           .success(function(data) {
             $scope.username = data.name;
+            $scope.current = data.current;
+            $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
           })
           .error(function(err) {
@@ -26,6 +28,35 @@ module.exports = function(app) {
       };
 
       $scope.index();
+
+      $scope.import = function() {
+        $http({
+          method: 'GET',
+          url: '/api/emails/import',
+          headers: {
+            jwt: $cookies.jwt
+          }
+        })
+        .success(function() {
+          $scope.index();
+        });
+      };
+
+      $scope.switchTo = function(accountNum) {
+        $http({
+          method: 'PUT',
+          url: '/api/account/current',
+          headers: {
+            jwt: $cookies.jwt
+          },
+          data: {
+            number: accountNum
+          }
+        })
+        .success(function() {
+          $scope.index();
+        });
+      };
 
       $scope.goToBox = function(boxKey) {
         return $location.path('/box/' + boxKey);

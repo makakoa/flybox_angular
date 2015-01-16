@@ -10,11 +10,17 @@ module.exports = function(app, jwtAuth) {
     console.log('Changing ' + req.user.displayName + ' to ' + req.body.newName);
     req.user.displayName = req.body.newName;
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       res.json({msg: 'saved'});
+    });
+  });
+
+  app.put('/account/current', jwtAuth, function(req, res) {
+    console.log(req.user.displayName + ' switching to ' + req.user.smtps[req.body.number].auth.user);
+    req.user.current = req.body.number;
+    req.user.save(function(err) {
+      if (err) handle(err, res);
+      res.json({msg: 'switched to ' + req.user.smtps[req.user.current].auth.user});
     });
   });
 
@@ -31,7 +37,7 @@ module.exports = function(app, jwtAuth) {
           }
         };
       } catch (err) {
-        return res.status(500).send('there was an error adding account');
+        handle(err, res);
       }
     } else {
       try {
@@ -45,15 +51,13 @@ module.exports = function(app, jwtAuth) {
           }
         };
       } catch (err) {
-        return res.status(500).send('there was an error adding account');
+        handle(err, res);
       }
     }
     req.user.smtps.push(smtp);
+    req.user.current = req.user.smtps.length - 1;
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       console.log('Account added to ' + req.user.email);
       res.json({msg: 'added'});
     });
@@ -69,10 +73,7 @@ module.exports = function(app, jwtAuth) {
     req.user.smtps.id(req.body._id).port = req.body.port;
 
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       res.json({msg: 'saved'});
     });
   });
@@ -80,13 +81,14 @@ module.exports = function(app, jwtAuth) {
   app.delete('/account/smtp/:id', jwtAuth, function(req, res) {
     console.log('Deleting account from ' + req.user.email);
     req.user.smtps.id(req.params.id).remove();
-
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       res.json({msg: 'deleted'});
     });
   });
+
+  var handle = function(err, res) {
+    console.log(err);
+    return res.status(500).send('Account Error');
+  };
 };

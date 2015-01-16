@@ -5,6 +5,11 @@
   <p data-ng-model='username'>Hello {{username}}</p>
   <a href='#/account'>Account</a>
   <button data-ng-click='logOut()'>Log out</button>
+  <button data-ng-click='import()'>Import</button>
+  <p>As: {{current}}</p>
+  <ul data-ng-show='accounts.length > 1'><p>Switch to</p>
+    <li data-ng-repeat='account in accounts'><p data-ng-click='switchTo(account.number)'>{{account.name}}</p></li>
+  </ul>
 </header>
 
 <main>

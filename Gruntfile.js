@@ -18,14 +18,14 @@ module.exports = function(grunt) {
       options: {
         jshintrc: '.jshintrc'
       },
-      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js']
+      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js', 'lib/**.js']
     },
 
     jscs: {
       options: {
         config: '.jscsrc'
       },
-      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js']
+      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js', 'lib/**.js']
     },
 
     mongo_drop: {
