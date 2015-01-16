@@ -11,7 +11,7 @@ module.exports = function(app) {
       $scope.index = function() {
         $http({
           method: 'GET',
-          url: '/account/',
+          url: '/api/account/',
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
@@ -20,12 +20,10 @@ module.exports = function(app) {
         });
       };
 
-      $scope.index();
-
       $scope.setName = function() {
         $http({
           method: 'PUT',
-          url: '/account/name',
+          url: '/api/account/name',
           headers: {jwt: $cookies.jwt},
           data: $scope.user
         })
@@ -37,7 +35,7 @@ module.exports = function(app) {
       $scope.add = function() {
         $http({
           method: 'POST',
-          url: '/account/smtp',
+          url: '/api/account/smtp',
           headers: {jwt: $cookies.jwt},
           data: $scope.newSmtp
         })
@@ -53,7 +51,7 @@ module.exports = function(app) {
         console.log(smtp);
         $http({
           method: 'PUT',
-          url: '/account/smtp',
+          url: '/api/account/smtp',
           headers: {jwt: $cookies.jwt},
           data: smtp
         })
@@ -65,7 +63,7 @@ module.exports = function(app) {
       $scope.delete = function(smtp) {
         $http({
           method: 'DELETE',
-          url: '/account/smtp/' + smtp._id,
+          url: '/api/account/smtp/' + smtp._id,
           headers: {jwt: $cookies.jwt}
         })
         .success(function() {
