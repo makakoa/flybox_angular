@@ -33,7 +33,7 @@ module.exports = function(app, jwtAuth) {
     });
   });
 
-  //get single email
+/*  //get single email
   app.get('/api/email/:number', jwtAuth, function(req, res) {
     console.log('Fetching email ' + req.params.number);
     fetcher.getEmail(fillerImap, req.params, function(email) {
@@ -61,7 +61,7 @@ module.exports = function(app, jwtAuth) {
       };
       res.json(response);
     });
-  });
+  });*/
 
   // add member to box
   app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
@@ -111,8 +111,8 @@ module.exports = function(app, jwtAuth) {
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
     console.log('getting inbox for ' + req.user.email);
-    var ready = 0;
     var boxes = [];
+/*    var ready = 0;
     fetcher.getInbox(fillerImap, function(inbox) {
       inbox.forEach(function(box) {
         boxes.push({
@@ -124,7 +124,7 @@ module.exports = function(app, jwtAuth) {
         });
       });
       readycheck();
-    });
+    });*/
     Box.find({members: {$elemMatch: {email: req.user.email}}}, function(err, data) {
       if (err) {
         console.log(err);
@@ -147,9 +147,14 @@ module.exports = function(app, jwtAuth) {
           isBox: true
         });
       });
-      readycheck();
+      //readycheck();
+      var response = {
+        name: req.user.email,
+        inbox: boxes
+      };
+      res.json(response);
     });
-    var readycheck = function() {
+/*    var readycheck = function() {
       ready++;
       if (ready == 2) {
         var response = {
@@ -158,7 +163,7 @@ module.exports = function(app, jwtAuth) {
         };
         res.json(response);
       }
-    };
+    };*/
   });
 
   //send box
@@ -208,6 +213,41 @@ module.exports = function(app, jwtAuth) {
       mailer(mailOptions, smtpOptions);
 
       res.json({msg: 'sent!'});
+    });
+  });
+
+  // import emails
+  app.get('/api/emails/import', jwtAuth, function(req, res) {
+    fetcher.getMail(fillerImap, function(inbox) {
+      inbox.forEach(function(mail) {
+        console.log(mail);
+        var post = new Post();
+        post.content = mail.text;
+        post.by = mail.from[0].address;
+        post.date = mail.date;
+        post.save(function(err) {
+          if (err) {
+            console.log(err);
+            return res.status(500).send('there was an error');
+          }
+        });
+        var box = new Box();
+        try {
+          box.subject = mail.subject;
+          box.boxKey = key();
+          box.members = [{email: mail.from[0].address, unread: 0}, {email: req.user.email, unread: 0}];
+          box.thread = [post._id];
+        } catch (err) {
+          return res.status(400).send('invalid input');
+        }
+        box.save(function(err) {
+          if (err) {
+            console.log(err);
+            return res.status(500).send('there was an error');
+          }
+          console.log('box posted to ' + mail.to[0].address);
+        });
+      });
     });
   });
 };

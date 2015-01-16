@@ -8,11 +8,9 @@ module.exports = function(app) {
       if (!userId) userId = '';
 
       $scope.index = function() {
-        var dest = 'boxes';
-        if (userId === 'false') dest = 'email';
         $http({
           method: 'GET',
-          url: '/api/' + dest + '/' + boxKey,
+          url: '/api/boxes/' + boxKey,
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {

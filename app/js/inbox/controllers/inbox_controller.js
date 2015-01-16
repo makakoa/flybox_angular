@@ -27,6 +27,19 @@ module.exports = function(app) {
 
       $scope.index();
 
+      $scope.import = function() {
+        $http({
+          method: 'GET',
+          url: '/api/emails/import',
+          headers: {
+            jwt: $cookies.jwt
+          }
+        })
+        .success(function() {
+          $scope.index();
+        });
+      };
+
       $scope.goToBox = function(boxKey, isBox) {
         return $location.path('/box/' + boxKey + '/' + isBox);
       };
