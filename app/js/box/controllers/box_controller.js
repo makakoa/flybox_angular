@@ -4,8 +4,6 @@ module.exports = function(app) {
   app.controller('BoxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', '$routeParams', 'socket',
     function($scope, $http, $base64, $cookies, $location, $routeParams, socket) {
       var boxKey = $routeParams.boxId;
-      var userId = $routeParams.userId;
-      if (!userId) userId = '';
 
       $scope.index = function() {
         $http({

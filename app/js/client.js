@@ -37,7 +37,7 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/compose.html',
       controller: 'ComposeCtrl'
     })
-    .when('/box/:boxId/:box/', {
+    .when('/box/:boxId/', {
       templateUrl: 'templates/box.html',
       controller: 'BoxCtrl'
     })

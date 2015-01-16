@@ -58,8 +58,8 @@ module.exports = function(app) {
         });
       };
 
-      $scope.goToBox = function(boxKey, isBox) {
-        return $location.path('/box/' + boxKey + '/' + isBox);
+      $scope.goToBox = function(boxKey) {
+        return $location.path('/box/' + boxKey);
       };
 
       $scope.logOut = function() {

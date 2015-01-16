@@ -17,8 +17,11 @@ var fetcher = require('../lib/fetcher');
 module.exports = function(app, jwtAuth) {
   // get single box
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
+    console.log('Getting box ' + req.params.boxKey + ' for ' + req.params.email);
+    var as = req.user.email;
+    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
     Box.findOne({boxKey: req.params.boxKey,
-              members: {$elemMatch: {email: req.user.email}}})
+              members: {$elemMatch: {email: as}}})
     .populate('thread')
     .exec(function(err, data) {
       if (err) {
@@ -126,9 +129,11 @@ module.exports = function(app, jwtAuth) {
   //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     console.log('post route hit');
+    var as = req.user.email;
+    if (req.user.smtps.length > 0) as = req.user.smtps[req.user.current].auth.user;
     var post = new Post();
     post.content = req.body.post;
-    post.by = req.user.email;
+    post.by = as;
     post.save(function(err) {
       if (err) {
         console.log(err);
@@ -139,7 +144,7 @@ module.exports = function(app, jwtAuth) {
     try {
       box.subject = req.body.subject;
       box.boxKey = key();
-      box.members = [{email: req.user.email, unread: 0}];
+      box.members = [{email: as, unread: 0}];
       req.body.members.forEach(function(member) {
         box.members.push({email: member, unread: 1});
       });
