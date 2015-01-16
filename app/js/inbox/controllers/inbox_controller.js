@@ -8,6 +8,14 @@ module.exports = function(app) {
         $location.path('/');
       }
 
+      $scope.boxDetail = {
+        title: 'TITLE!',
+        date: 'today',
+        members: ['cam', 'charles'],
+        subject: 'subject',
+        body: 'This is the body of the email'
+      };
+
       $scope.index = function() {
         $http({
           method: 'GET',
@@ -21,6 +29,7 @@ module.exports = function(app) {
             $scope.current = data.current;
             $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
+            console.log(data.inbox);
           })
           .error(function(err) {
             console.log(err);
@@ -65,6 +74,24 @@ module.exports = function(app) {
       $scope.logOut = function() {
         delete $cookies.jwt;
         return $location.path('/');
+      };
+
+      $scope.getBoxDetail = function(boxKey) {
+        $http({
+          method: 'GET',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function(data) {
+          console.log(data);
+          $scope.boxDetail = {
+            title: data.box.subject,
+            date: 'today2',
+            members: data.box.members,
+            subject: 'subject2',
+            body: data.box.thread[0].content
+          };
+        }); // TODO: add error catch
       };
     }]);
 };

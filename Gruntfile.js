@@ -48,7 +48,7 @@ module.exports = function(grunt) {
       dev: {
         cwd: 'app/',
         expand: true,
-        src: ['**/*.html', '**/*.css'],
+        src: ['**/*.html', '**/*.css', 'img/**'],
         dest: 'build/'
       }
     },
