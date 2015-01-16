@@ -15,7 +15,7 @@ describe('User Creation and Authentication', function() {
   it('should create a user', function(done) {
     chai.request('http://localhost:3000')
     .post('/api/users')
-    .send({email: 'fake@email.com', password: 'foobar'})
+    .send({email: 'flyboxdev', password: 'pass'})
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body).to.have.property('jwt');
@@ -27,7 +27,7 @@ describe('User Creation and Authentication', function() {
   it('should not create a duplicate user', function(done) {
     chai.request('http://localhost:3000')
     .post('/api/users')
-    .send({email: 'fake@email.com', password: 'foobar'})
+    .send({email: 'flyboxdev', password: 'pass'})
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res).to.have.status(500);
@@ -38,7 +38,7 @@ describe('User Creation and Authentication', function() {
   it('should log in an existing user', function(done) {
     chai.request('http://localhost:3000')
     .get('/api/users')
-    .auth('fake@email.com', 'foobar')
+    .auth('flyboxdev', 'pass')
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body).to.have.property('jwt');

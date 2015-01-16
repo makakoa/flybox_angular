@@ -9,14 +9,14 @@ require('../../server');
 var expect = chai.expect;
 var appUrl = 'http://localhost:3000';
 
-describe('box routes', function() {
+describe('Box routes', function() {
   var jwtToken;
   var boxKey;
 
   before(function(done) {
     chai.request(appUrl)
-    .post('/api/users')
-    .send({email: 'flybox4real@gmail.com', password: 'flyboxme'})
+    .get('/api/users')
+    .auth('flyboxdev', 'pass')
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body).to.have.property('jwt');
@@ -42,7 +42,7 @@ describe('box routes', function() {
     });
   });
 
-  it('should get an index of boxes for a user', function(done) {
+  it('should get an inbox for a user', function(done) {
     chai.request(appUrl)
     .get('/api/boxes')
     .set({jwt: jwtToken})
@@ -60,7 +60,7 @@ describe('box routes', function() {
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(res.body.box.thread[0].by).to.eql('flybox4real@gmail.com');
+      expect(res.body.box.thread[0].by).to.eql('flyboxdev');
       done();
     });
   });

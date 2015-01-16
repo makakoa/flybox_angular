@@ -25,7 +25,7 @@ module.exports = function(app) {
           }
         })
           .success(function(data) {
-            $scope.username = data.name;
+            $scope.user = data.user;
             $scope.current = data.current;
             $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
@@ -51,7 +51,7 @@ module.exports = function(app) {
         });
       };
 
-      $scope.switchTo = function(accountNum) {
+      $scope.switchTo = function(account) {
         $http({
           method: 'PUT',
           url: '/api/account/current',
@@ -59,7 +59,7 @@ module.exports = function(app) {
             jwt: $cookies.jwt
           },
           data: {
-            number: accountNum
+            number: $scope.accounts.indexOf(account)
           }
         })
         .success(function() {
