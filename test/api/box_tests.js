@@ -58,8 +58,13 @@ describe('Box routes', function() {
   it('should be able to import emails', function(done) {
     this.timeout(5000);
     chai.request(appUrl)
-    .get('/api/emails/import')
+    .post('/api/emails/import')
     .set({jwt: jwtToken})
+    .send({account: {
+      service: 'gmail',
+      email: 'flybox4real@gmail.com',
+      password: 'flyboxme'
+    }})
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body.msg).to.eql('emails imported');

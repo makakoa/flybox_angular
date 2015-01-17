@@ -111,7 +111,7 @@ describe('Account Settings', function() {
     .set({jwt: jwtToken})
     .send({
       _id: accountId,
-      username: 'right@right.com',
+      email: 'right@right.com',
       password: 'correct',
       service: 'notgmail'
     })
