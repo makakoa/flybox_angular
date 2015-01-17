@@ -14,11 +14,11 @@ var key = require('../lib/key_gen');
 var mailer = require('../lib/mailer');
 var fetcher = require('../lib/fetcher');
 
-module.exports = function(app, jwtAuth) {
+module.exports = function(app, jwtAuth, logging) {
   // get single box
   app.get('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
-    console.log('fly[]: Getting box ' + req.params.boxKey + ' for ' + req.params.email + ' as ' + user);
+    if (logging) console.log('fly[]: Getting box ' + req.params.boxKey + ' for ' + req.user.email + ' as ' + user);
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: user}}})
     .populate('thread')
@@ -34,7 +34,7 @@ module.exports = function(app, jwtAuth) {
 
   // add member to box
   app.post('/api/boxes/:boxKey', jwtAuth, function(req, res) {
-    console.log('fly[]: Adding ' + req.body.email + ' to ' + req.params.boxKey);
+    if (logging) console.log('fly[]: Adding ' + req.body.email + ' to ' + req.params.boxKey);
     var user = getCurrent(req.user);
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: user}}}, function(err, box) {
@@ -53,7 +53,7 @@ module.exports = function(app, jwtAuth) {
   // leave box
   app.delete('/api/boxes/:boxKey', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
-    console.log('fly[]: ' + user + ' leaving ' + req.params.boxKey);
+    if (logging) console.log('fly[]: ' + user + ' leaving ' + req.params.boxKey);
     Box.findOne({boxKey: req.params.boxKey,
               members: {$elemMatch: {email: user}}}, function(err, box) {
       if (err) handle(err, res);
@@ -72,7 +72,7 @@ module.exports = function(app, jwtAuth) {
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
-    console.log('fly[]: Getting inbox for ' + req.user.email + ' as ' + user);
+    if (logging) console.log('fly[]: Getting inbox for ' + req.user.email + ' as ' + user);
     var boxes = [];
     Box.find({members: {$elemMatch: {email: user}}}, function(err, data) {
       if (err) handle(err, res);
@@ -113,7 +113,7 @@ module.exports = function(app, jwtAuth) {
   //send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
-    console.log('fly[]: Posting box for ' + req.user.email + ' as ' + user);
+    if (logging) console.log('fly[]: Posting box for ' + req.user.email + ' as ' + user);
     var post = new Post();
     post.content = req.body.post;
     post.by = user;
@@ -136,14 +136,18 @@ module.exports = function(app, jwtAuth) {
       if (err) handle(err, res);
       //add checker for flybox user here
       if (req.body.sendEmail) {
-        console.log('fly[]: Box posted, mailing box as ' + user);
+        if (logging) console.log('fly[]: Box posted, mailing box as ' + user);
         var mailOptions = {
           from: req.user.displayName + '<' + user + '>',
           to: req.body.members,
           subject: box.subject,
           text: post.content
         };
-        mailer(mailOptions, req.user.smtps[req.user.current]);
+        var smtpOptions = {
+          service: req.user.smtps[req.user.current].service,
+          auth: req.user.smtps[req.user.current].auth
+        };
+        mailer(mailOptions, smtpOptions);
       }
       res.json({msg: 'sent!'});
     });
@@ -151,8 +155,9 @@ module.exports = function(app, jwtAuth) {
 
   // import emails
   app.get('/api/emails/import', jwtAuth, function(req, res) {
-    console.log('fly[]: Importing emails for ' + req.user.email + ' from...');
-    fetcher.getMail(fillerImap, function(inbox) {
+    if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from...');
+    fetcher.getMail(fillerImap, logging, function(inbox) {
+      if (logging) console.log('fly[]: Posting boxes...');
       inbox.forEach(function(mail) {
         var post = new Post();
         post.content = mail.text;
@@ -172,9 +177,10 @@ module.exports = function(app, jwtAuth) {
         }
         box.save(function(err) {
           if (err) handle(err, res);
-          console.log('box posted to ' + mail.to[0].address);
         });
       });
+      if (logging) console.log('fly[]: Finished import');
+      res.json({msg: 'emails imported'});
     });
   });
 

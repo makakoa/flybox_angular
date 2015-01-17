@@ -29,7 +29,6 @@ module.exports = function(app) {
             $scope.current = data.current;
             $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
-            console.log(data.inbox);
           })
           .error(function(err) {
             console.log(err);
@@ -83,7 +82,6 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
-          console.log(data);
           $scope.boxDetail = {
             title: data.box.subject,
             date: 'today2',

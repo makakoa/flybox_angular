@@ -1,10 +1,11 @@
 'use strict';
 
+var logging = true; //change to turn off activity logs
+
 var express = require('express');
 var mongoose = require('mongoose');
 var bp = require('body-parser');
 var passport = require('passport');
-var socket = require('./routes/socket');
 
 var app = express();
 app.use(express.static(__dirname + '/build'));
@@ -21,9 +22,10 @@ mongoose.connect(process.env.MONGO_URL ||
 
 require('./lib/passport')(passport);
 var jwtAuth = require('./lib/jwt_auth')(app.get('jwtSecret'));
-require('./routes/user_routes')(app, passport);
-require('./routes/box_routes')(app, jwtAuth);
-require('./routes/account_routes')(app, jwtAuth);
+require('./routes/user_routes')(app, passport, logging);
+require('./routes/box_routes')(app, jwtAuth, logging);
+require('./routes/account_routes')(app, jwtAuth, logging);
+var socket = require('./routes/socket')(logging);
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
