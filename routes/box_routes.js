@@ -1,18 +1,11 @@
 'use strict';
 
-var fillerImap = {
-  user: 'flybox4real@gmail.com',
-  password: 'flyboxme',
-  host: 'imap.gmail.com',
-  port: 993,
-  tls: true
-}; //TODO remove
-
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
 var mailer = require('../lib/mailer');
 var fetcher = require('../lib/fetcher');
+var format = require('../lib/format');
 
 module.exports = function(app, jwtAuth, logging) {
   // get single box
@@ -110,7 +103,7 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
-  //send box
+  // send box
   app.post('/api/boxes', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[]: Posting box for ' + req.user.email + ' as ' + user);
@@ -137,15 +130,13 @@ module.exports = function(app, jwtAuth, logging) {
       //add checker for flybox user here
       if (req.body.sendEmail) {
         if (logging) console.log('fly[]: Box posted, mailing box as ' + user);
+        var smtpOptions = format.smtp(req.user.accounts[req.user.current]);
+        //var mailOptions = mailFactory(smtpOptions, req.body);
         var mailOptions = {
           from: req.user.displayName + '<' + user + '>',
           to: req.body.members,
           subject: box.subject,
           text: post.content
-        };
-        var smtpOptions = {
-          service: req.user.smtps[req.user.current].service,
-          auth: req.user.smtps[req.user.current].auth
         };
         mailer(mailOptions, smtpOptions);
       }
@@ -155,8 +146,9 @@ module.exports = function(app, jwtAuth, logging) {
 
   // import emails
   app.get('/api/emails/import', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from...');
-    fetcher.getMail(fillerImap, logging, function(inbox) {
+    var user = getCurrent(req.user);
+    if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from' + user);
+    fetcher.getMail(format.imap(req.user.accounts[req.user.current]), logging, function(inbox) {
       if (logging) console.log('fly[]: Posting boxes...');
       inbox.forEach(function(mail) {
         var post = new Post();
