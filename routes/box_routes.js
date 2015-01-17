@@ -11,7 +11,7 @@ var fillerImap = {
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
-//var mailer = require('../lib/mailer');
+var mailer = require('../lib/mailer');
 var fetcher = require('../lib/fetcher');
 
 module.exports = function(app, jwtAuth) {
@@ -26,7 +26,7 @@ module.exports = function(app, jwtAuth) {
       if (err) handle(err, res);
       var response = {
         box: data,
-        name: user
+        user: {name: user}
       };
       res.json(response);
     });
@@ -134,23 +134,17 @@ module.exports = function(app, jwtAuth) {
     }
     box.save(function(err) {
       if (err) handle(err, res);
-      console.log('fly[]: Box posted, mailing box as ' + user);
       //add checker for flybox user here
-/*      var mailOptions = {
-        from: req.user.displayName + '<' + user + '>',
-        to: req.body.members,
-        subject: box.subject,
-        text: post.content
-      };
-      var smtpOptions = {
-        service: 'gmail',
-        auth: {
-          user: 'flybox4real@gmail.com',
-          pass: 'flyboxme'
-        }
-      };
-      mailer(mailOptions, smtpOptions);*/
-
+      if (req.body.sendEmail) {
+        console.log('fly[]: Box posted, mailing box as ' + user);
+        var mailOptions = {
+          from: req.user.displayName + '<' + user + '>',
+          to: req.body.members,
+          subject: box.subject,
+          text: post.content
+        };
+        mailer(mailOptions, req.user.smtps[req.user.current]);
+      }
       res.json({msg: 'sent!'});
     });
   });
