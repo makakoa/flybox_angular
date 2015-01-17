@@ -94,9 +94,9 @@ module.exports = function(app, jwtAuth, logging) {
         });
       });
       var accounts = [];
-      for (var i = 0; i < req.user.smtps.length; i++) {
+      for (var i = 0; i < req.user.accounts.length; i++) {
         accounts.push({
-          name: req.user.smtps[i].auth.user,
+          name: req.user.accounts[i].email,
           number: i
         });
       }
@@ -191,7 +191,7 @@ module.exports = function(app, jwtAuth, logging) {
 
   var getCurrent = function(user) {
     var currently = user.email;
-    if (user.smtps.length > 0 && !isNaN(user.current)) currently = user.smtps[user.current].auth.user;
+    if (user.accounts.length > 0 && !isNaN(user.current)) currently = user.accounts[user.current].email;
     return currently;
   };
 };

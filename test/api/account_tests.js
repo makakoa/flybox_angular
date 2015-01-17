@@ -11,7 +11,7 @@ var appUrl = 'http://localhost:3000';
 
 describe('Account Settings', function() {
   var jwtToken;
-  var smtpId;
+  var accountId;
 
   before(function(done) {
     chai.request(appUrl)
@@ -48,16 +48,14 @@ describe('Account Settings', function() {
     });
   });
 
-  it('should add smtp info using service', function(done) {
+  it('should add account info using service', function(done) {
     chai.request(appUrl)
-    .post('/api/account/smtp')
+    .post('/api/account/new')
     .set({jwt: jwtToken})
     .send({
       service: 'gmail',
-      auth: {
-        user: 'flybox4real@gmail.com',
-        pass: 'flyboxme'
-      }
+      email: 'flybox4real@gmail.com',
+      password: 'flyboxme'
     })
     .end(function(err, res) {
       expect(err).to.eql(null);
@@ -66,18 +64,23 @@ describe('Account Settings', function() {
     });
   });
   
-  it('should add a second smtp using smtp info', function(done) {
+  it('should add a second account using smtp and imap info', function(done) {
     chai.request(appUrl)
-    .post('/api/account/smtp')
+    .post('/api/account/new')
     .set({jwt: jwtToken})
     .send({
-      auth: {
-        user: 'flyboxnotreal@gmail.com',
-        pass: 'incorrect'
+      email: 'flyboxnotreal@gmail.com',
+      password: 'incorrect',
+      smtp: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true
       },
-      host: 'smtp.gmail.com',
-      port: 465,
-      secureConnection: true
+      imap: {
+        host: 'imap.gmail.com',
+        port: 993,
+        tls: true
+      }
     })
     .end(function(err, res) {
       expect(err).to.eql(null);
@@ -95,34 +98,33 @@ describe('Account Settings', function() {
       expect(res.body.email).to.eql('flyboxdev');
       expect(res.body.displayName).to.eql('Sir Fly');
       expect(res.body.current).to.eql(1);
-      expect(res.body.smtps.length).to.eql(2);
-      smtpId = res.body.smtps[1]._id;
+      expect(res.body.accounts.length).to.eql(2);
+      accountId = res.body.accounts[1]._id;
+      console.log(res.body.accounts);
       done();
     });
   });
 
-  it('should be able to edit smtp', function(done) {
+  it('should be able to edit account', function(done) {
     chai.request(appUrl)
-    .put('/api/account/smtp')
+    .put('/api/account/')
     .set({jwt: jwtToken})
     .send({
-      _id: smtpId,
-      auth: {
-        user: 'right@right.com',
-        pass: 'correct'
-      },
+      _id: accountId,
+      username: 'right@right.com',
+      password: 'correct',
       service: 'notgmail'
     })
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(res.body.msg).to.eql('saved');
+      expect(res.body.msg).to.eql('account updated');
       done();
     });
   });
 
-  it('should delete an smtp', function(done) {
+  it('should delete an account', function(done) {
     chai.request(appUrl)
-    .delete('/api/account/smtp/' + smtpId)
+    .delete('/api/account/remove/' + accountId)
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
@@ -131,7 +133,7 @@ describe('Account Settings', function() {
     });
   });
   
-  if('should set current smtp', function(done) {
+  if('should set current account', function(done) {
     chai.request(appUrl)
     .put('/api/account/current')
     .set({jwt: jwtToken})

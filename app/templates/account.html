@@ -19,59 +19,79 @@
     <button data-ng-click='editname=!editname; user.newName=user.displayName'>{{editname ? 'Cancel':'Change'}}</button>
 
     <h3>Email Accounts</h3>
-    <div data-ng-repeat='smtp in user.smtps'>
-      <h4>{{smtp.auth.user}}</h4>
+    <div data-ng-repeat='account in user.accounts'>
+      <h4>{{account.email}}</h4>
       <h6>Username:</h6>
-      <p data-ng-show='!smtp.editing'>{{smtp.auth.user}}</p>
-      <input data-ng-show='smtp.editing' data-ng-model='new.smtp.auth.user'>
+      <p data-ng-show='!account.editing'>{{account.email}}</p>
+      <input data-ng-show='account.editing' data-ng-model='new.account.email'>
       <h6>Password:</h6>
-      <p data-ng-show='!smtp.editing'>{{smtp.auth.pass}}</p>
-      <input data-ng-show='smtp.editing' data-ng-model='new.smtp.auth.pass'>
-      <div data-ng-show='smtp.editing || smtp.service'>
+      <p data-ng-show='!account.editing'>********</p>
+      <input data-ng-show='account.editing' data-ng-model='new.account.password'>
+      <div data-ng-show='account.editing || account.service'>
         <h6>Service:</h6>
-        <p data-ng-show='!smtp.editing'>{{smtp.service}}</p>
-        <input data-ng-show='smtp.editing' data-ng-model='new.smtp.service'>
+        <p data-ng-show='!account.editing'>{{account.service}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.service'>
       </div>
-      <div data-ng-show='smtp.editing || !smtp.service'>
-        <h6>Host:</h6>
-        <p data-ng-show='!smtp.editing'>{{smtp.host}}</p>
-        <input data-ng-show='smtp.editing' data-ng-model='new.smtp.host'>
-        <h6>Port:</h6>
-        <p data-ng-show='!smtp.editing'>{{smtp.port}}</p>
-        <input data-ng-show='smtp.editing' data-ng-model='new.smtp.port' type='Number'>
-        <h6>Secure:</h6>
-        <p data-ng-show='!smtp.editing'>{{smtp.secureConnection}}</p>
-        <input data-ng-show='smtp.editing' data-ng-model='new.smtp.secureConnection' type='checkbox'>
+      <div data-ng-show='account.editing || !account.service'>
+        <h6>SMTP Host:</h6>
+        <p data-ng-show='!account.editing'>{{account.smtp.host}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.smtp.host'>
+        <h6>SMTP Port:</h6>
+        <p data-ng-show='!account.editing'>{{account.smtp.port}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.smtp.port' type='Number'>
+        <h6>SMTP Secure:</h6>
+        <p data-ng-show='!account.editing'>{{account.smtp.secure}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.smtp.secure' type='checkbox'>
+        <h6>IMAP Host:</h6>
+        <p data-ng-show='!account.editing'>{{account.imap.host}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.imap.host'>
+        <h6>IMAP Port:</h6>
+        <p data-ng-show='!account.editing'>{{account.imap.port}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.imap.port' type='Number'>
+        <h6>IMAP TLS:</h6>
+        <p data-ng-show='!account.editing'>{{account.imap.tls}}</p>
+        <input data-ng-show='account.editing' data-ng-model='new.account.imap.tls' type='checkbox'>
       </div>
-      <button data-ng-show='smtp.editing' data-ng-click='edit(new.smtp)'>Save</button>
-      <button data-ng-click='smtp.editing=!smtp.editing; new.smtp=smtp'>{{smtp.editing ? 'Cancel':'Edit'}}</button>
-      <button data-ng-click='delete(smtp)'>Delete</button>
+      <button data-ng-show='account.editing' data-ng-click='edit(new.account)'>Save</button>
+      <button data-ng-click='account.editing=!account.editing; new.account=account'>{{account.editing ? 'Cancel':'Edit'}}</button>
+      <button data-ng-click='delete(account)'>Delete</button>
     </div>
 
-    <p data-ng-show='!adding'>{{user.smtps ? 'Expand your Flybox, add another account':'You have no email accounts set up'}}</p>
+    <p data-ng-show='!adding'>{{user.accounts ? 'Expand your Flybox, add another account':'You have no email accounts set up'}}</p>
     <div data-ng-show='adding'>
       <h4>Please enter your login information</h4>
       <h6>Username:</h6>
-      <input data-ng-model='newSmtp.auth.user'>
+      <input data-ng-model='newAccount.email'>
       <br>
       <h6>Password:</h6>
-      <input data-ng-model='newSmtp.auth.pass'>
+      <input data-ng-model='newAccount.password'>
       <br>
       <h4>and fill in either</h4>
       <h6>Service:</h6>
       <a href='http://adilapapaya.com/docs/nodemailer/#wellknownservicesforsmtp'>list of acceptable services</a>
       <br>
-      <input data-ng-model='newSmtp.service'>
+      <input data-ng-model='newAccount.service'>
       <br>
       <h4>or</h4>
+      <h5>SMTP</h5>
       <h6>Host:</h6>
-      <input data-ng-model='newSmtp.host'>
-      <br>
-      <h6>Secure:</h6>
-      <input type='checkbox' data-ng-model='newSmtp.secureConnection'>
+      <input data-ng-model='newAccount.smtp.host'>
       <br>
       <h6>Port:</h6>
-      <input type='Number' data-ng-model='newSmtp.port'>
+      <input type='Number' data-ng-model='newAccount.smtp.port'>
+      <br>
+      <h6>Secure:</h6>
+      <input type='checkbox' data-ng-model='newAccount.smtp.secure'>
+      <br>
+      <h5>IMAP</h5>
+      <h6>Host:</h6>
+      <input data-ng-model='newAccount.imap.host'>
+      <br>
+      <h6>Port:</h6>
+      <input type='Number' data-ng-model='newAccount.imap.port'>
+      <br>
+      <h6>TLS:</h6>
+      <input type='checkbox' data-ng-model='newAccount.imap.tls'>
       <br>
     </div>
 
