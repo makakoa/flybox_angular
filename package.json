@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "postinstall": "bower install && grunt build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node_modules/grunt-cli/bin/grunt test"
   },
   "author": "",
   "license": "ISC",
