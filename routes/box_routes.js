@@ -130,25 +130,26 @@ module.exports = function(app, jwtAuth, logging) {
       //add checker for flybox user here
       if (req.body.sendEmail) {
         if (logging) console.log('fly[]: Box posted, mailing box as ' + user);
-        var smtpOptions = format.smtp(req.user.accounts[req.user.current]);
-        //var mailOptions = mailFactory(smtpOptions, req.body);
-        var mailOptions = {
-          from: req.user.displayName + '<' + user + '>',
+        var smtp = format.smtp(req.user.accounts[req.user.current]);
+        var mail = {
+          from: user,
+          name: req.user.displayName,
           to: req.body.members,
           subject: box.subject,
           text: post.content
         };
-        mailer(mailOptions, smtpOptions);
+        //mailFactory(smtp, mail);
+        mailer(mail, smtp);
       }
       res.json({msg: 'sent!'});
     });
   });
 
   // import emails
-  app.get('/api/emails/import', jwtAuth, function(req, res) {
+  app.post('/api/emails/import', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from' + user);
-    fetcher.getMail(format.imap(req.user.accounts[req.user.current]), logging, function(inbox) {
+    fetcher.getMail(format.imap(req.body.account), logging, function(inbox) {
       if (logging) console.log('fly[]: Posting boxes...');
       inbox.forEach(function(mail) {
         var post = new Post();
