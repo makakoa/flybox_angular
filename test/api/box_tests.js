@@ -33,7 +33,8 @@ describe('Box routes', function() {
             content: 'Hey, you there!'
            },
            subject: 'Test greetings',
-           members: ['someguy', 'andanother']
+           members: ['someguy', 'andanother'],
+           sendEmail: false
           })
     .end(function(err, res) {
       expect(err).to.eql(null);
