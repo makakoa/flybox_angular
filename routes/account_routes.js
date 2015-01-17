@@ -1,13 +1,13 @@
 'use strict';
 
-module.exports = function(app, jwtAuth) {
+module.exports = function(app, jwtAuth, logging) {
   app.get('/api/account/', jwtAuth, function(req, res) {
-    console.log('fly[]: Getting info for ' + req.user.email);
+    if (logging) console.log('fly[]: Getting info for ' + req.user.email);
     res.json(req.user);
   });
 
   app.put('/api/account/name', jwtAuth, function(req, res) {
-    console.log('fly[]: ' + req.user.displayName + ' is now ' + req.body.newName);
+    if (logging) console.log('fly[]: ' + req.user.displayName + ' is now ' + req.body.newName);
     req.user.displayName = req.body.newName;
     req.user.save(function(err) {
       if (err) handle(err, res);
@@ -16,7 +16,7 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.put('/api/account/current', jwtAuth, function(req, res) {
-    console.log('fly[]: ' + req.user.email + ' switching to ' + req.user.smtps[req.body.number].auth.user);
+    if (logging) console.log('fly[]: ' + req.user.email + ' switching to ' + req.user.smtps[req.body.number].auth.user);
     req.user.current = req.body.number;
     req.user.save(function(err) {
       if (err) handle(err, res);
@@ -25,7 +25,7 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.post('/api/account/smtp', jwtAuth, function(req, res) {
-    console.log('fly[]: Adding smtp smtp to ' + req.user.email);
+    if (logging) console.log('fly[]: Adding smtp smtp to ' + req.user.email);
     var smtp;
     if (req.body.service) {
       try {
@@ -63,7 +63,7 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.put('/api/account/smtp', jwtAuth, function(req, res) {
-    console.log('fly[]: Changing smtp for ' + req.user.email);
+    if (logging) console.log('fly[]: Changing smtp for ' + req.user.email);
     req.user.smtps.id(req.body._id).auth.user = req.body.auth.user;
     req.user.smtps.id(req.body._id).auth.pass = req.body.auth.pass;
     req.user.smtps.id(req.body._id).service = req.body.service;
@@ -78,7 +78,7 @@ module.exports = function(app, jwtAuth) {
   });
 
   app.delete('/api/account/smtp/:id', jwtAuth, function(req, res) {
-    console.log('fly[]: Deleting smtp from ' + req.user.email);
+    if (logging) console.log('fly[]: Deleting smtp from ' + req.user.email);
     req.user.smtps.id(req.params.id).remove();
     req.user.current = 0;
     req.user.save(function(err) {

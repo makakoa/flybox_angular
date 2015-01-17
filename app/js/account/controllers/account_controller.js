@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.controller('AccountCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
     function($scope, $http, $base64, $cookies, $location) {
       if (!$cookies.jwt) {
-        console.log('redirecting');
+        console.log('Redirecting');
         $location.path('/');
       }
 
@@ -48,7 +48,6 @@ module.exports = function(app) {
       };
 
       $scope.edit = function(smtp) {
-        console.log(smtp);
         $http({
           method: 'PUT',
           url: '/api/account/smtp',

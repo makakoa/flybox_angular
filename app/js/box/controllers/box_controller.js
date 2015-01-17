@@ -18,7 +18,7 @@ module.exports = function(app) {
           $scope.box = data.box;
           $scope.posts = data.box.thread;
           socket.emit('init', {
-            name: $scope.user,
+            user: $scope.user,
             room: boxKey
           });
         });
