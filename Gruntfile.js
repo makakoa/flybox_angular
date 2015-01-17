@@ -18,14 +18,14 @@ module.exports = function(grunt) {
       options: {
         jshintrc: '.jshintrc'
       },
-      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js']
+      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js', 'lib/**.js']
     },
 
     jscs: {
       options: {
         config: '.jscsrc'
       },
-      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js']
+      src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js', 'lib/**.js']
     },
 
     mongo_drop: {
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
     },
 
     simplemocha: {
-      src: ['test/api/user_tests.js', 'test/api/box_tests.js']
+      src: ['test/api/user_tests.js', 'test/api/account_tests.js', 'test/api/box_tests.js']
     },
 
     clean: {

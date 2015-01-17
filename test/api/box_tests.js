@@ -9,14 +9,14 @@ require('../../server');
 var expect = chai.expect;
 var appUrl = 'http://localhost:3000';
 
-describe('box routes', function() {
+describe('Box routes', function() {
   var jwtToken;
   var boxKey;
 
   before(function(done) {
     chai.request(appUrl)
-    .post('/api/users')
-    .send({email: 'flybox4real@gmail.com', password: 'flyboxme'})
+    .get('/api/users')
+    .auth('flyboxdev', 'pass')
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body).to.have.property('jwt');
@@ -33,7 +33,8 @@ describe('box routes', function() {
             content: 'Hey, you there!'
            },
            subject: 'Test greetings',
-           members: ['someguy', 'andanother']
+           members: ['someguy', 'andanother'],
+           sendEmail: false
           })
     .end(function(err, res) {
       expect(err).to.eql(null);
@@ -42,7 +43,7 @@ describe('box routes', function() {
     });
   });
 
-  it('should get an index of boxes for a user', function(done) {
+  it('should get an inbox for a user', function(done) {
     chai.request(appUrl)
     .get('/api/boxes')
     .set({jwt: jwtToken})
@@ -54,6 +55,18 @@ describe('box routes', function() {
     });
   });
 
+  it('should be able to import emails', function(done) {
+    this.timeout(5000);
+    chai.request(appUrl)
+    .get('/api/emails/import')
+    .set({jwt: jwtToken})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body.msg).to.eql('emails imported');
+      done();
+    });
+  });
+
   it('should get a single box', function(done) {
     chai.request(appUrl)
     .get('/api/boxes/' + boxKey)
@@ -61,6 +74,18 @@ describe('box routes', function() {
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body.box.thread[0].by).to.eql('flybox4real@gmail.com');
+      done();
+    });
+  });
+  
+  it('should be able to add a member to a box', function(done) {
+    chai.request(appUrl)
+    .post('/api/boxes/' + boxKey)
+    .set({jwt: jwtToken})
+    .send({email: 'newGuy'})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body.msg).to.eql('member added');
       done();
     });
   });

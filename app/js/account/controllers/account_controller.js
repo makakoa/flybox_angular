@@ -4,14 +4,14 @@ module.exports = function(app) {
   app.controller('AccountCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
     function($scope, $http, $base64, $cookies, $location) {
       if (!$cookies.jwt) {
-        console.log('redirecting');
+        console.log('Redirecting');
         $location.path('/');
       }
 
       $scope.index = function() {
         $http({
           method: 'GET',
-          url: '/account/',
+          url: '/api/account/',
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
@@ -20,12 +20,10 @@ module.exports = function(app) {
         });
       };
 
-      $scope.index();
-
       $scope.setName = function() {
         $http({
           method: 'PUT',
-          url: '/account/name',
+          url: '/api/account/name',
           headers: {jwt: $cookies.jwt},
           data: $scope.user
         })
@@ -37,39 +35,38 @@ module.exports = function(app) {
       $scope.add = function() {
         $http({
           method: 'POST',
-          url: '/account/smtp',
+          url: '/api/account/new',
           headers: {jwt: $cookies.jwt},
-          data: $scope.newSmtp
+          data: $scope.newAccount
         })
         .success(function() {
-          var temp = $scope.newSmtp;
-          $scope.user.smtps.push(temp);
+          var temp = $scope.newAccount;
+          $scope.user.accounts.push(temp);
           $scope.adding = false;
-          $scope.newSmtp = {};
+          $scope.newAccount = {};
         });
       };
 
-      $scope.edit = function(smtp) {
-        console.log(smtp);
+      $scope.edit = function(account) {
         $http({
           method: 'PUT',
-          url: '/account/smtp',
+          url: '/api/account/',
           headers: {jwt: $cookies.jwt},
-          data: smtp
+          data: account
         })
         .success(function() {
-          smtp.editing = false;
+          account.editing = false;
         });
       };
 
-      $scope.delete = function(smtp) {
+      $scope.delete = function(account) {
         $http({
           method: 'DELETE',
-          url: '/account/smtp/' + smtp._id,
+          url: '/api/account/remove' + account._id,
           headers: {jwt: $cookies.jwt}
         })
         .success(function() {
-          $scope.user.smtps.splice($scope.user.smtps.indexOf(smtp), 1);
+          $scope.user.accounts.splice($scope.user.accounts.indexOf(account), 1);
         });
       };
 

@@ -8,15 +8,13 @@ var userSchema = mongoose.Schema({
   email: String,
   password: String,
   displayName: String,
-  smtps: [{
-    auth: {
-      user: String,
-      pass: String
-    },
+  current: Number,
+  accounts: [{
+    email: String,
+    password: String,
     service: String,
-    host: String,
-    secureConnection: Boolean,
-    port: Number
+    smtp: {},
+    imap: {}
   }]
 });
 

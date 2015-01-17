@@ -25,7 +25,9 @@ module.exports = function(app) {
           }
         })
           .success(function(data) {
-            $scope.username = data.name;
+            $scope.user = data.user;
+            $scope.current = data.current;
+            $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
             $scope.getBoxDetail($scope.boxes[0].boxKey);
           })
@@ -35,6 +37,35 @@ module.exports = function(app) {
       };
 
       $scope.index();
+
+      $scope.import = function() {
+        $http({
+          method: 'GET',
+          url: '/api/emails/import',
+          headers: {
+            jwt: $cookies.jwt
+          }
+        })
+        .success(function() {
+          $scope.index();
+        });
+      };
+
+      $scope.switchTo = function(account) {
+        $http({
+          method: 'PUT',
+          url: '/api/account/current',
+          headers: {
+            jwt: $cookies.jwt
+          },
+          data: {
+            number: $scope.accounts.indexOf(account)
+          }
+        })
+        .success(function() {
+          $scope.index();
+        });
+      };
 
       $scope.goToBox = function(boxKey) {
         return $location.path('/box/' + boxKey);

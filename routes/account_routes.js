@@ -1,92 +1,107 @@
 'use strict';
 
-module.exports = function(app, jwtAuth) {
-  app.get('/account/', jwtAuth, function(req, res) {
-    console.log('Getting info for ' + req.user.email);
+module.exports = function(app, jwtAuth, logging) {
+  app.get('/api/account/', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: Getting info for ' + req.user.email);
     res.json(req.user);
   });
 
-  app.put('/account/name', jwtAuth, function(req, res) {
-    console.log('Changing ' + req.user.displayName + ' to ' + req.body.newName);
+  app.put('/api/account/name', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: ' + req.user.displayName + ' is now ' + req.body.newName);
     req.user.displayName = req.body.newName;
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       res.json({msg: 'saved'});
     });
   });
 
-  app.post('/account/smtp', jwtAuth, function(req, res) {
-    console.log('Adding smtp account for ' + req.user.email);
-    var smtp;
-    if (req.body.service) {
-      try {
-        smtp = {
-          service: req.body.service,
-          auth: {
-            user: req.body.auth.user,
-            pass: req.body.auth.pass // TODO: add some sort of encryption
-          }
-        };
-      } catch (err) {
-        return res.status(500).send('there was an error adding account');
-      }
-    } else {
-      try {
-        smtp = {
-          host: req.body.host,
-          secureConnection: req.body.secureConnection,
-          port: req.body.port,
-          auth: {
-            user: req.body.auth.user,
-            pass: req.body.auth.pass // TODO: add some sort of encryption
-          }
-        };
-      } catch (err) {
-        return res.status(500).send('there was an error adding account');
-      }
-    }
-    req.user.smtps.push(smtp);
+  app.put('/api/account/current', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].auth.user);
+    req.user.current = req.body.number;
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
+      if (err) handle(err, res);
+      res.json({msg: 'switched to ' + req.user.accounts[req.user.current].auth.user});
+    });
+  });
+
+  app.post('/api/account/new', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: Adding account to ' + req.user.email);
+    var account = {};
+    try {
+      account.email = req.body.email;
+      account.password = req.body.password;
+      if (req.body.service) {
+        account.service = req.body.service;
+      } else {
+        account.smtp = {
+          host: req.body.smtp.host,
+          port: req.body.smtp.port,
+          secure: req.body.smtp.secure
+        };
+        account.imap = {
+          host: req.body.imap.host,
+          port: req.body.imap.port,
+          tls: req.body.imap.tls
+        };
       }
-      console.log('Account added to ' + req.user.email);
+    } catch (err) {
+      handle(err, res);
+    }
+    req.user.accounts.push(account);
+    req.user.current = req.user.accounts.length - 1;
+    req.user.save(function(err) {
+      if (err) handle(err, res);
       res.json({msg: 'added'});
     });
   });
 
-  app.put('/account/smtp', jwtAuth, function(req, res) {
-    console.log('Changing smtp account for ' + req.user.email);
-    req.user.smtps.id(req.body._id).auth.user = req.body.auth.user;
-    req.user.smtps.id(req.body._id).auth.pass = req.body.auth.pass;
-    req.user.smtps.id(req.body._id).service = req.body.service;
-    req.user.smtps.id(req.body._id).host = req.body.host;
-    req.user.smtps.id(req.body._id).secureConnection = req.body.secureConnection;
-    req.user.smtps.id(req.body._id).port = req.body.port;
-
-    req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
+  app.put('/api/account/', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: Changing account for ' + req.user.email);
+    var account = {};
+    account._id = req.body._id;
+    try {
+      account.email = req.body.email;
+      account.password = req.body.password;
+      if (req.body.service) {
+        account.service = req.body.service;
+      } else {
+        account.smtp = {
+          host: req.body.smtp.host,
+          port: req.body.smtp.port,
+          secure: req.body.smtp.secure
+        };
+        account.imap = {
+          host: req.body.imap.host,
+          port: req.body.imap.port,
+          tls: req.body.imap.tls
+        };
       }
-      res.json({msg: 'saved'});
+    } catch (err) {
+      handle(err, res);
+    }
+    req.user.accounts.id(req.body._id).remove();
+    req.user.accounts.push(account);
+    req.user.current = req.user.accounts.length - 1;
+    req.user.save(function(err) {
+      if (err) handle(err, res);
+      res.json({msg: 'account updated'});
     });
   });
 
-  app.delete('/account/smtp/:id', jwtAuth, function(req, res) {
-    console.log('Deleting account from ' + req.user.email);
-    req.user.smtps.id(req.params.id).remove();
-
+  app.delete('/api/account/remove/:id', jwtAuth, function(req, res) {
+    if (logging) console.log('fly[]: Deleting account from ' + req.user.email);
+    console.log(req.user.accounts);
+    console.log(req.params.id);
+    req.user.accounts.id(req.params.id).remove();
+    req.user.current = 0;
     req.user.save(function(err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send('there was an error');
-      }
+      if (err) handle(err, res);
       res.json({msg: 'deleted'});
     });
   });
+
+  var handle = function(err, res) {
+    console.log(err);
+    return res.status(500).send('Account Error');
+  };
 };
