@@ -38,19 +38,6 @@ module.exports = function(app) {
 
       $scope.index();
 
-      $scope.import = function() {
-        $http({
-          method: 'GET',
-          url: '/api/emails/import',
-          headers: {
-            jwt: $cookies.jwt
-          }
-        })
-        .success(function() {
-          $scope.index();
-        });
-      };
-
       $scope.switchTo = function(account) {
         $http({
           method: 'PUT',

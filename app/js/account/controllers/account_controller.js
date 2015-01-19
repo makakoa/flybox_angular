@@ -32,6 +32,36 @@ module.exports = function(app) {
         });
       };
 
+      $scope.switchTo = function(account) {
+        $http({
+          method: 'PUT',
+          url: '/api/account/current',
+          headers: {
+            jwt: $cookies.jwt
+          },
+          data: {
+            number: $scope.accounts.indexOf(account)
+          }
+        })
+        .success(function() {
+          $scope.user.current = $scope.accounts.indexOf(account);
+        });
+      };
+
+      $scope.import = function(account) {
+        $http({
+          method: 'POST',
+          url: '/api/emails/import/',
+          headers: {
+            jwt: $cookies.jwt
+          },
+          data: {account: account}
+        })
+        .success(function() {
+          console.log('emails imported');
+        });
+      };
+
       $scope.add = function() {
         $http({
           method: 'POST',
