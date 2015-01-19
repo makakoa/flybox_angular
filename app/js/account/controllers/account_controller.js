@@ -55,7 +55,7 @@ module.exports = function(app) {
           headers: {
             jwt: $cookies.jwt
           },
-          data: {account: account}
+          data: {index: $scope.user.accounts.indexOf(account)}
         })
         .success(function() {
           console.log('emails imported');

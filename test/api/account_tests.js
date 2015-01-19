@@ -100,7 +100,6 @@ describe('Account Settings', function() {
       expect(res.body.current).to.eql(1);
       expect(res.body.accounts.length).to.eql(2);
       accountId = res.body.accounts[1]._id;
-      console.log(res.body.accounts);
       done();
     });
   });

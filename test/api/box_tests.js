@@ -34,7 +34,7 @@ describe('Box routes', function() {
            },
            subject: 'Test greetings',
            members: ['someguy', 'andanother'],
-           sendEmail: false
+           sendEmail: true
           })
     .end(function(err, res) {
       expect(err).to.eql(null);
@@ -60,11 +60,7 @@ describe('Box routes', function() {
     chai.request(appUrl)
     .post('/api/emails/import')
     .set({jwt: jwtToken})
-    .send({account: {
-      service: 'gmail',
-      email: 'flybox4real@gmail.com',
-      password: 'flyboxme'
-    }})
+    .send({index: 0})
     .end(function(err, res) {
       expect(err).to.eql(null);
       expect(res.body.msg).to.eql('emails imported');
