@@ -6,7 +6,16 @@ var jwt = require('jwt-simple');
 
 var userSchema = mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  displayName: String,
+  current: Number,
+  accounts: [{
+    email: String,
+    password: String,
+    service: String,
+    smtp: {},
+    imap: {}
+  }]
 });
 
 userSchema.methods.generateHash = function(password) {

@@ -1,13 +1,18 @@
 <header>
   <a href='#/inbox'><h1>Flybox</h1></a>
-  <p data-ng-model='username'>Hello {{username}}</p>
+  <p>Hello {{user.name}}</p>
   <a href='#/account'>Account</a>
   <button data-ng-click='logOut()'>Log out</button>
 </header>
 
-<main>
+<main data-ng-init='index()'>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
+  <p>Members:</p>
+  <a data-ng-repeat='member in box.members'>{{member.email+':'+member.unread}}</a>
+  <input data-ng-model='newMember.email'/>
+  <button data-ng-click='addMember(newMember)'>Add Member</button>
+  <button data-ng-click='leaveBox()'>Leave Box</button>
   <section class='well' ng-repeat='post in posts'>
     <p class='email'>{{post.by}}</p>
     <p class='date'>{{post.date | date}}</p>
