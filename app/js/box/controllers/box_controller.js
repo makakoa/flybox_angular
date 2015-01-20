@@ -19,6 +19,7 @@ module.exports = function(app) {
           $scope.posts = data.box.thread;
           socket.emit('init', {
             user: $scope.user,
+            token: $cookies.jwt,
             room: boxKey
           });
         });
@@ -70,7 +71,8 @@ module.exports = function(app) {
         socket.emit('send:post', {
           content: $scope.newPost.content,
           by: $scope.username,
-          box: boxKey
+          box: boxKey,
+          sendEmail: $scope.sendEmail
         });
         var tempPost = $scope.newPost;
         tempPost.by = 'me';

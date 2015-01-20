@@ -30,5 +30,7 @@
   </section>
   <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
   <button data-ng-click='reply()' id='send'>Post</button>
+  <p>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
+  <input type='checkbox' data-ng-model='sendEmail'>
 
 </main>
