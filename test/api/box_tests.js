@@ -56,7 +56,7 @@ describe('Box routes', function() {
   });
 
   it('should be able to import emails', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     chai.request(appUrl)
     .post('/api/emails/import')
     .set({jwt: jwtToken})
