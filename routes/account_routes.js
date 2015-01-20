@@ -1,6 +1,10 @@
 'use strict';
 
+var jwt = require('jwt-simple');
+
 module.exports = function(app, jwtAuth, logging) {
+  var secret = app.get('accountSecret');
+
   app.get('/api/account/', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Getting info for ' + req.user.email);
     res.json(req.user);
@@ -29,7 +33,7 @@ module.exports = function(app, jwtAuth, logging) {
     var account = {};
     try {
       account.email = req.body.email;
-      account.password = req.body.password;
+      account.password = jwt.encode(req.body.password, secret);
       if (req.body.service) {
         account.service = req.body.service;
       } else {
@@ -61,7 +65,7 @@ module.exports = function(app, jwtAuth, logging) {
     account._id = req.body._id;
     try {
       account.email = req.body.email;
-      account.password = req.body.password;
+      account.password = jwt.encode(req.body.password, secret);
       if (req.body.service) {
         account.service = req.body.service;
       } else {
@@ -90,8 +94,6 @@ module.exports = function(app, jwtAuth, logging) {
 
   app.delete('/api/account/remove/:id', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Deleting account from ' + req.user.email);
-    console.log(req.user.accounts);
-    console.log(req.params.id);
     req.user.accounts.id(req.params.id).remove();
     req.user.current = 0;
     req.user.save(function(err) {

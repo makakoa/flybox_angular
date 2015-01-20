@@ -2,24 +2,30 @@
 
 var Box = require('../models/box');
 var Post = require('../models/post');
+var format = require('../lib/format');
+var mailFactory = require('../lib/mailFactory');
 
-module.exports = function(logging) {
+module.exports = function(secret, logging) {
+  var auth = require('../lib/socket_auth')(secret);
+
   return function(socket) {
     socket.on('init', function(data) {
-      socket.username = data.user.name; // should replace with jwt route
+      auth(data.token, function(user) {
+        socket.user = user;
+        if (logging) console.log('fly[]: ' + socket.user.email + ' joined room:' + socket.room);
+      });
       socket.join(data.room);
       socket.room = data.room;
-      if (logging) console.log('fly[]: ' + data.user.name + ' joined room:' + socket.room);
     });
 
     socket.on('read', function() {
       socket.broadcast.to(socket.room).emit('read', {
-        by: socket.username
+        by: socket.user.accounts[socket.user.current].email
       });
 
       Box.findOne({boxKey: socket.room}, function(err, box) {
         box.members.forEach(function(member) {
-          if (member.email === socket.username) {
+          if (member.email === socket.user.accounts[socket.user.current].email) {
             member.unread = 0;
           }
         });
@@ -30,28 +36,42 @@ module.exports = function(logging) {
     });
 
     socket.on('send:post', function(data) {
-      if (logging) console.log('fly[]: ' + socket.username + ' posted in room:' + socket.room);
+      if (logging) console.log('fly[]: ' + socket.user.accounts[socket.user.current].email + ' posted in room:' + socket.room);
       socket.broadcast.to(socket.room).emit('send:post', {
         content: data.content,
-        by: socket.username,
+        by: socket.user.accounts[socket.user.current].email,
         date: Date.now()
       });
 
       var post = new Post();
-      post.by = socket.username;
+      post.by = socket.user.accounts[socket.user.current].email;
       post.content = data.content;
       post.date = Date.now();
       post.save(function(err) {
         if (err) return console.log(err);
         Box.findOne({boxKey: data.box}, function(err, box) {
           if (err) return console.log(err);
+          var recipients = [];
           box.thread.push(post._id);
           box.members.forEach(function(member) {
+            recipients.push(member.email);
             member.unread += 1;
-            if (member.email === socket.username) member.unread = 0;
+            if (member.email === socket.user.accounts[socket.user.current].email) member.unread = 0;
           });
           box.save(function(err) {
             if (err) return console.log(err);
+            if (data.sendEmail) {
+              if (logging) console.log('fly[]: Posted, mailing post as ' + socket.user.accounts[socket.user.current].email);
+              var smtp = format.smtp(socket.user.accounts[socket.user.current]);
+              var mail = {
+                from: socket.user.accounts[socket.user.current].email,
+                name: socket.user.displayName,
+                to: recipients,
+                subject: box.subject,
+                text: post.content
+              };
+              mailFactory(smtp, mail, logging);
+            }
           });
         });
       });
@@ -60,7 +80,7 @@ module.exports = function(logging) {
     socket.on('edit:post', function(data) {
       Post.findOne({_id: data._id}, function(err, post) {
         if (err) return console.log(err);
-        if (post.by !== socket.username) return console.log('access error');
+        if (post.by !== socket.user.accounts[socket.user.current].email) return console.log('access error');
         if (data.delete) {
           post.by = 'deleted';
           data.content = '';
