@@ -37,6 +37,7 @@ module.exports = function(app) {
       };
 
       $scope.index();
+      $scope.selectedBox = 0;
 
       $scope.switchTo = function(account) {
         $http({
@@ -71,7 +72,7 @@ module.exports = function(app) {
         */
       };
 
-      $scope.getBoxDetail = function(boxKey) {
+      var getBoxDetail = function(boxKey) {
         $http({
           method: 'GET',
           url: '/api/boxes/' + boxKey,
@@ -86,6 +87,11 @@ module.exports = function(app) {
             body: data.box.thread[0].content
           };
         }); // TODO: add error catch
+      };
+
+      $scope.boxClick = function(boxKey, $index) {
+        getBoxDetail(boxKey);
+        $scope.selectedBox = $index;
       };
 
       //console.log($scope.boxes[0]);
