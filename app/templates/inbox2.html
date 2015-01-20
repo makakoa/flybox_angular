@@ -37,6 +37,9 @@
               <li><a href="#"><span class="email-label-personal"></span>Personal</a></li>
               <li><a href="#"><span class="email-label-work"></span>Work</a></li>
               <li><a href="#"><span class="email-label-travel"></span>Travel</a></li>
+              <a href>
+                <button data-ng-click='logOut()' class='secondary-button pure-button'>Logout</button>
+              </a>
             </ul>
           </div>
         </div>
@@ -69,16 +72,18 @@
         <div class="email-content">
           <div class="email-content-header pure-g">
             <div class="pure-u-1-2">
+<!--              <section data-ng-repeat='email in boxDetail.members'>-->
+                <img data-ng-repeat='email in boxDetail.members' class="email-avatar" alt={{email}} title={{email}} height="64" width="64" src="../img/common/tilo-avatar.png">
+<!--              </section>-->
               <h1 class="email-content-title">{{boxDetail.title}}</h1>
               <p class="email-content-subtitle">
-                From <a>{{boxDetail.members}}</a> at <span>{{boxDetail.date}}</span>
+                <span>{{boxDetail.date}}</span>
               </p>
             </div>
 
             <div class="email-content-controls pure-u-1-2">
-              <button class="secondary-button pure-button">Reply</button>
-              <button class="secondary-button pure-button">Forward</button>
-              <button class="secondary-button pure-button">Move to</button>
+              <button class="secondary-button pure-button">Analytics</button>
+              <button class="secondary-button pure-button">Delete</button>
             </div>
           </div>
 

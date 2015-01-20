@@ -8,12 +8,21 @@ module.exports = function(app) {
         $location.path('/');
       }
 
-      $scope.boxDetail = {
-        title: 'TITLE!',
-        date: 'today',
-        members: ['cam', 'charles'],
-        subject: 'subject',
-        body: 'This is the body of the email'
+      var getBoxDetail = function(boxKey) {
+        $http({
+          method: 'GET',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function(data) {
+          $scope.boxDetail = {
+            title: data.box.subject,
+            date: data.box.date,
+            members: data.box.members,
+            subject: 'subject2',
+            body: data.box.thread[0].content
+          };
+        }); // TODO: add error catch
       };
 
       $scope.index = function() {
@@ -29,7 +38,9 @@ module.exports = function(app) {
             $scope.current = data.current;
             $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
-            $scope.getBoxDetail($scope.boxes[0].boxKey);
+//          $scope.getBoxDetail($scope.boxes[0].boxKey);
+            getBoxDetail($scope.boxes[$scope.boxes.length - 1].boxKey);
+//            console.log($scope.boxes.length);
           })
           .error(function(err) {
             console.log(err);
@@ -62,31 +73,6 @@ module.exports = function(app) {
       $scope.logOut = function() {
         delete $cookies.jwt;
         return $location.path('/');
-      };
-
-      $scope.highlightThis = function() {
-        console.log('CLICKED');
-        /*
-        * Do this later:
-        * http://stackoverflow.com/questions/17928487/angular-js-how-to-change-an-elements-css-class-on-click-and-to-remove-all-others
-        */
-      };
-
-      var getBoxDetail = function(boxKey) {
-        $http({
-          method: 'GET',
-          url: '/api/boxes/' + boxKey,
-          headers: {jwt: $cookies.jwt}
-        })
-        .success(function(data) {
-          $scope.boxDetail = {
-            title: data.box.subject,
-            date: data.box.date,
-            members: data.box.members,
-            subject: 'subject2',
-            body: data.box.thread[0].content
-          };
-        }); // TODO: add error catch
       };
 
       $scope.boxClick = function(boxKey, $index) {
