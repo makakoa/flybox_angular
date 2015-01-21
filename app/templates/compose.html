@@ -8,7 +8,8 @@
 <main>
   <h2>Compose</h2>
   <h3>To:</h3>  
-  <input type='text' data-ng-model='newBox.members' />
+  <input type='text' data-ng-model='recipient.email' data-ng-keyup='checkIfSpace($event.keyCode)'/>
+  <p data-ng-repeat='member in newBox.members'>{{member.email + (member.isUser ? ' :)':' :(')}}</p>
   <h3>Subject:</h3>
   <input type='text' data-ng-model='newBox.subject' />
   <h3>Body:</h3>

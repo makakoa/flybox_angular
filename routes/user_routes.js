@@ -3,11 +3,13 @@
 var User = require('../models/user');
 
 module.exports = function(app, passport, logging) {
+  //User login
   app.get('/api/users', passport.authenticate('basic', {session: false}), function(req, res) {
     if (logging) console.log('fly[]: ' + req.user.email + ' logged in');
     res.json({jwt: req.user.generateToken(app.get('jwtSecret'))});
   });
 
+  //Create account
   app.post('/api/users', function(req, res) {
     if (logging) console.log('fly[]: Creating account ' + req.body.email);
     User.findOne({email: req.body.email}, function(err, user) {
@@ -24,6 +26,20 @@ module.exports = function(app, passport, logging) {
     });
   });
 
+  //Check flybox for email
+  app.post('/api/user/check', function(req, res) {
+    if (logging) console.log('fly[]: Searching for ' + req.body.email);
+    User.findOne({accounts: {$elemMatch: {email: req.body.email}}}, function(err, user) {
+      if (err) return res.status(500).send('server error');
+      if (user) {
+        return res.json({isUser: true, name: user.displayName});
+      } else {
+        return res.json({isUser: false});
+      }
+    });
+  });
+
+  //Delete account
   app.delete('/api/users', passport.authenticate('basic', {session:false}), function(req, res) {
     if (logging) console.log('fly[]: Deleting account ' + req.user.email);
     User.remove({_id: req.user._id}, function(err) {
