@@ -3,7 +3,6 @@
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
-//var mailer = require('../lib/mailer');
 var mailFactory = require('../lib/mailFactory');
 var fetcher = require('../lib/fetcher');
 var format = require('../lib/format');
@@ -118,7 +117,7 @@ module.exports = function(app, jwtAuth, logging) {
     try {
       box.subject = req.body.subject;
       box.boxKey = key();
-      box.members = [{email: user, name: res.user.displayName, unread: 0, isUser: true}];
+      box.members = [{email: user, name: req.user.displayName, unread: 0, isUser: true}];
       req.body.members.forEach(function(member) {
         member.unread = 1;
         box.members.push(member); //should add format check or error catch
@@ -129,7 +128,6 @@ module.exports = function(app, jwtAuth, logging) {
     }
     box.save(function(err) {
       if (err) handle(err, res);
-      //add checker for flybox user here
       if (req.body.sendEmail) {
         if (logging) console.log('fly[]: Box posted, mailing box as ' + user);
         var smtp = format.smtp(req.user.accounts[req.user.current]);
@@ -141,7 +139,6 @@ module.exports = function(app, jwtAuth, logging) {
           text: post.content
         };
         mailFactory(smtp, mail, logging);
-        //mailer(mail, smtp);
       }
       res.json({msg: 'sent!'});
     });
@@ -154,7 +151,6 @@ module.exports = function(app, jwtAuth, logging) {
     fetcher.getMail(format.imap(req.user.accounts[req.body.index]), logging, function(inbox) {
       if (logging) console.log('fly[]: Posting boxes... (C: Creating box, A: Adding to existing box)');
       var saveEmail = function(num) {
-      //inbox.forEach(function(mail) {
         if (num == inbox.length) return;
         var mail = inbox[num];
         if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);

@@ -33,7 +33,8 @@ describe('Box routes', function() {
             content: 'Hey, you there!'
            },
            subject: 'Test greetings',
-           members: ['someguy', 'andanother'],
+           members: [{email: 'someguy', isUser: false},
+                     {email: 'andanother', isUser: false}],
            sendEmail: true
           })
     .end(function(err, res) {
