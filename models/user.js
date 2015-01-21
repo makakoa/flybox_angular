@@ -13,6 +13,7 @@ var userSchema = mongoose.Schema({
     email: String,
     password: String,
     service: String,
+    lastImported: Number,
     smtp: {},
     imap: {}
   }]

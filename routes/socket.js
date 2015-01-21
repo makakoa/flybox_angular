@@ -54,7 +54,7 @@ module.exports = function(secret, logging) {
           var recipients = [];
           box.thread.push(post._id);
           box.members.forEach(function(member) {
-            recipients.push(member.email);
+            recipients.push(member);
             member.unread += 1;
             if (member.email === socket.user.accounts[socket.user.current].email) member.unread = 0;
           });
@@ -70,7 +70,7 @@ module.exports = function(secret, logging) {
                 subject: box.subject,
                 text: post.content
               };
-              mailFactory(smtp, mail, logging);
+              mailFactory(smtp, mail, logging, function() {return;});
             }
           });
         });

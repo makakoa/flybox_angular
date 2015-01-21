@@ -94,7 +94,7 @@ module.exports = function(app, jwtAuth, logging) {
         });
       }
       var response = {
-        user: {name: user},
+        user: {name: user, current: req.user.current},
         current: user,
         accounts: accounts,
         inbox: boxes
@@ -147,15 +147,19 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
-  // import emails
+  // Sync emails
   app.post('/api/emails/import', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from ' + user);
-    fetcher.getMail(format.imap(req.user.accounts[req.body.index]), logging, function(inbox) {
+    var last = req.user.accounts[req.body.index].lastImported;
+    var imap = format.imap(req.user.accounts[req.body.index]);
+    fetcher.getMail(last, imap, logging, function(inbox) {
       if (logging) console.log('fly[]: Posting boxes... (C: Creating box, A: Adding to existing box)');
       var saveEmail = function(num) {
-        if (num == inbox.length) return;
+        if (num == inbox.length) return console.log(' Finished posting');
         var mail = inbox[num];
+        req.user.accounts[req.body.index].lastImported = inbox[num].number;
+        req.user.save();
         if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);
         if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
         if (mail.subject.indexOf('New Flybox Messages:') === 0) return saveEmail(++num);
