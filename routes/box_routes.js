@@ -138,7 +138,10 @@ module.exports = function(app, jwtAuth, logging) {
           subject: box.subject,
           text: post.content
         };
-        mailFactory(smtp, mail, logging);
+        mailFactory(smtp, mail, logging, function(messageId) {
+          box.originalMessageId = messageId;
+          box.save();
+        });
       }
       res.json({msg: 'sent!'});
     });
@@ -155,6 +158,7 @@ module.exports = function(app, jwtAuth, logging) {
         var mail = inbox[num];
         if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);
         if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
+        if (mail.subject.indexOf('New Flybox Messages:') === 0) return saveEmail(++num);
         var post = new Post();
         post.content = mail.text;
         post.html = mail.html;
