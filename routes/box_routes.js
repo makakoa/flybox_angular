@@ -160,6 +160,7 @@ module.exports = function(app, jwtAuth, logging) {
         if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
         var post = new Post();
         post.content = mail.text;
+        post.html = mail.html;
         post.by = mail.from[0].address;
         post.date = mail.date;
         post.save(function(err) {

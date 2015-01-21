@@ -18,7 +18,6 @@ module.exports = function(app) {
           $scope.box = data.box;
           $scope.posts = data.box.thread;
           socket.emit('init', {
-            user: $scope.user,
             token: $cookies.jwt,
             room: boxKey
           });
