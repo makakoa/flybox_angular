@@ -118,9 +118,10 @@ module.exports = function(app, jwtAuth, logging) {
     try {
       box.subject = req.body.subject;
       box.boxKey = key();
-      box.members = [{email: user, unread: 0}];
+      box.members = [{email: user, name: res.user.displayName, unread: 0, isUser: true}];
       req.body.members.forEach(function(member) {
-        box.members.push({email: member, unread: 1});
+        member.unread = 1;
+        box.members.push(member); //should add format check or error catch
       });
       box.thread = [post._id];
     } catch (err) {
