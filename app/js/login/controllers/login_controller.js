@@ -9,7 +9,7 @@ module.exports = function(app) {
 
       if ($cookies.jwt) {
         console.log('redirecting');
-        $location.path('/inbox');
+        $location.path('/n');
       }
 
       $scope.logIn = function() {

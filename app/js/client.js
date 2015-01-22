@@ -16,6 +16,7 @@ require('./inbox/inbox')(app);
 require('./account/account')(app);
 require('./compose/compose')(app);
 require('./box/box')(app);
+require('./spa/spa')(app);
 
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider
@@ -23,12 +24,11 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/login.html',
       controller: 'LoginCtrl'
     })
+    .when('/n/', {
+      templateUrl: 'templates/spa.html'
+    })
     .when('/landing/', {
       templateUrl: 'templates/landing.html'
-    })
-    .when('/inbox/', {
-      templateUrl: 'templates/inbox.html',
-      controller: 'InboxCtrl'
     })
     .when('/account/', {
       templateUrl: 'templates/account.html',

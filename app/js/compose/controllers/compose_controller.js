@@ -3,10 +3,6 @@
 module.exports = function(app) {
   app.controller('ComposeCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
     function($scope, $http, $base64, $cookies, $location) {
-      if (!$cookies.jwt) {
-        console.log('redirecting');
-        $location.path('/');
-      }
       $scope.newBox = {};
       $scope.newBox.members = [];
 
@@ -47,11 +43,6 @@ module.exports = function(app) {
           $scope.recipient.email = '';
           $scope.checkAddress({email: temp});
         }
-      };
-
-      $scope.logOut = function() {
-        delete $cookies.jwt;
-        return $location.path('/');
       };
     }]);
 };

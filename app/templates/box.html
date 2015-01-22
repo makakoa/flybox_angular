@@ -1,11 +1,4 @@
-<header>
-  <a href='#/inbox'><h1>Flybox</h1></a>
-  <p>Hello {{user.name}}</p>
-  <a href='#/account'>Account</a>
-  <button data-ng-click='logOut()'>Log out</button>
-</header>
-
-<main data-ng-init='index()'>
+<main data-ng-show='box'>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
   <p>Members:</p>
