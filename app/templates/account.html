@@ -21,7 +21,7 @@
     <h3>Email Accounts</h3>
     <div data-ng-repeat='account in user.accounts'>
       <h4>{{account.email}}</h4><h3 data-ng-show='(user.accounts.indexOf(account) === user.current)'>CURRENT</h3>
-      <button data-ng-click='import(account)'>Import Emails</button>
+      <button data-ng-click='import(account)'>Sync</button>
       <h6>Username:</h6>
       <p data-ng-show='!account.editing'>{{account.email}}</p>
       <input data-ng-show='account.editing' data-ng-model='new.account.email'>

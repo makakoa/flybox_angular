@@ -3,7 +3,6 @@
 var Box = require('../models/box');
 var Post = require('../models/post');
 var key = require('../lib/key_gen');
-//var mailer = require('../lib/mailer');
 var mailFactory = require('../lib/mailFactory');
 var fetcher = require('../lib/fetcher');
 var format = require('../lib/format');
@@ -95,7 +94,7 @@ module.exports = function(app, jwtAuth, logging) {
         });
       }
       var response = {
-        user: {name: user},
+        user: {name: user, current: req.user.current},
         current: user,
         accounts: accounts,
         inbox: boxes
@@ -118,9 +117,10 @@ module.exports = function(app, jwtAuth, logging) {
     try {
       box.subject = req.body.subject;
       box.boxKey = key();
-      box.members = [{email: user, unread: 0}];
+      box.members = [{email: user, name: req.user.displayName, unread: 0, isUser: true}];
       req.body.members.forEach(function(member) {
-        box.members.push({email: member, unread: 1});
+        member.unread = 1;
+        box.members.push(member); //should add format check or error catch
       });
       box.thread = [post._id];
     } catch (err) {
@@ -128,7 +128,6 @@ module.exports = function(app, jwtAuth, logging) {
     }
     box.save(function(err) {
       if (err) handle(err, res);
-      //add checker for flybox user here
       if (req.body.sendEmail) {
         if (logging) console.log('fly[]: Box posted, mailing box as ' + user);
         var smtp = format.smtp(req.user.accounts[req.user.current]);
@@ -139,40 +138,71 @@ module.exports = function(app, jwtAuth, logging) {
           subject: box.subject,
           text: post.content
         };
-        mailFactory(smtp, mail, logging);
-        //mailer(mail, smtp);
+        mailFactory(smtp, mail, logging, function(messageId) {
+          box.originalMessageId = messageId;
+          box.save();
+        });
       }
       res.json({msg: 'sent!'});
     });
   });
 
-  // import emails
+  // Sync emails
   app.post('/api/emails/import', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[]: Importing emails for ' + req.user.email + ' from ' + user);
-    fetcher.getMail(format.imap(req.user.accounts[req.body.index]), logging, function(inbox) {
-      if (logging) console.log('fly[]: Posting boxes...');
-      inbox.forEach(function(mail) {
+    var last = req.user.accounts[req.body.index].lastImported;
+    var imap = format.imap(req.user.accounts[req.body.index]);
+    fetcher.getMail(last, imap, logging, function(inbox) {
+      if (logging) console.log('fly[]: Posting boxes... (C: Creating box, A: Adding to existing box)');
+      var saveEmail = function(num) {
+        if (num == inbox.length) return console.log(' Finished posting');
+        var mail = inbox[num];
+        req.user.accounts[req.body.index].lastImported = inbox[num].number;
+        req.user.save();
+        if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);
+        if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
+        if (mail.subject.indexOf('New Flybox Messages:') === 0) return saveEmail(++num);
         var post = new Post();
         post.content = mail.text;
+        post.html = mail.html;
         post.by = mail.from[0].address;
         post.date = mail.date;
         post.save(function(err) {
           if (err) handle(err, res);
         });
-        var box = new Box();
-        try {
-          box.subject = mail.subject;
-          box.boxKey = key();
-          box.members = [{email: mail.from[0].address, unread: 0}, {email: mail.to[0].address, unread: 0}];
-          box.thread = [post._id];
-        } catch (err) {
-          handle(err, res);
-        }
-        box.save(function(err) {
+        var original = mail.messageId;
+        if (mail.references) original = mail.references[0];
+        Box.findOne({subject: mail.subject, originalMessageId: original}, function(err, box) {
           if (err) handle(err, res);
+          if (box) {
+            if (logging) process.stdout.write('A');
+            box.thread.push(post._id);
+            box.save(function(err) {
+              if (err) handle(err, res);
+            });
+            saveEmail(++num);
+          } else {
+            if (logging) process.stdout.write('C');
+            var newBox = new Box();
+            try {
+              newBox.subject = mail.subject;
+              newBox.boxKey = key();
+              newBox.members = [{email: mail.from[0].address, unread: 0}, {email: mail.to[0].address, unread: 0}];
+              newBox.thread = [post._id];
+              newBox.date = mail.date;
+              newBox.originalMessageId = original;
+            } catch (err) {
+              handle(err, res);
+            }
+            newBox.save(function(err) {
+              if (err) handle(err, res);
+              saveEmail(++num);
+            });
+          }
         });
-      });
+      };
+      saveEmail(0);
       if (logging) console.log('fly[]: Finished import');
       res.json({msg: 'emails imported'});
     });

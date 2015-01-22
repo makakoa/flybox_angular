@@ -7,9 +7,11 @@ module.exports = function(app) {
         console.log('redirecting');
         $location.path('/');
       }
+      $scope.newBox = {};
+      $scope.newBox.members = [];
 
       $scope.send = function() {
-        $scope.newBox.members = $scope.newBox.members.split(' ');
+        console.log($scope.newBox);
         $http({
           method: 'POST',
           url: '/api/boxes',
@@ -23,6 +25,28 @@ module.exports = function(app) {
           console.log(data);
         });
         return $location.path('/');
+      };
+
+      $scope.checkAddress = function(recipient) {
+        $http({
+          method: 'POST',
+          url: '/api/user/check',
+          headers: {jwt: $cookies.jwt},
+          data: recipient
+        })
+        .success(function(data) {
+          recipient.isUser = data.isUser;
+          if (data.isUser) recipient.name = data.name;
+          $scope.newBox.members.push(recipient);
+        });
+      };
+
+      $scope.checkIfSpace = function(event) {
+        if (event === 32) {
+          var temp = $scope.recipient.email;
+          $scope.recipient.email = '';
+          $scope.checkAddress({email: temp});
+        }
       };
 
       $scope.logOut = function() {

@@ -38,6 +38,17 @@ module.exports = function(app) {
             $scope.current = data.current;
             $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
+            $http({
+              method: 'POST',
+              url: '/api/emails/import/',
+              headers: {
+                jwt: $cookies.jwt
+              },
+              data: {index: $scope.user.current}
+            })
+            .success(function() {
+              console.log('emails imported');
+            });
 //          $scope.getBoxDetail($scope.boxes[0].boxKey);
             getBoxDetail($scope.boxes[$scope.boxes.length - 1].boxKey);
 //            console.log($scope.boxes.length);
