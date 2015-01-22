@@ -5,11 +5,13 @@ var jwt = require('jwt-simple');
 module.exports = function(app, jwtAuth, logging) {
   var secret = app.get('accountSecret');
 
+  //Account info
   app.get('/api/account/', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Getting info for ' + req.user.email);
     res.json(req.user);
   });
 
+  //Set current name
   app.put('/api/account/name', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: ' + req.user.displayName + ' is now ' + req.body.newName);
     req.user.displayName = req.body.newName;
@@ -19,6 +21,7 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
+  //Set current account
   app.put('/api/account/current', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].auth.user);
     req.user.current = req.body.number;
@@ -28,6 +31,7 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
+  //Add email account
   app.post('/api/account/new', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Adding account to ' + req.user.email);
     var account = {};
@@ -60,7 +64,8 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
-  app.put('/api/account/', jwtAuth, function(req, res) {
+  //Edit an email account
+  app.put('/api/account', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Changing account for ' + req.user.email);
     var account = {};
     account._id = req.body._id;
@@ -93,6 +98,7 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
+  //Delete an email account
   app.delete('/api/account/remove/:id', jwtAuth, function(req, res) {
     if (logging) console.log('fly[]: Deleting account from ' + req.user.email);
     req.user.accounts.id(req.params.id).remove();
