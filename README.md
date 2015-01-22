@@ -23,6 +23,11 @@
 ######3 : Importing outbox/email acct search  
 ######3 : Contacts features  
 
+*Priority Scale*  
+_1: Needs to be done before v1_  
+_2: Should be done before v1_  
+_3: Can be done after v1_  
+
 API Routes
 -----------
 ###Users
