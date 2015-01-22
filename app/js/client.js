@@ -42,6 +42,10 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/box.html',
       controller: 'BoxCtrl'
     })
+    .when('/spa/', {
+      templateUrl: 'templates/inbox2.html',
+      controller: 'InboxCtrl'
+    })
     .otherwise({
       redirectTo: '/'
     });

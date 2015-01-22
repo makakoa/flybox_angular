@@ -8,12 +8,21 @@ module.exports = function(app) {
         $location.path('/');
       }
 
-      $scope.boxDetail = {
-        title: 'TITLE!',
-        date: 'today',
-        members: ['cam', 'charles'],
-        subject: 'subject',
-        body: 'This is the body of the email'
+      var getBoxDetail = function(boxKey) {
+        $http({
+          method: 'GET',
+          url: '/api/boxes/' + boxKey,
+          headers: {jwt: $cookies.jwt}
+        })
+        .success(function(data) {
+          $scope.boxDetail = {
+            title: data.box.subject,
+            date: data.box.date,
+            members: data.box.members,
+            subject: 'subject2',
+            body: data.box.thread[0].content
+          };
+        }); // TODO: add error catch
       };
 
       $scope.index = function() {
@@ -40,6 +49,9 @@ module.exports = function(app) {
             .success(function() {
               console.log('emails imported');
             });
+//          $scope.getBoxDetail($scope.boxes[0].boxKey);
+            getBoxDetail($scope.boxes[$scope.boxes.length - 1].boxKey);
+//            console.log($scope.boxes.length);
           })
           .error(function(err) {
             console.log(err);
@@ -47,6 +59,7 @@ module.exports = function(app) {
       };
 
       $scope.index();
+      $scope.selectedBox = 0;
 
       $scope.switchTo = function(account) {
         $http({
@@ -73,21 +86,11 @@ module.exports = function(app) {
         return $location.path('/');
       };
 
-      $scope.getBoxDetail = function(boxKey) {
-        $http({
-          method: 'GET',
-          url: '/api/boxes/' + boxKey,
-          headers: {jwt: $cookies.jwt}
-        })
-        .success(function(data) {
-          $scope.boxDetail = {
-            title: data.box.subject,
-            date: 'today2',
-            members: data.box.members,
-            subject: 'subject2',
-            body: data.box.thread[0].content
-          };
-        }); // TODO: add error catch
+      $scope.boxClick = function(boxKey, $index) {
+        getBoxDetail(boxKey);
+        $scope.selectedBox = $index;
       };
+
+      //console.log($scope.boxes[0]);
     }]);
 };
