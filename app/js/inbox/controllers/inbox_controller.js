@@ -1,8 +1,9 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('InboxCtrl', ['$scope', '$http', '$base64', '$cookies',
-    function($scope, $http, $base64, $cookies) {
+  app.controller('InboxCtrl', ['$rootScope', '$http', '$base64', '$cookies',
+    function($rootScope, $http, $base64, $cookies) {
+      var $scope = $rootScope;
 
       $scope.getInbox = function() {
         $http({
