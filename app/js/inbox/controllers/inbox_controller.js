@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('InboxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
+  app.controller('InboxCtrl', ['$scope', '$http', '$base64', '$cookies',
     function($scope, $http, $base64, $cookies) {
 
       $scope.getInbox = function() {
@@ -11,10 +11,8 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
           .success(function(data) {
-            $scope.user = data.user;
-            $scope.current = data.current;
-            $scope.accounts = data.accounts;
             $scope.boxes = data.inbox;
+            $scope.selectedBox = $scope.boxes[$scope.boxes.length - 1].boxKey;
 /*            $http({
               method: 'POST',
               url: '/api/emails/import/',
@@ -29,8 +27,6 @@ module.exports = function(app) {
             console.log(err);
           });
       };
-
-      $scope.getInbox();
 
       $scope.selectBox = function(boxKey) {
         $scope.selectedBox = boxKey;

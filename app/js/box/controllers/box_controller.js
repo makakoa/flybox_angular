@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('BoxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', '$routeParams', 'socket',
+  app.controller('BoxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', 'socket',
     function($scope, $http, $base64, $cookies, $location, socket) {
 
       $scope.getBox = function() {

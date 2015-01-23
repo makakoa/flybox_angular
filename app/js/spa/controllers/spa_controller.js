@@ -8,6 +8,9 @@ module.exports = function(app) {
         $location.path('/');
       }
 
+      $scope.getBox = function() {};
+      $scope.selectedBox = '';
+
       $scope.init = function() {
         $http({
           method: 'GET',

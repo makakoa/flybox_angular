@@ -12,9 +12,14 @@
 </header>
 
 <data-ng-switch on='main'>
+
+  <div ng-switch-when='account'>
+    <account-page></account-page>
+  </div>
+
   <div ng-switch-default>
     <div style='float:left'>
-      <inbox></inbox>
+      <inbox-section></inbox-section>
     </div>
     <div style='float:right'>
       <data-ng-switch on='mode'>
@@ -27,9 +32,5 @@
         </div>
       </data-ng-switch>
     </div>
-  </div>
-
-  <div ng-switch-when='account'>
-    <account-page></account-page>
   </div>
 </data-ng-switch>

@@ -25,10 +25,15 @@ app.config(['$routeProvider', function($routeProvider) {
       controller: 'LoginCtrl'
     })
     .when('/n/', {
-      templateUrl: 'templates/spa.html'
+      templateUrl: 'templates/spa.html',
+    controller: 'SpaCtrl'
     })
     .when('/landing/', {
       templateUrl: 'templates/landing.html'
+    })
+    .when('/inbox/', {
+      templateUrl: 'templates/inbox.html',
+      controller: 'InboxCtrl'
     })
     .when('/account/', {
       templateUrl: 'templates/account.html',

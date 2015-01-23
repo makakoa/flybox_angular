@@ -1,11 +1,10 @@
 'use strict';
 
 module.exports = function(app) {
-  app.directive('inbox', function() {
+  app.directive('inboxSection', function() {
     return {
       restrict: 'AEC',
       transclude: true,
-      scope: {},
       templateUrl: 'templates/inbox.html',
       controller: 'InboxCtrl'
     };

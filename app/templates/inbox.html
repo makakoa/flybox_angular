@@ -1,4 +1,4 @@
-<main>
+<main data-ng-init='getInbox()'>
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
     <div class='well' data-ng-click='selectBox(box.boxKey)'>
       <p>{{box.subject}}</p>

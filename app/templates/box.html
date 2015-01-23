@@ -1,4 +1,4 @@
-<main data-ng-show='box'>
+<main>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
   <p>Members:</p>
@@ -20,7 +20,7 @@
 
       <button data-ng-click='delete(post)'>Delete</button>
     </div>
-
+    <p>Box length {{boxes.length}}</p>
   </section>
   <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
   <button data-ng-click='reply()' id='send'>Post</button>
