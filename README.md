@@ -8,6 +8,7 @@
 ####1 : Attachment handling  
 ####1 : Test socket routes  
 ####1 : Update front end tests  
+####1 : Clean up Angular (organize into services)
 ####1 : UI work  
 ####1 : Stylable (WYSIWYG) text editor for composing/posting  
 #####2 : Handling editing for html/text post editing  
