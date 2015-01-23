@@ -4,13 +4,13 @@
 
 ##To Do: (priority: task)  
 ####1 : Add guest box page  
-####1 : Wrap pages with app shell(to handle menu bar, socket notifications, etc)  
-####1 : Attachment handling  
+####1 : Attachment handling (do after WYSIWYG)  
 ####1 : Test socket routes  
 ####1 : Update front end tests  
 ####1 : Clean up Angular (organize into services)
 ####1 : UI work  
 ####1 : Stylable (WYSIWYG) text editor for composing/posting  
+#####2 : Improve shell (add notifications, online/offline)  
 #####2 : Handling editing for html/text post editing  
 #####2 : Change flybox username/password  
 #####2 : More implementation of display name  
