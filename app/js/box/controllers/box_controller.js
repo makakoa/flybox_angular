@@ -16,8 +16,7 @@ module.exports = function(app) {
           console.log('Box retrieved');
           $scope.box = data.box;
           $scope.posts = data.box.thread;
-          socket.emit('init', {
-            token: $cookies.jwt,
+          socket.emit('join:box', {
             room: $scope.selectedBox
           });
         });

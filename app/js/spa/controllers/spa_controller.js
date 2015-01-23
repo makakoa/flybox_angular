@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('SpaCtrl', ['$scope', '$http', '$base64', '$cookies', '$location',
-    function($scope, $http, $base64, $cookies, $location) {
+  app.controller('SpaCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', 'socket',
+    function($scope, $http, $base64, $cookies, $location, socket) {
       if (!$cookies.jwt) {
         console.log('Redirecting');
         $location.path('/');
@@ -21,6 +21,9 @@ module.exports = function(app) {
           $scope.user = data.user;
           $scope.current = data.current;
           $scope.accounts = data.accounts;
+          socket.emit('log:in', {
+            token: $cookies.jwt
+          });
         })
         .error(function(err) {
           console.log(err);
