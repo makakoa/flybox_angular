@@ -12,9 +12,16 @@ module.exports = function(secret, logging) {
   return function(socket) {
     socket.on('log:in', function(data) {
       auth(data.token, function(user) {
-        socket.user = user;
-        online[socket.user.email] = socket.user.accounts[socket.user.current].email;
         if (!user) socket.disconnect();
+        socket.user = user;
+        online[user.email] = user.accounts[user.current].email;
+      });
+    });
+
+    socket.on('account:switch', function(data) {
+      auth(data.token, function(user) {
+        if (!user) socket.disconnect();
+        online[user.email] = user.accounts[user.current].email;
       });
     });
 
@@ -108,7 +115,7 @@ module.exports = function(secret, logging) {
     });
 
     socket.on('disconnect', function() {
-      delete online[socket.user];
+      delete online[socket.user.email];
     });
   };
 };

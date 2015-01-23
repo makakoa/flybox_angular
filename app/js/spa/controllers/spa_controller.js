@@ -40,6 +40,9 @@ module.exports = function(app) {
           }
         })
         .success(function() {
+          socket.emit('account:switch', {
+            token: $cookies.jwt
+          });
         });
       };
 
