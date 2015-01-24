@@ -1,4 +1,4 @@
-<header>
+<header data-ng-init='loadBox()'>
   <h1>Flybox : Guest</h1>
   <p>Hello {{user.name}}</p>
 </header>
@@ -24,7 +24,6 @@
 
       <button data-ng-click='delete(post)'>Delete</button>
     </div>
-    <p>Box length {{boxes.length}}</p>
   </section>
   <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
   <button data-ng-click='reply()' id='send'>Post</button>

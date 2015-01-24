@@ -1,10 +1,11 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('GuestCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', '$routeParams', 'socket',
-    function($scope, $http, $base64, $cookies, $location, $routeParams, socket) {
+  app.controller('GuestCtrl', ['$scope', '$http', '$base64', '$location', '$routeParams', 'socket',
+    function($scope, $http, $base64, $location, $routeParams, socket) {
       var boxKey = $routeParams.boxKey;
       var guestKey = $routeParams.guestKey;
+
       socket.emit('init:guest', {
         box: boxKey,
         token: guestKey
@@ -14,7 +15,7 @@ module.exports = function(app) {
         console.log('GET box: ' + boxKey);
         $http({
           method: 'GET',
-          url: '/api/box/guest' + boxKey + '/' + guestKey
+          url: '/api/box/guest/' + boxKey + '/' + guestKey
         })
         .success(function(data) {
           console.log('Box retrieved');

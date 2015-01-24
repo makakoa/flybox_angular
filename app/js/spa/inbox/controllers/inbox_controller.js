@@ -23,6 +23,7 @@ module.exports = function(app) {
       $scope.selectBox = function(boxKey) {
         $scope.selectedBox = boxKey;
         $scope.getBox();
+        $scope.mode = '';
       };
     }]);
 };
