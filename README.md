@@ -3,7 +3,7 @@
 ##### "Next Generation Emailing"
 
 ##To Do: (priority: task)  
-####1 : Add guest box page  
+####1 : Get guest box page working  
 ####1 : Attachment handling (do after WYSIWYG)  
 ####1 : Test socket routes  
 ####1 : Update front end tests  
