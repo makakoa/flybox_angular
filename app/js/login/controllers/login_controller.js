@@ -42,7 +42,7 @@ module.exports = function(app) {
         })
           .success(function(data) {
             $cookies.jwt = data.jwt;
-            $location.path('/inbox');
+            $location.path('/n');
           })
           .error(function(data) {
             console.log('err', data);

@@ -6,7 +6,8 @@ require('angular-mocks');
 describe('Inbox Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
-  var $scope;
+  var $scope = {getBox: function() {}};
+  var $cookies = {jwt: 'hash'};
 
   beforeEach(angular.mock.module('flyboxApp'));
 
@@ -16,14 +17,14 @@ describe('Inbox Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('InboxCtrl', {$scope: $scope});
-    expect(typeof boxController).toBe('object');
+    var inboxController = $controllerConstructor('InboxCtrl', {$rootScope: $scope, $cookies: $cookies});
+    expect(typeof inboxController).toBe('object');
   });
 
   describe('Inbox functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('InboxCtrl', {$scope: $scope});
+      $controllerConstructor('InboxCtrl', {$rootScope: $scope, $cookies: $cookies});
     }));
 
     afterEach(function() {
@@ -31,16 +32,23 @@ describe('Inbox Controller', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get a box from the server', function() {
-      $httpBackend.expectGET('/api/boxes').respond(200, [{
-        email: 'testSubject',
-        date: '1/2/13',
-        subject: 'testing',
-        boxKey: 123
-      }]);
+    it('should get an inbox', function() {
+      $httpBackend.expectGET('/api/boxes').respond(200, {
+        inbox: [{
+          date: '1/2/13',
+          subject: 'testing',
+          thread: [],
+          boxKey: 123
+        }]
+      });
+      $scope.getBox = function() {};
+
+      $scope.getInbox();
+
       $httpBackend.flush();
+
+      expect(Array.isArray($scope.boxes)).toBeTruthy();
       expect(typeof $scope.boxes[0]).toBe('object');
-      expect($scope.boxes.lenth).toBe(1);
     });
   });
 });
