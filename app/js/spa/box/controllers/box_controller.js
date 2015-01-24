@@ -1,25 +1,23 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('BoxCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', '$routeParams', 'socket',
-    function($scope, $http, $base64, $cookies, $location, $routeParams, socket) {
-      var boxKey = $routeParams.boxId;
+  app.controller('BoxCtrl', ['$rootScope', '$http', '$base64', '$cookies', '$location', 'socket',
+    function($rootScope, $http, $base64, $cookies, $location, socket) {
+      var $scope = $rootScope;
 
-      $scope.index = function() {
-        console.log('GET box: ' + boxKey);
+      $scope.getBox = function() {
+        console.log('GET box: ' + $scope.selectedBox);
         $http({
           method: 'GET',
-          url: '/api/boxes/' + boxKey,
+          url: '/api/boxes/' + $scope.selectedBox,
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
           console.log('Box retrieved');
-          $scope.user = data.user;
           $scope.box = data.box;
           $scope.posts = data.box.thread;
-          socket.emit('init', {
-            token: $cookies.jwt,
-            room: boxKey
+          socket.emit('join:box', {
+            room: $scope.selectedBox
           });
         });
       };
@@ -27,7 +25,7 @@ module.exports = function(app) {
       $scope.addMember = function(newMember) {
         $http({
           method: 'POST',
-          url: '/api/boxes/' + boxKey,
+          url: '/api/boxes/' + $scope.selectedBox,
           headers: {jwt: $cookies.jwt},
           data: newMember
         })
@@ -39,7 +37,7 @@ module.exports = function(app) {
       $scope.leaveBox = function() {
         $http({
           method: 'DELETE',
-          url: '/api/boxes/' + boxKey,
+          url: '/api/boxes/' + $scope.selectedBox,
           headers: {jwt: $cookies.jwt}
         })
         .success(function() {
@@ -62,7 +60,7 @@ module.exports = function(app) {
       });
 
       socket.on('edit:post', function() {
-        $scope.index();
+        $scope.getBox();
       });
 
       $scope.reply = function() {
@@ -70,7 +68,7 @@ module.exports = function(app) {
         socket.emit('send:post', {
           content: $scope.newPost.content,
           by: $scope.username,
-          box: boxKey,
+          box: $scope.selectedBox,
           sendEmail: $scope.sendEmail
         });
         var tempPost = $scope.newPost;
@@ -107,11 +105,6 @@ module.exports = function(app) {
         if (event === 13) {
           $scope.reply();
         }
-      };
-
-      $scope.logOut = function() {
-        delete $cookies.jwt;
-        return $location.path('/');
       };
     }]);
 };

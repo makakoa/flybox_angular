@@ -7,22 +7,36 @@ var mailFactory = require('../lib/mailFactory');
 
 module.exports = function(secret, logging) {
   var auth = require('../lib/socket_auth')(secret);
+  var online = {};
 
   return function(socket) {
-    socket.on('init', function(data) {
+    socket.on('log:in', function(data) {
       auth(data.token, function(user) {
+        if (!user) socket.disconnect();
         socket.user = user;
-        if (logging) console.log('fly[]: ' + socket.user.email + ' joined room:' + socket.room);
+        if (user.accounts.length > 0) online[user.email] = user.accounts[user.current].email;
       });
-      socket.join(data.room);
+    });
+
+    socket.on('account:switch', function(data) {
+      auth(data.token, function(user) {
+        if (!user) socket.disconnect();
+        online[user.email] = user.accounts[user.current].email;
+      });
+    });
+
+    socket.on('join:box', function(data) {
+      if (!socket.user) socket.disconnect();
+      if (logging) console.log('fly[]: ' + socket.user.email + ' joined room:' + socket.room);
+      socket.join(data.room); //should check if user is in box
       socket.room = data.room;
     });
 
     socket.on('read', function() {
+      if (!socket.user) socket.disconnect();
       socket.broadcast.to(socket.room).emit('read', {
         by: socket.user.accounts[socket.user.current].email
       });
-
       Box.findOne({boxKey: socket.room}, function(err, box) {
         box.members.forEach(function(member) {
           if (member.email === socket.user.accounts[socket.user.current].email) {
@@ -36,13 +50,13 @@ module.exports = function(secret, logging) {
     });
 
     socket.on('send:post', function(data) {
+      if (!socket.user) socket.disconnect();
       if (logging) console.log('fly[]: ' + socket.user.accounts[socket.user.current].email + ' posted in room:' + socket.room);
       socket.broadcast.to(socket.room).emit('send:post', {
         content: data.content,
         by: socket.user.accounts[socket.user.current].email,
         date: Date.now()
       });
-
       var post = new Post();
       post.by = socket.user.accounts[socket.user.current].email;
       post.content = data.content;
@@ -78,6 +92,7 @@ module.exports = function(secret, logging) {
     });
 
     socket.on('edit:post', function(data) {
+      if (!socket.user) socket.disconnect();
       Post.findOne({_id: data._id}, function(err, post) {
         if (err) return console.log(err);
         if (post.by !== socket.user.accounts[socket.user.current].email) return console.log('access error');
@@ -97,6 +112,10 @@ module.exports = function(secret, logging) {
           content: post.content
         });
       });
+    });
+
+    socket.on('disconnect', function() {
+      delete online[socket.user.email];
     });
   };
 };

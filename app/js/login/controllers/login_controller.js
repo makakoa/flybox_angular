@@ -9,7 +9,7 @@ module.exports = function(app) {
 
       if ($cookies.jwt) {
         console.log('redirecting');
-        $location.path('/inbox');
+        $location.path('/n');
       }
 
       $scope.logIn = function() {
@@ -21,7 +21,7 @@ module.exports = function(app) {
         })
           .success(function(data) {
             $cookies.jwt = data.jwt;
-            $location.path('/inbox');
+            $location.path('/n');
           })
           .error(function(data) {
             console.log('err', data);

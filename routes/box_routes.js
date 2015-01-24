@@ -2,7 +2,7 @@
 
 var Box = require('../models/box');
 var Post = require('../models/post');
-var key = require('../lib/key_gen');
+var genKey = require('../lib/key_gen');
 var mailFactory = require('../lib/mailFactory');
 var fetcher = require('../lib/fetcher');
 var format = require('../lib/format');
@@ -20,6 +20,28 @@ module.exports = function(app, jwtAuth, logging) {
       var response = {
         box: data,
         user: {name: user}
+      };
+      res.json(response);
+    });
+  });
+
+  // get guest box
+  app.get('/api/box/guest/:boxKey/:guestKey', function(req, res) {
+    if (logging) console.log('fly[]: Getting box ' + req.params.boxKey + ' for guest: ' + req.params.guestKey);
+    Box.findOne({boxKey: req.params.boxKey,
+              members: {$elemMatch: {guestKey: req.params.guestKey}}})
+    .populate('thread')
+    .exec(function(err, data) {
+      if (err) handle(err, res);
+      var guest = {};
+      data.members.forEach(function(member) {
+        if (member.guestKey == req.params.guestKey) {
+          guest = member;
+        }
+      });
+      var response = {
+        box: data,
+        user: {name: guest.email}
       };
       res.json(response);
     });
@@ -116,9 +138,10 @@ module.exports = function(app, jwtAuth, logging) {
     var box = new Box();
     try {
       box.subject = req.body.subject;
-      box.boxKey = key();
+      box.boxKey = genKey();
       box.members = [{email: user, name: req.user.displayName, unread: 0, isUser: true}];
       req.body.members.forEach(function(member) {
+        if (!member.isUser && member.link) member.guestKey = genKey();
         member.unread = 1;
         box.members.push(member); //should add format check or error catch
       });
@@ -187,7 +210,7 @@ module.exports = function(app, jwtAuth, logging) {
             var newBox = new Box();
             try {
               newBox.subject = mail.subject;
-              newBox.boxKey = key();
+              newBox.boxKey = genKey();
               newBox.members = [{email: mail.from[0].address, unread: 0}, {email: mail.to[0].address, unread: 0}];
               newBox.thread = [post._id];
               newBox.date = mail.date;

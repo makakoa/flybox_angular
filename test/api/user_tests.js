@@ -3,11 +3,16 @@
 process.env.MONGO_URL = 'mongodb://localhost/flybox_test';
 var chai = require('chai');
 var chaihttp = require('chai-http');
+var mongoose = require('mongoose');
 chai.use(chaihttp);
 
 require('../../server');
 
 var expect = chai.expect;
+
+mongoose.connection.collections.users.drop();
+mongoose.connection.collections.boxes.drop();
+mongoose.connection.collections.posts.drop();
 
 describe('User Creation and Authentication', function() {
   var jwtToken;

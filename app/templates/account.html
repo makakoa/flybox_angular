@@ -1,26 +1,20 @@
-<header>
-  <a href='#/inbox'><h1>Flybox</h1></a>
-  <p data-ng-model='username'>Hello {{username}}</p>
-  <button data-ng-click='logOut()'>Log out</button>
-</header>
-
-<main data-ng-init='index()'>
-  <div data-ng-model='user'>
+<main data-ng-init='indexUser()'>
+  <div data-ng-model='info'>
     <h2>Flybox Account</h2>
 
     <h3>Login</h3>
-    <p>Username: {{user.email}}</p>
+    <p>Username: {{info.email}}</p>
     <p>Password: ********</p>
 
     <h3>Display Name</h3>
-    <p data-ng-show='!editname'>{{user.displayName}}</p>
-    <input data-ng-show='editname' data-ng-model='user.newName'>
+    <p data-ng-show='!editname'>{{info.displayName}}</p>
+    <input data-ng-show='editname' data-ng-model='info.newName'>
     <button data-ng-show='editname' data-ng-click='setName(); editname=false'>Save</button>
-    <button data-ng-click='editname=!editname; user.newName=user.displayName'>{{editname ? 'Cancel':'Change'}}</button>
+    <button data-ng-click='editname=!editname; info.newName=info.displayName'>{{editname ? 'Cancel':'Change'}}</button>
 
     <h3>Email Accounts</h3>
-    <div data-ng-repeat='account in user.accounts'>
-      <h4>{{account.email}}</h4><h3 data-ng-show='(user.accounts.indexOf(account) === user.current)'>CURRENT</h3>
+    <div data-ng-repeat='account in info.accounts'>
+      <h4>{{account.email}}</h4><h3 data-ng-show='(info.accounts.indexOf(account) === info.current)'>CURRENT</h3>
       <button data-ng-click='import(account)'>Sync</button>
       <h6>Username:</h6>
       <p data-ng-show='!account.editing'>{{account.email}}</p>
@@ -53,12 +47,12 @@
         <p data-ng-show='!account.editing'>{{account.imap.tls}}</p>
         <input data-ng-show='account.editing' data-ng-model='new.account.imap.tls' type='checkbox'>
       </div>
-      <button data-ng-show='account.editing' data-ng-click='edit(new.account)'>Save</button>
+      <button data-ng-show='account.editing' data-ng-click='editAccount(new.account)'>Save</button>
       <button data-ng-click='account.editing=!account.editing; new.account=account'>{{account.editing ? 'Cancel':'Edit'}}</button>
-      <button data-ng-click='delete(account)'>Delete</button>
+      <button data-ng-click='deleteAccount(account)'>Delete</button>
     </div>
 
-    <p data-ng-show='!adding'>{{user.accounts ? 'Expand your Flybox, add another account':'You have no email accounts set up'}}</p>
+    <p data-ng-show='!adding'>{{info.accounts ? 'Expand your Flybox, add another account':'You have no email accounts set up'}}</p>
     <div data-ng-show='adding'>
       <h4>Please enter your login information</h4>
       <h6>Username:</h6>
@@ -96,7 +90,7 @@
       <br>
     </div>
 
-    <button data-ng-show='adding' data-ng-click='add()'>Save</button>
+    <button data-ng-show='adding' data-ng-click='addAccount()'>Save</button>
     <button data-ng-click='adding=!adding'>{{adding ? 'Cancel':'Add'}}</button>
   </div>
 </main>

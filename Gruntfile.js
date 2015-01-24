@@ -3,7 +3,6 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-jscs');
-  grunt.loadNpmTasks('grunt-mongo-drop');
   grunt.loadNpmTasks('grunt-simple-mocha');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
@@ -26,12 +25,6 @@ module.exports = function(grunt) {
         config: '.jscsrc'
       },
       src: ['Gruntfile.js', 'server.js', 'routes/**.js', 'models/**.js', 'test/**tests.js', 'app/**/*.js', 'lib/**.js']
-    },
-
-    mongo_drop: {
-      test: {
-        uri: 'mongodb://localhost/flybox_test'
-      }
     },
 
     simplemocha: {
@@ -124,8 +117,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['test']);
-  grunt.registerTask('test', ['jshint', 'jscs', 'mongo_drop', 'simplemocha']);
-  grunt.registerTask('test:client', ['jshint', 'jscs', 'mongo_drop', 'build:test', 'karma']);
+  grunt.registerTask('test', ['jshint', 'jscs', 'simplemocha']);
+  grunt.registerTask('test:client', ['jshint', 'jscs', 'build:test', 'karma']);
   grunt.registerTask('build:test', ['jshint', 'jscs', 'clean:dev', 'copy:dev', 'sass', 'browserify:test']);
   grunt.registerTask('build', ['jshint', 'jscs', 'clean:dev', 'copy:dev', 'sass', 'browserify:dev']);
   grunt.registerTask('serve', ['build:dev', 'express:dev', 'watch']);

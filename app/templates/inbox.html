@@ -1,19 +1,6 @@
-<header>
-  <h1>Flybox</h1>
-  <a href='#/compose'>Compose</a>
-  <a href='#/landing'>About flybox</a>
-  <p>Hello {{user.name}}</p>
-  <a href='#/account'>Account</a>
-  <button data-ng-click='logOut()'>Log out</button>
-  <p>As: {{current}}</p>
-  <ul><p>Switch to</p>
-    <button data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'>{{account.name}}</button>
-  </ul>
-</header>
-
-<main>
+<main data-ng-init='getInbox()'>
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
-    <div class='well' data-ng-click='goToBox(box.boxKey)'>
+    <div class='well' data-ng-click='selectBox(box.boxKey)'>
       <p>{{box.subject}}</p>
       <p>{{box.email}}</p>
       <p>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
