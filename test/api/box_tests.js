@@ -25,6 +25,17 @@ describe('Box routes', function() {
     });
   });
 
+  it('should be able to check for an email', function(done) {
+    chai.request('http://localhost:3000')
+    .post('/api/user/check')
+    .send({email: 'flybox4real@gmail.com'})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body.isUser).to.eql(true);
+      done();
+    });
+  });
+
   it('should make a box', function(done) {
     chai.request(appUrl)
     .post('/api/boxes')
@@ -33,7 +44,7 @@ describe('Box routes', function() {
             content: 'Hey, you there!'
            },
            subject: 'Test greetings',
-           members: [{email: 'someguy', isUser: false},
+           members: [{email: 'someguy', isUser: false, link: true},
                      {email: 'andanother', isUser: false}],
            sendEmail: true
           })
@@ -50,7 +61,7 @@ describe('Box routes', function() {
     .set({jwt: jwtToken})
     .end(function(err, res) {
       expect(err).to.eql(null);
-      expect(Array.isArray(res.body.inbox)).to.be.true;
+      expect(Array.isArray(res.body.inbox)).to.eql(true);
       boxKey = res.body.inbox[0].boxKey;
       done();
     });

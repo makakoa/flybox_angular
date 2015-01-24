@@ -18,11 +18,14 @@
   </div>
 
   <div ng-switch-default>
+
     <div style='float:left'>
-      <inbox-section></inbox-section>
+      <inbox-section data-ng-click='mode=""'></inbox-section>
     </div>
+
     <div style='float:right'>
       <data-ng-switch on='mode'>
+
         <div ng-switch-default>
           <single-box></single-box>
         </div>
@@ -30,7 +33,9 @@
         <div ng-switch-when='compose'>
           <compose-box></compose-box>
         </div>
+
       </data-ng-switch>
     </div>
+
   </div>
 </data-ng-switch>

@@ -3,11 +3,11 @@
 require('../../app/js/client');
 require('angular-mocks');
 
-describe('Box Controller', function() {
+describe('Guest Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
   var $scope;
-  var $cookies = {jwt: 'hash'};
+  var $routeParams = {boxKey: 123, guestKey: 456};
 
   beforeEach(angular.mock.module('flyboxApp'));
 
@@ -17,14 +17,14 @@ describe('Box Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
-    expect(typeof boxController).toBe('object');
+    var guestController = $controllerConstructor('GuestCtrl', {$scope: $scope, $routeParams: $routeParams});
+    expect(typeof guestController).toBe('object');
   });
 
-  describe('box functions', function() {
+  describe('Guest box functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
+      $controllerConstructor('GuestCtrl', {$scope: $scope, $routeParams: $routeParams});
     }));
 
     afterEach(function() {
@@ -32,20 +32,22 @@ describe('Box Controller', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get a box from the server', function() {
-      $httpBackend.expectGET('/api/boxes/123').respond(200, {box: {
-        subject: 'testSubject',
-        date: '1/2/13',
-        members: [],
-        thread: []
-      }});
+    it('should get a box', function() {
+      $httpBackend.expectGET('/api/box/guest/123/456').respond(200, {
+        user: {name: 'flybox'},
+        box: {
+          boxKey: 123,
+          members: [],
+          thread: []
+        }
+      });
 
-      $scope.selectedBox = '123';
-      $scope.getBox;
+      $scope.loadBox();
 
       $httpBackend.flush();
 
       expect(typeof $scope.box).toBe('object');
+      expect(typeof $scope.user).toBe('object');
       expect(Array.isArray($scope.posts)).toBeTruthy();
     });
   });

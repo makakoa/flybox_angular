@@ -1,4 +1,4 @@
-<main>
+<main data-ng-show='box'>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
   <p>Members:</p>
@@ -25,5 +25,4 @@
   <button data-ng-click='reply()' id='send'>Post</button>
   <p>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
   <input type='checkbox' data-ng-model='sendEmail'>
-
 </main>

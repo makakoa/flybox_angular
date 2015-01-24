@@ -12,7 +12,7 @@ var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford
 
 require('./services/socket_service')(app);
 require('./login/login')(app);
-require('./guest/guest');
+require('./guest/guest')(app);
 require('./spa/spa')(app);
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -23,7 +23,7 @@ app.config(['$routeProvider', function($routeProvider) {
     })
     .when('/n/', {
       templateUrl: 'templates/spa.html',
-    controller: 'SpaCtrl'
+      controller: 'SpaCtrl'
     })
     .when('/landing/', {
       templateUrl: 'templates/landing.html'

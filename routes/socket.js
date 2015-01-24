@@ -18,6 +18,11 @@ module.exports = function(secret, logging) {
       });
     });
 
+    socket.on('init:guest', function(data) {
+      console.log(data.token);
+      console.log(data.boxKey);
+    });
+
     socket.on('account:switch', function(data) {
       auth(data.token, function(user) {
         if (!user) socket.disconnect();
@@ -115,7 +120,7 @@ module.exports = function(secret, logging) {
     });
 
     socket.on('disconnect', function() {
-      delete online[socket.user.email];
+      if (socket.user) delete online[socket.user.email];
     });
   };
 };

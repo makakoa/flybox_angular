@@ -13,7 +13,7 @@ module.exports = function(app) {
         })
           .success(function(data) {
             $scope.boxes = data.inbox;
-            $scope.selectedBox = $scope.boxes[$scope.boxes.length - 1].boxKey;
+            $scope.selectBox($scope.boxes[$scope.boxes.length - 1].boxKey);
           })
           .error(function(err) {
             console.log(err);
