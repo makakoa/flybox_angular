@@ -14,15 +14,6 @@ module.exports = function(app) {
           .success(function(data) {
             $scope.boxes = data.inbox;
             $scope.selectedBox = $scope.boxes[$scope.boxes.length - 1].boxKey;
-/*            $http({
-              method: 'POST',
-              url: '/api/emails/import/',
-              headers: {jwt: $cookies.jwt},
-              data: {index: $scope.user.current}
-            })
-            .success(function() {
-              console.log('emails imported');
-            });*/
           })
           .error(function(err) {
             console.log(err);

@@ -60,7 +60,7 @@ module.exports = function(app) {
       });
 
       socket.on('edit:post', function() {
-        $scope.index();
+        $scope.getBox();
       });
 
       $scope.reply = function() {

@@ -14,7 +14,7 @@ module.exports = function(secret, logging) {
       auth(data.token, function(user) {
         if (!user) socket.disconnect();
         socket.user = user;
-        online[user.email] = user.accounts[user.current].email;
+        if (user.accounts.length > 0) online[user.email] = user.accounts[user.current].email;
       });
     });
 

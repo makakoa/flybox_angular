@@ -12,10 +12,7 @@ var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford
 
 require('./services/socket_service')(app);
 require('./login/login')(app);
-require('./inbox/inbox')(app);
-require('./account/account')(app);
-require('./compose/compose')(app);
-require('./box/box')(app);
+require('./guest/guest');
 require('./spa/spa')(app);
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -31,21 +28,9 @@ app.config(['$routeProvider', function($routeProvider) {
     .when('/landing/', {
       templateUrl: 'templates/landing.html'
     })
-    .when('/inbox/', {
-      templateUrl: 'templates/inbox.html',
-      controller: 'InboxCtrl'
-    })
-    .when('/account/', {
-      templateUrl: 'templates/account.html',
-      controller: 'AccountCtrl'
-    })
-    .when('/compose/', {
-      templateUrl: 'templates/compose.html',
-      controller: 'ComposeCtrl'
-    })
-    .when('/box/:boxId/', {
-      templateUrl: 'templates/box.html',
-      controller: 'BoxCtrl'
+    .when('/guest/:boxKey/:guestKey', {
+      templateUrl: 'templates/guest.html',
+      controller: 'GuestCtrl'
     })
     .when('/spa/', {
       templateUrl: 'templates/inbox2.html',
