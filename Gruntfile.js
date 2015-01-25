@@ -116,10 +116,11 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['test']);
-  grunt.registerTask('test', ['jshint', 'jscs', 'simplemocha']);
+  grunt.registerTask('default', ['test:all']);
+  grunt.registerTask('test:api', ['jshint', 'jscs', 'simplemocha']);
   grunt.registerTask('test:client', ['jshint', 'jscs', 'build:test', 'karma']);
-  grunt.registerTask('build:test', ['jshint', 'jscs', 'clean:dev', 'copy:dev', 'sass', 'browserify:test']);
+  grunt.registerTask('test:all', ['jshint', 'jscs', 'simplemocha', 'build:test', 'karma']);
+  grunt.registerTask('build:test', ['clean:dev', 'copy:dev', 'sass', 'browserify:test']);
   grunt.registerTask('build', ['jshint', 'jscs', 'clean:dev', 'copy:dev', 'sass', 'browserify:dev']);
   grunt.registerTask('serve', ['build:dev', 'express:dev', 'watch']);
 };

@@ -3,11 +3,17 @@
 require('../../app/js/client');
 require('angular-mocks');
 
-describe('Box Controller', function() {
+describe('Compose Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
   var $scope;
   var $cookies = {jwt: 'hash'};
+  var testBox = {
+        subject: 'testSubject',
+        date: '1/2/13',
+        members: [],
+        thread: []
+  };
 
   beforeEach(angular.mock.module('flyboxApp'));
 
@@ -17,14 +23,14 @@ describe('Box Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
-    expect(typeof boxController).toBe('object');
+    var composeController = $controllerConstructor('ComposeCtrl', {$scope: $scope, $cookies: $cookies});
+    expect(typeof composeController).toBe('object');
   });
 
-  describe('box functions', function() {
+  describe('compose functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
+      $controllerConstructor('ComposeCtrl', {$scope: $scope, $cookies: $cookies});
     }));
 
     afterEach(function() {
@@ -32,21 +38,13 @@ describe('Box Controller', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get a box from the server', function() {
-      $httpBackend.expectGET('/api/boxes/123').respond(200, {box: {
-        subject: 'testSubject',
-        date: '1/2/13',
-        members: [],
-        thread: []
-      }});
+    it('should send a box', function() {
+      $httpBackend.expectPOST('/api/boxes').respond(200);
 
-      $scope.selectedBox = '123';
-      $scope.getBox();
+      $scope.newBox = testBox;
+      $scope.send();
 
       $httpBackend.flush();
-
-      expect(typeof $scope.box).toBe('object');
-      expect(Array.isArray($scope.posts)).toBeTruthy();
     });
   });
 });

@@ -3,7 +3,7 @@
 require('../../app/js/client');
 require('angular-mocks');
 
-describe('Box Controller', function() {
+describe('Account Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
   var $scope;
@@ -17,14 +17,14 @@ describe('Box Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
-    expect(typeof boxController).toBe('object');
+    var accountController = $controllerConstructor('AccountCtrl', {$scope: $scope, $cookies: $cookies});
+    expect(typeof accountController).toBe('object');
   });
 
-  describe('box functions', function() {
+  describe('account functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
+      $controllerConstructor('AccountCtrl', {$scope: $scope, $cookies: $cookies});
     }));
 
     afterEach(function() {
@@ -32,21 +32,19 @@ describe('Box Controller', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get a box from the server', function() {
-      $httpBackend.expectGET('/api/boxes/123').respond(200, {box: {
-        subject: 'testSubject',
-        date: '1/2/13',
-        members: [],
-        thread: []
-      }});
+    it('should get account information', function() {
+      $httpBackend.expectGET('/api/account/').respond(200, {
+        email: 'flybox',
+        password: 'awelrf',
+        accounts: []
+      });
 
-      $scope.selectedBox = '123';
-      $scope.getBox();
+      $scope.indexUser();
 
       $httpBackend.flush();
 
-      expect(typeof $scope.box).toBe('object');
-      expect(Array.isArray($scope.posts)).toBeTruthy();
+      expect(typeof $scope.info).toBe('object');
+      expect($scope.username).toBe('flybox');
     });
   });
 });

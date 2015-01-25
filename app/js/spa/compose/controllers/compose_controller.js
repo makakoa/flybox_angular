@@ -7,7 +7,6 @@ module.exports = function(app) {
       $scope.newBox.members = [];
 
       $scope.send = function() {
-        console.log($scope.newBox);
         $http({
           method: 'POST',
           url: '/api/boxes',
