@@ -3,10 +3,8 @@
 ##### "Next Generation Emailing"
 
 ##To Do: (priority: task)  
-####1 : Get guest box page working  
 ####1 : Attachment handling (do after WYSIWYG)  
 ####1 : Test socket routes  
-####1 : Update front end tests  
 ####1 : Clean up Angular (organize into services)
 ####1 : UI work  
 ####1 : Stylable (WYSIWYG) text editor for composing/posting  
