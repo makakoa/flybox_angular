@@ -113,7 +113,6 @@ module.exports = function(grunt) {
         browsers: ['PhantomJS']
       }
     }
-
   });
 
   grunt.registerTask('default', ['test:all']);
