@@ -56,6 +56,7 @@ module.exports = function(grunt) {
           'build/CSS/login.css': 'app/sass/login.sass',
           'build/CSS/spa.css': 'app/sass/spa.sass',
           'build/CSS/box.css': 'app/sass/box.sass',
+          'build/CSS/account.css': 'app/sass/account.sass',
           'build/CSS/inbox.css': 'app/sass/inbox.sass'
         }
       }

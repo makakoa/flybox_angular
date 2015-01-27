@@ -8,9 +8,9 @@
   <input data-ng-model='newMember.email'/>
   <button data-ng-click='addMember(newMember)'>Add Member</button>
   <button data-ng-click='leaveBox()'>Leave Box</button>
-  <section class='well' ng-repeat='post in posts'>
-    <p class='email'>{{post.by}}</p>
-    <p class='date'>{{post.date | date}}</p>
+  <section class='post' ng-repeat='post in posts'>
+    <h4 class='email'>{{post.by}}</h4>
+    <h4 class='date'>{{post.date | date}}</h4>
     <div data-ng-show='post.html' data-ng-bind-html='post.html'></div>
     <p data-ng-show='!post.editing && !post.html'>{{post.content}}</p>
 
