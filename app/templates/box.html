@@ -2,15 +2,15 @@
 
 <main id='single-box' data-ng-show='box'>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
-  <p data-ng-model='box'>{{box.date | date}}</p>
+  <p data-ng-model='box'>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
   <p>Members:</p>
-  <a data-ng-repeat='member in box.members'>{{member.email+':'+member.unread}}</a>
+  <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+member.unread}} </a>
   <input data-ng-model='newMember.email'/>
   <button data-ng-click='addMember(newMember)'>Add Member</button>
   <button data-ng-click='leaveBox()'>Leave Box</button>
-  <section class='well' ng-repeat='post in posts'>
-    <p class='email'>{{post.by}}</p>
-    <p class='date'>{{post.date | date}}</p>
+  <section class='post' ng-repeat='post in posts'>
+    <h4 class='email'>{{post.by}}</h4>
+    <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
     <div data-ng-show='post.html' data-ng-bind-html='post.html'></div>
     <p data-ng-show='!post.editing && !post.html'>{{post.content}}</p>
 
@@ -25,6 +25,6 @@
   </section>
   <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
   <button data-ng-click='reply()' id='send'>Post</button>
-  <p>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
-  <input type='checkbox' data-ng-model='sendEmail'>
+  <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
+  <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
 </main>
