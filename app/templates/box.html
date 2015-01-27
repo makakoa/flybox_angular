@@ -17,12 +17,11 @@
     <div data-ng-show='post.html' data-ng-bind-html='post.html'></div>
     <p data-ng-show='!post.editing && !post.html'>{{post.content}}</p>
 
-    <div data-ng-show='username===post.by'>
+    <div data-ng-show='current===post.by'>
       <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
       <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
       <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
         {{post.editing ? 'Cancel':'Edit'}}</button>
-
       <button data-ng-click='delete(post)'>Delete</button>
     </div>
   </section>
