@@ -26,7 +26,10 @@
       <button data-ng-click='delete(post)'>Delete</button>
     </div>
   </section>
+  <div text-angular placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
+<!--
   <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
+-->
   <button data-ng-click='reply()' id='send'>Post</button>
   <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
   <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>

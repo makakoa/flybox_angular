@@ -4,6 +4,7 @@ module.exports = function(app) {
   app.controller('BoxCtrl', ['$rootScope', '$http', '$base64', '$cookies', '$location', 'socket',
     function($rootScope, $http, $base64, $cookies, $location, socket) {
       var $scope = $rootScope;
+      $scope.newPost = {};
 
       $scope.getBox = function() {
         console.log('GET box: ' + $scope.selectedBox);
@@ -64,9 +65,10 @@ module.exports = function(app) {
       });
 
       $scope.reply = function() {
-        if ($scope.newPost.text === '') return;
+        if ($scope.newPost.html === '') return;
         socket.emit('send:post', {
           content: $scope.newPost.content,
+          html: $scope.newPost.html,
           by: $scope.username,
           box: $scope.selectedBox,
           sendEmail: $scope.sendEmail
@@ -76,6 +78,7 @@ module.exports = function(app) {
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
+        $scope.newPost.html = '';
         $scope.box.members.forEach(function(member) {
           member.unread++;
           if (member.email === $scope.username) member.unread = 0;

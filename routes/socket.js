@@ -65,6 +65,7 @@ module.exports = function(secret, logging) {
       var post = new Post();
       post.by = socket.user.accounts[socket.user.current].email;
       post.content = data.content;
+      post.html = data.html;
       post.date = Date.now();
       post.save(function(err) {
         if (err) return console.log(err);
