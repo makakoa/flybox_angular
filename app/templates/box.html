@@ -13,6 +13,7 @@
   <section class='post' ng-repeat='post in posts'>
     <h4 class='email'>{{post.by}}</h4>
     <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
+    <br>
     <div data-ng-show='post.html' data-ng-bind-html='post.html'></div>
     <p data-ng-show='!post.editing && !post.html'>{{post.content}}</p>
 
