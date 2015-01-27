@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="CSS/spa.css">
 <header data-ng-init='init()'>
   <h1>Flybox</h1>
   <a data-ng-click='main=""'><button>Inbox</button></a>
@@ -10,32 +11,33 @@
     <button data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'>{{account.name}}</button>
   </ul>
 </header>
+<article>
+  <data-ng-switch id='main' on='main'>
 
-<data-ng-switch on='main'>
-
-  <div ng-switch-when='account'>
-    <account-page></account-page>
-  </div>
-
-  <div ng-switch-default>
-
-    <div style='float:left'>
-      <inbox-section data-ng-click='mode=""'></inbox-section>
+    <div id='account' ng-switch-when='account'>
+      <account-page></account-page>
     </div>
 
-    <div style='float:right'>
-      <data-ng-switch on='mode'>
+    <div id='multi' ng-switch-default>
 
-        <div ng-switch-default>
-          <single-box></single-box>
-        </div>
+      <div id='inbox-comp'>
+        <inbox-section data-ng-click='mode=""'></inbox-section>
+      </div>
 
-        <div ng-switch-when='compose'>
-          <compose-box></compose-box>
-        </div>
+      <div id='side'>
+        <data-ng-switch on='mode'>
 
-      </data-ng-switch>
+          <div id='box-comp' ng-switch-default>
+            <single-box></single-box>
+          </div>
+
+          <div id='compose' ng-switch-when='compose'>
+            <compose-box></compose-box>
+          </div>
+
+        </data-ng-switch>
+      </div>
+
     </div>
-
-  </div>
-</data-ng-switch>
+  </data-ng-switch>
+</article>
