@@ -1,10 +1,10 @@
-<main data-ng-init='getInbox()'>
+<link rel="stylesheet" type="text/css" href="CSS/inbox.css">
+<main id='inbox' data-ng-init='getInbox()'>
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
-    <div class='well' data-ng-click='selectBox(box.boxKey)'>
-      <p>{{box.subject}}</p>
+    <div data-ng-click='selectBox(box.boxKey)'>
+      <h3>{{box.subject}}</h3>
       <p>{{box.email}}</p>
       <p>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
-      <p>Unread: {{box.unread}}</p>
     </div>
   </section>
 </main>
