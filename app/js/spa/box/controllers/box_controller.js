@@ -78,7 +78,6 @@ module.exports = function(app) {
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
-        $scope.newPost.html = '';
         $scope.box.members.forEach(function(member) {
           member.unread++;
           if (member.email === $scope.username) member.unread = 0;
@@ -102,6 +101,7 @@ module.exports = function(app) {
         });
         post.by = 'deleted';
         post.content = '';
+        post.html = '';
       };
 
       $scope.checkIfEnter = function(event) {

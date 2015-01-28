@@ -1,16 +1,22 @@
 <link rel="stylesheet" type="text/css" href="CSS/compose.css">
 
 <main id='compose'>
+
   <h2>Compose</h2>
+
   <h3>To:</h3>
   <input type='text' data-ng-model='recipient.email' data-ng-blur='checkIfSpace(32)' data-ng-keyup='checkIfSpace($event.keyCode)'/>
   <p id='recipient' data-ng-repeat='member in newBox.members'>{{member.email + (member.isUser ? ' "' + member.name + '" :)':' :(')}}</p>
+
   <h3>Subject:</h3>
   <input type='text' data-ng-model='newBox.subject' />
+
   <h3>Body:</h3>
   <div text-angular data-ng-model='newBox.post.html'></div>
-<!--  <textarea type='text' data-ng-model='newBox.post.text'></textarea>-->
+  <!--<textarea type='text' data-ng-model='newBox.post.text'></textarea>-->
+
   <button data-ng-click='send()'>Send</button>
   <p id='sendemail'>Send as email? {{newBox.sendEmail ? 'Yes':'No'}}</p>
   <input type='checkbox' data-ng-model='newBox.sendEmail'>
+
 </main>

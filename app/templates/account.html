@@ -2,17 +2,18 @@
 
 <main data-ng-init='indexUser()'>
   <div data-ng-model='info'>
-    <h2>Flybox Account</h2>
+    <div id='flybox-account'>
+      <h2>Flybox Account</h2>
+      <h3>Login</h3>
+      <p>Username: {{info.email}}</p>
+      <p>Password: ********</p>
 
-    <h3>Login</h3>
-    <p>Username: {{info.email}}</p>
-    <p>Password: ********</p>
-
-    <h3>Display Name</h3>
-    <p data-ng-show='!editname'>{{info.displayName}}</p>
-    <input data-ng-show='editname' data-ng-model='info.newName'>
-    <button data-ng-show='editname' data-ng-click='setName(); editname=false'>Save</button>
-    <button data-ng-click='editname=!editname; info.newName=info.displayName'>{{editname ? 'Cancel':'Change'}}</button>
+      <h3>Display Name</h3>
+      <p data-ng-show='!editname'>{{info.displayName}}</p>
+      <input data-ng-show='editname' data-ng-model='info.newName'>
+      <button data-ng-show='editname' data-ng-click='setName(); editname=false'>Save</button>
+      <button data-ng-click='editname=!editname; info.newName=info.displayName'>{{editname ? 'Cancel':'Change'}}</button>
+    </div>
 
     <h3>Email Accounts</h3>
     <div data-ng-repeat='account in info.accounts'>

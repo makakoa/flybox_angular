@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="CSS/spa.css">
+
 <header data-ng-init='init()'>
   <h1>Flybox</h1>
   <a data-ng-click='main=""'><button>Inbox</button></a>
@@ -11,14 +12,15 @@
     <button data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'>{{account.name}}</button>
   </ul>
 </header>
+
 <article>
   <data-ng-switch id='main' on='main'>
 
-    <div id='account' ng-switch-when='account'>
+    <div id='account' data-ng-switch-when='account'>
       <account-page></account-page>
     </div>
 
-    <div id='multi' ng-switch-default>
+    <div id='multi' data-ng-switch-default>
 
       <div id='inbox-comp'>
         <inbox-section data-ng-click='mode=""'></inbox-section>
@@ -27,11 +29,11 @@
       <div id='side'>
         <data-ng-switch on='mode'>
 
-          <div id='box-comp' ng-switch-default>
+          <div id='box-comp' data-ng-switch-default>
             <single-box></single-box>
           </div>
 
-          <div id='compose' ng-switch-when='compose'>
+          <div id='compose' data-ng-switch-when='compose'>
             <compose-box></compose-box>
           </div>
 
