@@ -41,7 +41,8 @@ describe('Box routes', function() {
     .post('/api/boxes')
     .set({jwt: jwtToken})
     .send({post: {
-            content: 'Hey, you there!'
+            text: 'here is some text!',
+            html: '<h2>here is some html!</h2>'
            },
            subject: 'Test greetings',
            members: [{email: 'someguy', isUser: false, link: true},

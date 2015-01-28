@@ -65,6 +65,7 @@ module.exports = function(secret, logging) {
       var post = new Post();
       post.by = socket.user.accounts[socket.user.current].email;
       post.content = data.content;
+      post.html = data.html;
       post.date = Date.now();
       post.save(function(err) {
         if (err) return console.log(err);
@@ -104,18 +105,16 @@ module.exports = function(secret, logging) {
         if (data.delete) {
           post.by = 'deleted';
           data.content = '';
+          data.html = undefined;
         }
         post.content = data.content;
+        post.html = data.html;
         post.save(function(err) {
           if (err) return console.log(err);
           console.log('fly[]: Post updated');
         });
 
-        socket.broadcast.to(socket.room).emit('edit:post', {
-          _id: post._id,
-          by: post.by,
-          content: post.content
-        });
+        socket.broadcast.to(socket.room).emit('edit:post', post);
       });
     });
 

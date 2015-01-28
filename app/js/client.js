@@ -6,9 +6,12 @@ require('angular-cookies');
 require('angular-base64');
 window.io = require('socket.io-client/socket.io');
 require('angular-socket-io');
-require('angular-sanitize');
+//require('angular-sanitize');
+require('textAngular/dist/textAngular-rangy.min');
+require('textAngular/dist/textAngular-sanitize.min');
+require('textAngular/dist/textAngular.min');
 
-var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford.socket-io', 'ngSanitize']);
+var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford.socket-io', 'textAngular']);
 
 require('./services/socket_service')(app);
 require('./login/login')(app);

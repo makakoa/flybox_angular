@@ -1,30 +1,51 @@
 <link rel="stylesheet" type="text/css" href="CSS/box.css">
 
 <main id='single-box' data-ng-show='box'>
-  <h1 data-ng-model='box'>{{box.subject}}</h1>
-  <p data-ng-model='box'>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
-  <p>Members:</p>
-  <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+member.unread}} </a>
-  <input data-ng-model='newMember.email'/>
-  <button data-ng-click='addMember(newMember)'>Add Member</button>
-  <button data-ng-click='leaveBox()'>Leave Box</button>
-  <section class='post' ng-repeat='post in posts'>
-    <h4 class='email'>{{post.by}}</h4>
-    <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
-    <div data-ng-show='post.html' data-ng-bind-html='post.html'></div>
-    <p data-ng-show='!post.editing && !post.html'>{{post.content}}</p>
 
-    <div data-ng-show='username===post.by'>
+  <div id='box-headers'>
+    <h1 data-ng-model='box'>{{box.subject}}</h1>
+    <p id='date' data-ng-model='box'>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
+  </div>
+
+  <div id='members'>
+    <p>Members:</p>
+    <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+member.unread}} </a>
+    <input data-ng-model='newMember.email'/>
+    <button data-ng-click='addMember(newMember)'>Add Member</button>
+    <button data-ng-click='leaveBox()'>Leave Box</button>
+  </div>
+
+  <div id='thread' ng-repeat='post in posts'>
+    <div id='post-header'>
+      <h4 class='email'>{{post.by}}</h4>
+      <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
+    </div>
+    <br>
+
+    <div id='post-html' data-ng-show='post.html'>
+      <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
+      <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
+    </div>
+
+    <div id='post-text' data-ng-show='!post.html'>
+      <p data-ng-show='!post.editing'>{{post.content}}</p>
       <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
+    </div>
+
+    <div id='post-options' data-ng-show='current===post.by'>
       <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
       <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
         {{post.editing ? 'Cancel':'Edit'}}</button>
-
       <button data-ng-click='delete(post)'>Delete</button>
     </div>
-  </section>
-  <textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
-  <button data-ng-click='reply()' id='send'>Post</button>
-  <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
-  <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
+  </div>
+  
+  <div id='reply'>
+    <div text-angular placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
+    <!--<textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>-->
+    <button data-ng-click='reply()' id='send'>Post</button>
+    <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
+    <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
+  </div>
+
 </main>

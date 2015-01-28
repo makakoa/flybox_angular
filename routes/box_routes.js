@@ -130,7 +130,8 @@ module.exports = function(app, jwtAuth, logging) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[]: Posting box for ' + req.user.email + ' as ' + user);
     var post = new Post();
-    post.content = req.body.post;
+    post.content = req.body.post.text;
+    post.html = req.body.post.html;
     post.by = user;
     post.save(function(err) {
       if (err) handle(err, res);
