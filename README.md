@@ -3,14 +3,12 @@
 ##### "Next Generation Emailing"
 
 ##To Do: (priority: task)  
-####1 : Attachment handling (do after WYSIWYG)  
+####1 : Attachment handling  
 ####1 : Test socket routes  
 ####1 : Clean up Angular (organize into services)
-####1 : UI work  
-####1 : Stylable (WYSIWYG) text editor for composing/posting  
 #####2 : Improve shell (add notifications, online/offline)  
-#####2 : Handling editing for html/text post editing  
-#####2 : Change flybox username/password  
+#####2 : Change flybox username/password   
+#####2 : Bug fixes and audit  
 #####2 : More implementation of display name  
 #####2 : Search capabilities  
 #####2 : Error catching (email import, others)  
@@ -32,6 +30,10 @@ Debt/bugs:
 - BUG: Account page cancel edit doesn't work
 - Box add member function needs user check + guest key
 - BUG: Importing lots of emails imports twice
+- No am/pm on time stamps
+- email thread not really being handled
+- edit and delete not working perfectly
+- html/text being saved
 
 API Routes
 -----------
