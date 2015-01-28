@@ -3,10 +3,8 @@
 ##### "Next Generation Emailing"
 
 ##To Do: (priority: task)  
-####1 : Get guest box page working  
 ####1 : Attachment handling (do after WYSIWYG)  
 ####1 : Test socket routes  
-####1 : Update front end tests  
 ####1 : Clean up Angular (organize into services)
 ####1 : UI work  
 ####1 : Stylable (WYSIWYG) text editor for composing/posting  
@@ -14,11 +12,8 @@
 #####2 : Handling editing for html/text post editing  
 #####2 : Change flybox username/password  
 #####2 : More implementation of display name  
-#####2 : Sending of link/text (needs guest box)  
-#####2 : Live notifications (needs wrapper)  
 #####2 : Search capabilities  
 #####2 : Error catching (email import, others)  
-#####2 : Online/offline socket handling  
 ######3 : Add members to existing box criteria on email import  
 ######3 : Add analytics page/capabilities  
 ######3 : Importing outbox/email acct search  
@@ -28,6 +23,15 @@
 _1: Needs to be done before v1_  
 _2: Should be done before v1_  
 _3: Can be done after v1_  
+
+Debt/bugs:  
+- Test all front end functions
+- BUG: going from box -> compose -> box -> compose doesn't work
+- Sent link needs a url prefix
+- Sent emails don't have threads to them
+- BUG: Account page cancel edit doesn't work
+- Box add member function needs user check + guest key
+- BUG: Importing lots of emails imports twice
 
 API Routes
 -----------
