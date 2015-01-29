@@ -50,6 +50,25 @@ describe('Socket Routes', function() {
   
   before(function(done) {
     chai.request(appUrl)
+    .post('/api/boxes')
+    .set({jwt: jwtToken})
+    .send({post: {
+            text: 'Socket test text!',
+            html: '<h2>Socket test html!</h2>'
+           },
+           subject: 'Socket Test',
+           members: [{email: 'flyboxdev2', isUser: true}],
+           sendEmail: false
+          })
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body.msg).to.eql('sent!');
+      done();
+    });
+  });
+
+  before(function(done) {
+    chai.request(appUrl)
     .get('/api/boxes')
     .set({jwt: jwtToken})
     .end(function(err, res) {
