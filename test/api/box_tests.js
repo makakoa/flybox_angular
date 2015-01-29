@@ -11,6 +11,7 @@ var appUrl = 'http://localhost:3000';
 
 describe('Box routes', function() {
   var jwtToken;
+  var jwtToken2;
   var boxKey;
 
   before(function(done) {
@@ -25,7 +26,19 @@ describe('Box routes', function() {
     });
   });
 
-  it('should be able to check for an email', function(done) {
+  before(function(done) {
+    chai.request('http://localhost:3000')
+    .post('/api/users')
+    .send({email: 'flyboxdev2', password: 'pass'})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body).to.have.property('jwt');
+      jwtToken2 = res.body.jwt;
+      done();
+    });
+  });
+
+  it('should be able to check for another user', function(done) {
     chai.request('http://localhost:3000')
     .post('/api/user/check')
     .send({email: 'flybox4real@gmail.com'})

@@ -42,13 +42,15 @@ module.exports = function(io, secret, logging) {
 
   return function(socket) {
     socket.on('log:in', function(data) {
+      if (logging) console.log('fly []: Connecting user...');
       auth(data.token, function(user) {
         if (!user) socket.disconnect();
+        if (logging) console.log('fly []: ' + user.email + ' connected');
         socket.user = user;
-        if (user.accounts.length) {
-          socket.as = user.accounts[user.current].email;
-          accounts[socket.as] = socket.id;
-        }
+        socket.as = user.email;
+        if (user.accounts.length) socket.as = user.accounts[user.current].email;
+        accounts[socket.as] = socket.id;
+        io.to(socket.id).emit('connected');
       });
     });
 
@@ -119,7 +121,7 @@ module.exports = function(io, secret, logging) {
       post.date = Date.now();
       post.save(function(err) {
         if (err) return console.log(err);
-        Box.findOne({boxKey: data.box}, function(err, box) {
+        Box.findOne({boxKey: socket.room}, function(err, box) {
           if (err) return console.log(err);
           var recipients = [];
           var notifications = [];

@@ -62,4 +62,15 @@ describe('User Creation and Authentication', function() {
       done();
     });
   });
+
+  it('should not log in with the wrong password', function(done) {
+    chai.request('http://localhost:3000')
+    .get('/api/users')
+    .auth('flyboxdev', 'wrongpass')
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res).to.have.status(500);
+      done();
+    });
+  });
 });
