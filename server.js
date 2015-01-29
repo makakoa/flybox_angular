@@ -29,11 +29,11 @@ var jwtAuth = require('./lib/jwt_auth')(app.get('jwtSecret'));
 require('./routes/user_routes')(app, passport, logging);
 require('./routes/box_routes')(app, jwtAuth, logging);
 require('./routes/account_routes')(app, jwtAuth, logging);
-var socket = require('./routes/socket')(app.get('jwtSecret'), logging);
 
 //socket server
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var socket = require('./routes/socket')(io, app.get('jwtSecret'), logging);
 io.sockets.on('connection', socket);
 
 server.listen(port, function() {

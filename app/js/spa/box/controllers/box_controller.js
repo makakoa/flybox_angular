@@ -1,10 +1,11 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('BoxCtrl', ['$rootScope', '$http', '$base64', '$cookies', '$location', 'socket',
-    function($rootScope, $http, $base64, $cookies, $location, socket) {
+  app.controller('BoxCtrl', ['$rootScope', '$http', '$base64', '$cookies', '$location', 'socket', 'textAngularManager',
+    function($rootScope, $http, $base64, $cookies, $location, socket, textAngularManager) {
       var $scope = $rootScope;
       $scope.newPost = {};
+      if (textAngularManager); //remove once being used
 
       $scope.getBox = function() {
         console.log('GET box: ' + $scope.selectedBox);
@@ -46,10 +47,19 @@ module.exports = function(app) {
         });
       };
 
+      socket.on('update:room', function(data) {
+        $scope.online = data.online;
+      });
+
       socket.on('read', function(data) {
         $scope.box.members.forEach(function(member) {
           if (member.email === data.by) member.unread = 0;
         });
+      });
+
+      socket.on('notification', function(data) {
+        window.alert(data.msg);
+        console.log(data);
       });
 
       socket.on('send:post', function(post) {
@@ -83,6 +93,7 @@ module.exports = function(app) {
           if (member.email === $scope.username) member.unread = 0;
         });
       };
+      //textAngularManager.refreshEditor('reply-editor'); //wont work with digest
 
       $scope.edit = function(post) {
         socket.emit('edit:post', {
