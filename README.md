@@ -4,7 +4,6 @@
 
 ##To Do: (priority: task)  
 ####1 : Attachment handling  
-####1 : Test socket routes  
 ####1 : Clean up Angular (organize into services)  
 #####2 : Change flybox username/password   
 #####2 : Bug fixes and audit  
