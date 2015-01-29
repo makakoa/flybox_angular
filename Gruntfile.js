@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     },
 
     simplemocha: {
-      src: ['test/api/user_tests.js', 'test/api/account_tests.js', 'test/api/box_tests.js', 'test/api/socket_tests.js']
+      src: ['test/api/user_tests.js', 'test/api/account_tests.js', 'test/api/box_tests.js', 'test/api/socket_tests.js', 'test/api/email_tests.js']
     },
 
     clean: {

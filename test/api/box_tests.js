@@ -81,19 +81,6 @@ describe('Box routes', function() {
     });
   });
 
-  it('should be able to import emails', function(done) {
-    this.timeout(10000);
-    chai.request(appUrl)
-    .post('/api/emails/import')
-    .set({jwt: jwtToken})
-    .send({index: 0})
-    .end(function(err, res) {
-      expect(err).to.eql(null);
-      expect(res.body.msg).to.eql('emails imported');
-      done();
-    });
-  });
-
   it('should get a single box', function(done) {
     chai.request(appUrl)
     .get('/api/boxes/' + boxKey)
