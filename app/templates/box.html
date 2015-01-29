@@ -9,7 +9,7 @@
 
   <div id='members'>
     <p>Members:</p>
-    <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+member.unread}} </a>
+    <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
     <input data-ng-model='newMember.email'/>
     <button data-ng-click='addMember(newMember)'>Add Member</button>
     <button data-ng-click='leaveBox()'>Leave Box</button>
@@ -41,7 +41,7 @@
   </div>
   
   <div id='reply'>
-    <div text-angular placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
+    <div text-angular placeholder='Reply' name='reply-editor' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
     <!--<textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>-->
     <button data-ng-click='reply()' id='send'>Post</button>
     <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
