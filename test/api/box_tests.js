@@ -11,6 +11,7 @@ var appUrl = 'http://localhost:3000';
 
 describe('Box routes', function() {
   var jwtToken;
+  var jwtToken2;
   var boxKey;
 
   before(function(done) {
@@ -25,7 +26,19 @@ describe('Box routes', function() {
     });
   });
 
-  it('should be able to check for an email', function(done) {
+  before(function(done) {
+    chai.request('http://localhost:3000')
+    .post('/api/users')
+    .send({email: 'flyboxdev2', password: 'pass'})
+    .end(function(err, res) {
+      expect(err).to.eql(null);
+      expect(res.body).to.have.property('jwt');
+      jwtToken2 = res.body.jwt;
+      done();
+    });
+  });
+
+  it('should be able to check for another user', function(done) {
     chai.request('http://localhost:3000')
     .post('/api/user/check')
     .send({email: 'flybox4real@gmail.com'})
@@ -64,19 +77,6 @@ describe('Box routes', function() {
       expect(err).to.eql(null);
       expect(Array.isArray(res.body.inbox)).to.eql(true);
       boxKey = res.body.inbox[0].boxKey;
-      done();
-    });
-  });
-
-  it('should be able to import emails', function(done) {
-    this.timeout(10000);
-    chai.request(appUrl)
-    .post('/api/emails/import')
-    .set({jwt: jwtToken})
-    .send({index: 0})
-    .end(function(err, res) {
-      expect(err).to.eql(null);
-      expect(res.body.msg).to.eql('emails imported');
       done();
     });
   });
