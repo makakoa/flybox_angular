@@ -2,36 +2,34 @@
 [![Build Status](https://travis-ci.org/makakoa/flybox_reloaded.svg?branch=m2_dev)](https://travis-ci.org/makakoa/flybox_reloaded)
 ##### "Next Generation Emailing"
 
-##To Do: (priority: task)  
-####1 : Attachment handling  
-####1 : Clean up Angular (organize into services)  
-#####2 : Change flybox username/password   
-#####2 : Bug fixes and audit  
-#####2 : More implementation of display name  
-#####2 : Search capabilities  
-#####2 : Error catching (email import, others)  
-######3 : Add members to existing box criteria on email import  
-######3 : Add analytics page/capabilities  
-######3 : Importing outbox/email acct search  
-######3 : Contacts features  
+To Do: 
+- Attachment handling
+- Fix textAngular clearing
+- Search flybox
+- Search email
+- Variable importing
+- Change flybox username/password
+- Delete account (front end)
+- Analytics
+- Contacts
 
-*Priority Scale*  
-_1: Needs to be done before v1_  
-_2: Should be done before v1_  
-_3: Can be done after v1_  
+Bugs: Things that won't work
+- going from box -> compose -> box -> compose doesn't work
+- sent link needs a url prefix
+- account page cancel edit doesn't work
+- importing lots of emails imports twice
 
-Debt/bugs:  
-- Test all front end functions
-- BUG: going from box -> compose -> box -> compose doesn't work
-- Sent link needs a url prefix
-- Sent emails don't have threads to them
-- BUG: Account page cancel edit doesn't work
-- Box add member function needs user check + guest key
-- BUG: Importing lots of emails imports twice
-- No am/pm on time stamps
+Debt: Things that might not work later
+- test all front end functions
 - email thread not really being handled
 - edit and delete not working perfectly
+
+Improvements: Things that could work better
+- sent emails don't have threads to them
+- box add member function needs user check + guest key
+- no am/pm on time stamps
 - html/text being saved
+- error catching
 
 API Routes
 -----------
