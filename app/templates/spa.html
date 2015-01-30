@@ -1,10 +1,10 @@
 <link rel="stylesheet" type="text/css" href="CSS/spa.css">
 
-<header data-ng-init='init()'>
-  <h1>Flybox</h1>
+<header data-ng-cloak data-ng-init='init()'>
+  <h1>fly[] in dev</h1>
   <a data-ng-click='main=""'><button>Inbox</button></a>
   <a data-ng-click='main="";mode="compose"'><button>Compose</button></a>
-  <p>Hello {{user.name}}</p>
+  <p>Hello {{user.email}}</p>
   <a data-ng-click='main="account"'><button>Account</button></a>
   <button data-ng-click='logOut()'>Log out</button>
   <p>As: {{current}}</p>
@@ -13,7 +13,7 @@
   </ul>
 </header>
 
-<article>
+<article data-ng-cloak>
   <data-ng-switch id='main' on='main'>
 
     <div id='account' data-ng-switch-when='account'>

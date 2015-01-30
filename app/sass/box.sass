@@ -13,19 +13,36 @@
   #date
     margin: 0
   #members
+    margin-top: 10px
     margin-bottom: 20px
     #member
       border: 1px solid gray
       padding: 2px
       margin: 2px
   #thread
-    border-bottom: 1px solid black
-    border-top: 1px solid black
+    border-bottom: 1px solid gray
+    border-top: 1px solid gray
     padding: 2%
-    h4
-      display: inline
+    #post-content
+      display: inline-block
+      width: 89%
+      #post-header
+        h4
+          display: inline
+        h4.date
+            color: gray
+    #post-options
+      display: inline-block
+      width: 10%
+      button
+        margin: 2px
+    
   #reply
     margin-top: 20px
     height: 20%
+    #send
+      margin: 20px
+      font-size: 1em
+      float: right
     #sendemail
       display: inline

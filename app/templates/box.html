@@ -8,7 +8,6 @@
   </div>
 
   <div id='members'>
-    <p>Members:</p>
     <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
     <input data-ng-model='newMember.email'/>
     <button data-ng-click='addMember(newMember)'>Add Member</button>
@@ -16,20 +15,22 @@
   </div>
 
   <div id='thread' ng-repeat='post in posts'>
-    <div id='post-header'>
-      <h4 class='email'>{{post.by}}</h4>
-      <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
-    </div>
-    <br>
+    <div id='post-content'>
+      <div id='post-header'>
+        <h4 class='email'>{{post.by}}</h4>
+        <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
+      </div>
+      <br>
 
-    <div id='post-html' data-ng-show='post.html'>
-      <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
-      <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
-    </div>
+      <div id='post-html' data-ng-show='post.html'>
+        <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
+        <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
+      </div>
 
-    <div id='post-text' data-ng-show='!post.html'>
-      <p data-ng-show='!post.editing'>{{post.content}}</p>
-      <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
+      <div id='post-text' data-ng-show='!post.html'>
+        <p data-ng-show='!post.editing'>{{post.content}}</p>
+        <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
+      </div>
     </div>
 
     <div id='post-options' data-ng-show='current===post.by'>
@@ -43,7 +44,7 @@
   <div id='reply'>
     <div text-angular placeholder='Reply' name='reply-editor' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
     <!--<textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>-->
-    <button data-ng-click='reply()' id='send'>Post</button>
+    <button data-ng-click='reply()' id='send'>Send</button>
     <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
     <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
   </div>

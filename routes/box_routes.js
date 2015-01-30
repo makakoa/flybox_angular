@@ -116,7 +116,7 @@ module.exports = function(app, jwtAuth, logging) {
         });
       }
       var response = {
-        user: {name: user, current: req.user.current},
+        user: {name: user, current: req.user.current, email: req.user.email},
         current: user,
         accounts: accounts,
         inbox: boxes

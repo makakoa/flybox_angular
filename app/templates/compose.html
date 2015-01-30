@@ -15,7 +15,7 @@
   <div text-angular data-ng-model='newBox.post.html'></div>
   <!--<textarea type='text' data-ng-model='newBox.post.text'></textarea>-->
 
-  <button data-ng-click='send()'>Send</button>
+  <button id='compose-send' data-ng-click='send()'>Send</button>
   <p id='sendemail'>Send as email? {{newBox.sendEmail ? 'Yes':'No'}}</p>
   <input type='checkbox' data-ng-model='newBox.sendEmail'>
 
