@@ -7,13 +7,13 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Account info
   app.get('/api/account/', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: Getting info for ' + req.user.email);
+    if (logging) console.log('fly[a]: Getting info for ' + req.user.email);
     res.json(req.user);
   });
 
   //Set current name
   app.put('/api/account/name', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: ' + req.user.displayName + ' is now ' + req.body.newName);
+    if (logging) console.log('fly[a]: ' + req.user.displayName + ' is now ' + req.body.newName);
     req.user.displayName = req.body.newName;
     req.user.save(function(err) {
       if (err) handle(err, res);
@@ -23,7 +23,7 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Set current account
   app.put('/api/account/current', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].auth.user);
+    if (logging) console.log('fly[a]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].auth.user);
     req.user.current = req.body.number;
     req.user.save(function(err) {
       if (err) handle(err, res);
@@ -33,7 +33,7 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Add email account
   app.post('/api/account/new', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: Adding account to ' + req.user.email);
+    if (logging) console.log('fly[a]: Adding account to ' + req.user.email);
     var account = {};
     try {
       account.email = req.body.email;
@@ -66,7 +66,7 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Edit an email account
   app.put('/api/account', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: Changing account for ' + req.user.email);
+    if (logging) console.log('fly[a]: Changing account for ' + req.user.email);
     var account = {};
     account._id = req.body._id;
     try {
@@ -100,7 +100,7 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Delete an email account
   app.delete('/api/account/remove/:id', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[]: Deleting account from ' + req.user.email);
+    if (logging) console.log('fly[a]: Deleting account from ' + req.user.email);
     req.user.accounts.id(req.params.id).remove();
     req.user.current = 0;
     req.user.save(function(err) {

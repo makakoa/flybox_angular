@@ -1,8 +1,8 @@
-<header data-ng-init='loadBox()'>
+<header data-ng-cloak data-ng-init='loadBox()'>
   <h1>Flybox : Guest</h1>
   <p>Hello {{user.name}}</p>
 </header>
-<main>
+<main data-ng-cloak>
   <h1 data-ng-model='box'>{{box.subject}}</h1>
   <p data-ng-model='box'>{{box.date | date}}</p>
   <p>Members:</p>

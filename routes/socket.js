@@ -27,7 +27,7 @@ module.exports = function(io, secret, logging) {
     if (!rooms[room]) rooms[room] = {};
     socket.join(room); //should check if user is in box
     socket.room = room;
-    rooms[socket.room][socket.as] = true; // fill with info
+    rooms[room][socket.as] = true; // fill with info
     io.to(room).emit('update:room', {
       online: rooms[socket.room]
     });
@@ -42,10 +42,10 @@ module.exports = function(io, secret, logging) {
 
   return function(socket) {
     socket.on('log:in', function(data) {
-      if (logging) console.log('fly []: Connecting user...');
+      if (logging) console.log('fly[s]: Connecting user...');
       auth(data.token, function(user) {
         if (!user) socket.disconnect();
-        if (logging) console.log('fly []: ' + user.email + ' connected');
+        if (logging) console.log('fly[s]: ' + user.email + ' connected');
         socket.user = user;
         socket.as = user.email;
         if (user.accounts.length) socket.as = user.accounts[user.current].email;
@@ -55,7 +55,7 @@ module.exports = function(io, secret, logging) {
     });
 
     socket.on('init:guest', function(data, callback) {
-      console.log('fly[]: Guest: ' + data.token + ' in room: ' + data.boxKey);
+      console.log('fly[s]: Guest: ' + data.token + ' in room: ' + data.boxKey);
       Box.findOne({boxKey: data.boxKey}, function(err, box) {
         if (err) console.log(err);
         var guest = {};
@@ -84,7 +84,7 @@ module.exports = function(io, secret, logging) {
 
     socket.on('join:box', function(data) {
       if (!socket.user) socket.disconnect();
-      if (logging) console.log('fly[]: ' + socket.user.email + ' joining room:' + data.room);
+      if (logging) console.log('fly[s]: ' + socket.user.email + ' joining room:' + data.room);
       enterRoom(data.room, socket);
     });
 
@@ -107,7 +107,7 @@ module.exports = function(io, secret, logging) {
 
     socket.on('send:post', function(data) {
       if (!socket.user) socket.disconnect();
-      if (logging) console.log('fly[]: ' + socket.user.email + ' posted in room:' + socket.room);
+      if (logging) console.log('fly[s]: ' + socket.user.email + ' posted in room:' + socket.room);
       socket.broadcast.to(socket.room).emit('send:post', {
         content: data.content,
         html: data.html,
@@ -141,7 +141,7 @@ module.exports = function(io, secret, logging) {
           box.save(function(err) {
             if (err) return console.log(err);
             if (data.sendEmail) {
-              if (logging) console.log('fly[]: Posted, mailing post as ' + socket.as);
+              if (logging) console.log('fly[s]: Posted, mailing post as ' + socket.as);
               var smtp = format.smtp(socket.user.accounts[socket.user.current]);
               var mail = {
                 from: socket.as,
@@ -171,7 +171,7 @@ module.exports = function(io, secret, logging) {
         post.html = data.html;
         post.save(function(err) {
           if (err) return console.log(err);
-          console.log('fly[]: Post updated');
+          console.log('fly[s]: Post updated');
         });
 
         socket.broadcast.to(socket.room).emit('edit:post', post);

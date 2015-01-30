@@ -15,6 +15,7 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
+          if (!data.user) $scope.logOut();
           $scope.user = data.user;
           $scope.current = data.current;
           $scope.accounts = data.accounts;

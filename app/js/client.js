@@ -28,7 +28,7 @@ app.config(['$routeProvider', function($routeProvider) {
       templateUrl: 'templates/spa.html',
       controller: 'SpaCtrl'
     })
-    .when('/landing/', {
+    .when('/about/', {
       templateUrl: 'templates/landing.html'
     })
     .when('/guest/:boxKey/:guestKey', {
