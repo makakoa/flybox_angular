@@ -55,10 +55,20 @@ Sync email            `POST    /api/emails/import`
 
 Socket Routes
 -----------
-#####init
-(takes jwt token)
-#####read
-#####send:post
-(takes post data)
-#####edit:post
-(takes post data)
+init {token}  
+read
+send:post {post}  
+edit:post {post}  
+init:guest {token}  
+update:account  
+join:box  
+
+Logging Index: fly[ _ ]
+-----------
+a - account routes  
+b - box routes  
+i - imap/fetcher  
+m - mailer/smtp  
+p - passport  
+s - socket routes  
+u - user routes  
