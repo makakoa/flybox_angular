@@ -84,7 +84,7 @@ module.exports = function(app) {
           sendEmail: $scope.sendEmail
         });
         var tempPost = $scope.newPost;
-        tempPost.by = 'me';
+        tempPost.by = $scope.current;
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
@@ -93,7 +93,6 @@ module.exports = function(app) {
           if (member.email === $scope.username) member.unread = 0;
         });
       };
-      //textAngularManager.refreshEditor('reply-editor'); //wont work with digest
 
       $scope.edit = function(post) {
         socket.emit('edit:post', {

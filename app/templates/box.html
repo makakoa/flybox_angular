@@ -8,7 +8,7 @@
   </div>
 
   <div id='members'>
-    <a id='member' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
+    <a id='member' data-ng-show='member.email!==current' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
     <input data-ng-model='newMember.email'/>
     <button data-ng-click='addMember(newMember)'>Add Member</button>
     <button data-ng-click='leaveBox()'>Leave Box</button>
@@ -41,12 +41,21 @@
     </div>
   </div>
   <br>
-  <div id='reply'>
-    <div text-angular placeholder='Reply' name='reply-editor' data-ng-keyup='checkIfEnter($event.keyCode)' data-ng-model='newPost.html'></div>
-    <!--<textarea data-ng-model='newPost.content' placeholder='Reply' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>-->
-    <button data-ng-click='reply()' id='send'>Send</button>
-    <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
-    <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
-  </div>
 
+  <div id='reply-section'>
+    <p id='mode' data-ng-init='replyFull=false'>{{replyFull ? 'Full Reply' : 'Quick Reply'}}</p>
+    <button id='switch' data-ng-click='replyFull=!replyFull'>{{replyFull ? 'Quick Reply': 'Full Reply'}}</button>
+
+    <div id='reply-quick' data-ng-show='!replyFull'>
+      <textarea data-ng-model='newPost.html' placeholder='Reply (hit enter to send)' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
+      <button data-ng-click='reply()' id='send'>Send</button>
+    </div>
+
+    <div id='reply-full' data-ng-show='replyFull'>
+      <div text-angular placeholder='Reply' name='reply-editor' data-ng-model='newPost.html'></div>
+      <button data-ng-click='reply()' id='send'>Send</button>
+      <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
+      <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
+    </div>
+  </div>
 </main>

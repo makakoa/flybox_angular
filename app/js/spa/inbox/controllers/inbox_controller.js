@@ -24,6 +24,7 @@ module.exports = function(app) {
       };
 
       $scope.selectBox = function(boxKey) {
+        if ($scope.selectedBox == boxKey) return;
         $scope.selectedBox = boxKey;
         $scope.getBox();
       };
