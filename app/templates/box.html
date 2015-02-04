@@ -5,39 +5,41 @@
   <div id='box-headers'>
     <h1 data-ng-model='box'>{{box.subject}}</h1>
     <p id='date' data-ng-model='box'>{{box.date | date:'hh:mm'}} - {{box.date | date}}</p>
-  </div>
 
-  <div id='members'>
-    <a id='member' data-ng-show='member.email!==current' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
-    <input data-ng-model='newMember.email'/>
-    <button data-ng-click='addMember(newMember)'>Add Member</button>
-    <button data-ng-click='leaveBox()'>Leave Box</button>
-  </div>
-
-  <div id='thread' ng-repeat='post in posts'>
-    <div id='post-content'>
-      <div id='post-header'>
-        <h4 class='email'>{{post.by}}</h4>
-        <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
-      </div>
-      <br>
-
-      <div id='post-html' data-ng-show='post.html'>
-        <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
-        <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
-      </div>
-
-      <div id='post-text' data-ng-show='!post.html'>
-        <p data-ng-show='!post.editing'>{{post.content}}</p>
-        <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
-      </div>
+    <div id='members'>
+      <a id='member' data-ng-show='member.email!==current' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
+      <input data-ng-model='newMember.email'/>
+      <button data-ng-click='addMember(newMember)'>Add Member</button>
+      <button data-ng-click='leaveBox()'>Leave Box</button>
     </div>
+  </div>
 
-    <div id='post-options' data-ng-show='current===post.by'>
-      <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
-      <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
-        {{post.editing ? 'Cancel':'Edit'}}</button>
-      <button data-ng-click='delete(post)'>Delete</button>
+  <div id='thread-section'>
+    <div id='thread' ng-repeat='post in posts'>
+      <div id='post-content'>
+        <div id='post-header'>
+          <h4 class='email'>{{post.by}}</h4>
+          <h4 class='date'>  {{post.date | date:'hh:mm'}} - {{post.date | date}}</h4>
+        </div>
+        <br>
+
+        <div id='post-html' data-ng-show='post.html'>
+          <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
+          <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
+        </div>
+
+        <div id='post-text' data-ng-show='!post.html'>
+          <p data-ng-show='!post.editing'>{{post.content}}</p>
+          <textarea data-ng-show='post.editing' data-ng-model='post.newContent'>{{post.content}}</textarea>
+        </div>
+      </div>
+
+      <div id='post-options' data-ng-show='current===post.by'>
+        <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
+        <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
+          {{post.editing ? 'Cancel':'Edit'}}</button>
+        <button data-ng-click='delete(post)'>Delete</button>
+      </div>
     </div>
   </div>
   <br>
@@ -48,6 +50,7 @@
 
     <div id='reply-quick' data-ng-show='!replyFull'>
       <textarea data-ng-model='newPost.html' placeholder='Reply (hit enter to send)' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
+      <button data-ng-click='replyFull=true' id='send'>Full</button>
       <button data-ng-click='reply()' id='send'>Send</button>
     </div>
 
