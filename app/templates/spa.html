@@ -1,9 +1,9 @@
 <link rel="stylesheet" type="text/css" href="CSS/spa.css">
 
-<header data-ng-cloak data-ng-init='init()'>
-  <h1>fly[] in dev</h1>
-  <a data-ng-click='main=""'><button>Inbox</button></a>
-  <a data-ng-click='main="";mode="compose"'><button>Compose</button></a>
+<header data-ng-cloak data-ng-init='init(); main="inbox"; mode="box"'>
+  <h1>fly[ ]</h1>
+  <a data-ng-click='main="inbox";mode="box"'><button>Inbox</button></a>
+  <a data-ng-click='main="inbox";mode="compose";$digest()'><button>Compose</button></a>
   <p>Hello {{user.email}}</p>
   <a data-ng-click='main="account"'><button>Account</button></a>
   <button data-ng-click='logOut()'>Log out</button>
@@ -14,32 +14,27 @@
 </header>
 
 <article data-ng-cloak>
-  <data-ng-switch id='main' on='main'>
-
-    <div id='account' data-ng-switch-when='account'>
+  <div id='main'>
+    <div id='account' data-ng-show='main=="account"'>
       <account-page></account-page>
     </div>
 
-    <div id='multi' data-ng-switch-default>
+    <div id='multi' data-ng-show='main=="inbox"'>
 
       <div id='inbox-comp'>
-        <inbox-section data-ng-click='mode=""'></inbox-section>
+        <inbox-section data-ng-click='mode="box"'></inbox-section>
       </div>
 
       <div id='side'>
-        <data-ng-switch on='mode'>
+        <div id='compose' data-ng-show='mode=="compose"'>
+          <compose-box></compose-box>
+        </div>
 
-          <div id='box-comp' data-ng-switch-default>
-            <single-box></single-box>
-          </div>
-
-          <div id='compose' data-ng-switch-when='compose'>
-            <compose-box></compose-box>
-          </div>
-
-        </data-ng-switch>
+        <div id='box-comp' data-ng-show='mode=="box"'>
+          <single-box></single-box>
+        </div>
       </div>
 
     </div>
-  </data-ng-switch>
+  </div>
 </article>

@@ -24,7 +24,7 @@
         <br>
 
         <div id='post-html' data-ng-show='post.html'>
-          <div data-ng-show='!post.editing' data-ng-bind-html='post.html'></div>
+          <div data-ng-show='!post.editing' ta-bind data-ng-model='post.html'></div>
           <div text-angular data-ng-show='post.editing' data-ng-model='post.html'></div>
         </div>
 

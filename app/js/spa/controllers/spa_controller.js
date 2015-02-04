@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('SpaCtrl', ['$scope', '$http', '$base64', '$cookies', '$location', 'socket',
-    function($scope, $http, $base64, $cookies, $location, socket) {
+  app.controller('SpaCtrl', ['$scope', '$http', '$cookies', '$location', 'socket',
+    function($scope, $http, $cookies, $location, socket) {
       if (!$cookies.jwt) {
         console.log('Redirecting');
         $location.path('/');

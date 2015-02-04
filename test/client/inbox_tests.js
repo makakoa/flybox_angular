@@ -6,7 +6,7 @@ require('angular-mocks');
 describe('Inbox Controller', function() {
   var $controllerConstructor;
   var $httpBackend;
-  var $scope = {getBox: function() {}};
+  var $scope;
   var $cookies = {jwt: 'hash'};
 
   beforeEach(angular.mock.module('flyboxApp'));
@@ -17,14 +17,14 @@ describe('Inbox Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var inboxController = $controllerConstructor('InboxCtrl', {$rootScope: $scope, $cookies: $cookies});
+    var inboxController = $controllerConstructor('InboxCtrl', {$scope: $scope, $cookies: $cookies});
     expect(typeof inboxController).toBe('object');
   });
 
   describe('Inbox functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('InboxCtrl', {$rootScope: $scope, $cookies: $cookies});
+      $controllerConstructor('InboxCtrl', {$scope: $scope, $cookies: $cookies});
     }));
 
     afterEach(function() {
@@ -41,7 +41,6 @@ describe('Inbox Controller', function() {
           boxKey: 123
         }]
       });
-      $scope.getBox = function() {};
 
       $scope.getInbox();
 

@@ -1,9 +1,8 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('InboxCtrl', ['$rootScope', '$http', '$base64', '$cookies', 'socket',
-    function($rootScope, $http, $base64, $cookies, socket) {
-      var $scope = $rootScope;
+  app.controller('InboxCtrl', ['$scope', '$http', '$base64', '$cookies', 'socket',
+    function($scope, $http, $base64, $cookies, socket) {
 
       $scope.getInbox = function() {
         $http({
@@ -26,7 +25,7 @@ module.exports = function(app) {
       $scope.selectBox = function(boxKey) {
         if ($scope.selectedBox == boxKey) return;
         $scope.selectedBox = boxKey;
-        $scope.getBox();
+        $scope.$broadcast('box:selected', $scope.selectedBox);
       };
     }]);
 };

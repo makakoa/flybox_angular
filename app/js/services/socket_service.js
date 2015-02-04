@@ -6,7 +6,10 @@ module.exports = function(app) {
       var socket = socketFactory({
         ioSocket: window.io.connect()
       });
-      socket.forward('error');
+      socket.addOn = function(event, cb) {
+        if (socket.hasOwnProperty('$events') && socket.$events.hasOwnProperty(event)) return;
+        socket.on(event, cb);
+      };
       return socket;
     }]);
 };

@@ -17,14 +17,14 @@ describe('Box Controller', function() {
   }));
 
   it('should be able to create a controller', function() {
-    var boxController = $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
+    var boxController = $controllerConstructor('BoxCtrl', {$scope: $scope, $cookies: $cookies});
     expect(typeof boxController).toBe('object');
   });
 
   describe('box functions', function() {
     beforeEach(angular.mock.inject(function(_$httpBackend_) {
       $httpBackend = _$httpBackend_;
-      $controllerConstructor('BoxCtrl', {$rootScope: $scope, $cookies: $cookies});
+      $controllerConstructor('BoxCtrl', {$scope: $scope, $cookies: $cookies});
     }));
 
     afterEach(function() {
@@ -41,7 +41,7 @@ describe('Box Controller', function() {
       }});
 
       $scope.selectedBox = '123';
-      $scope.getBox();
+      $scope.getBox('123');
 
       $httpBackend.flush();
 
