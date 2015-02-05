@@ -1,25 +1,23 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('BoxCtrl', ['$rootScope', '$http', '$base64', '$cookies', '$location', 'socket', 'textAngularManager',
-    function($rootScope, $http, $base64, $cookies, $location, socket, textAngularManager) {
-      var $scope = $rootScope;
+  app.controller('BoxCtrl', ['$scope', '$http', '$cookies', '$location', 'socket',
+    function($scope, $http, $cookies, $location, socket) {
       $scope.newPost = {};
-      if (textAngularManager); //remove once being used
 
-      $scope.getBox = function() {
-        console.log('GET box: ' + $scope.selectedBox);
+      $scope.getBox = function(boxKey) {
+        console.log('GET box: ' + boxKey);
         $http({
           method: 'GET',
-          url: '/api/boxes/' + $scope.selectedBox,
+          url: '/api/boxes/' + boxKey,
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
-          console.log('Box retrieved');
+          console.log('fly[]: Box retrieved');
           $scope.box = data.box;
           $scope.posts = data.box.thread;
           socket.emit('join:box', {
-            room: $scope.selectedBox
+            room: boxKey
           });
         });
       };
@@ -47,22 +45,30 @@ module.exports = function(app) {
         });
       };
 
-      socket.on('update:room', function(data) {
+      $scope.$on('box:selected', function(ev, boxKey) {
+        $scope.selectedBox = boxKey;
+        $scope.getBox(boxKey);
+      });
+
+      socket.addOn('update:room', function(data) {
+        console.log('fly[]: updating room');
         $scope.online = data.online;
       });
 
-      socket.on('read', function(data) {
+      socket.addOn('read', function(data) {
+        console.log('fly[]: updating reads');
         $scope.box.members.forEach(function(member) {
           if (member.email === data.by) member.unread = 0;
         });
       });
 
-      socket.on('notification', function(data) {
-        window.alert(data.msg);
-        console.log(data);
+      socket.addOn('notification', function(data) {
+        console.log('fly[]: notification received');
+        console.log(data.msg);
       });
 
-      socket.on('send:post', function(post) {
+      socket.addOn('send:post', function(post) {
+        console.log('fly[]: post received');
         $scope.posts.push(post);
         $scope.box.members.forEach(function(member) {
           member.unread++;
@@ -70,7 +76,8 @@ module.exports = function(app) {
         });
       });
 
-      socket.on('edit:post', function() {
+      socket.addOn('edit:post', function() {
+        console.log('fly[]: updating post');
         $scope.getBox();
       });
 
@@ -84,7 +91,7 @@ module.exports = function(app) {
           sendEmail: $scope.sendEmail
         });
         var tempPost = $scope.newPost;
-        tempPost.by = 'me';
+        tempPost.by = $scope.current;
         tempPost.date = Date.now();
         $scope.posts.push(tempPost);
         $scope.newPost = {};
@@ -93,13 +100,12 @@ module.exports = function(app) {
           if (member.email === $scope.username) member.unread = 0;
         });
       };
-      //textAngularManager.refreshEditor('reply-editor'); //wont work with digest
 
       $scope.edit = function(post) {
         socket.emit('edit:post', {
           _id: post._id,
-          content: post.newContent,
-          by: $scope.username
+          html: post.html,
+          by: $scope.current
         });
         if (post.newContent) post.content = post.newContent;
         post.editing = false;
@@ -120,5 +126,6 @@ module.exports = function(app) {
           $scope.reply();
         }
       };
+
     }]);
 };

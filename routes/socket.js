@@ -15,7 +15,7 @@ module.exports = function(io, secret, logging) {
   var enterRoom = function(room, socket) {
     if (socket.room) {
       delete rooms[socket.room][socket.as];
-      if (rooms[socket.room].length < 1) {
+      if (Object.keys(rooms[socket.room]).length < 1) {
         delete rooms[socket.room];
       } else {
         io.to(socket.room).emit('update:room', {
@@ -77,7 +77,8 @@ module.exports = function(io, secret, logging) {
         if (!user) socket.disconnect();
         if (socket.as) delete accounts[socket.as];
         socket.user = user;
-        socket.as = user.accounts[user.current].email;
+        socket.as = user.email;
+        if (user.accounts.length) socket.as = user.accounts[user.current].email;
         accounts[socket.as] = socket.id;
       });
     });
@@ -165,7 +166,7 @@ module.exports = function(io, secret, logging) {
         if (data.delete) {
           post.by = 'deleted';
           data.content = '';
-          data.html = undefined;
+          data.html = '';
         }
         post.content = data.content;
         post.html = data.html;
@@ -173,7 +174,6 @@ module.exports = function(io, secret, logging) {
           if (err) return console.log(err);
           console.log('fly[s]: Post updated');
         });
-
         socket.broadcast.to(socket.room).emit('edit:post', post);
       });
     });
@@ -181,7 +181,7 @@ module.exports = function(io, secret, logging) {
     socket.on('disconnect', function() {
       if (socket.room) {
         delete rooms[socket.room][socket.as];
-        if (rooms[socket.room].length < 1) {
+        if (Object.keys(rooms[socket.room]).length < 1) {
           delete rooms[socket.room];
         } else {
           io.to(socket.room).emit('update:room', {
