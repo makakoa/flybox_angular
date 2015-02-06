@@ -4,7 +4,6 @@
 
 To Do: 
 - Attachment handling
-- Fix textAngular clearing
 - Search flybox
 - Search email
 - Variable importing
@@ -14,7 +13,6 @@ To Do:
 - Contacts
 
 Bugs: Things that won't work
-- going from box -> compose -> box -> compose doesn't work
 - sent link needs a url prefix
 - account page cancel edit doesn't work
 - importing lots of emails imports twice
@@ -22,13 +20,12 @@ Bugs: Things that won't work
 Debt: Things that might not work later
 - test all front end functions
 - email thread not really being handled
-- edit and delete not working perfectly
+- guest box ui
 
 Improvements: Things that could work better
 - sent emails don't have threads to them
 - box add member function needs user check + guest key
 - no am/pm on time stamps
-- html/text being saved
 - error catching
 
 API Routes
