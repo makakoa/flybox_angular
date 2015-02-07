@@ -15,7 +15,8 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
         .success(function(data) {
-          if (!data.user) $scope.logOut();
+          if (!data.user.name) $scope.logOut();
+          console.log(data);
           $scope.user = data.user;
           $scope.current = data.current;
           $scope.accounts = data.accounts;
@@ -25,6 +26,20 @@ module.exports = function(app) {
         })
         .error(function(err) {
           console.log(err);
+        });
+      };
+
+      $scope.sync = function() {
+        $http({
+          method: 'POST',
+          url: '/api/emails/import/',
+          headers: {
+            jwt: $cookies.jwt
+          },
+          data: {index: $scope.user.current}
+        })
+        .success(function() {
+          setTimeout($scope.$broadcast('update:inbox'), 5000);
         });
       };
 

@@ -27,5 +27,9 @@ module.exports = function(app) {
         $scope.selectedBox = boxKey;
         $scope.$broadcast('box:selected', $scope.selectedBox);
       };
+
+      $scope.$on('update:inbox', function() {
+        $scope.getInbox();
+      });
     }]);
 };
