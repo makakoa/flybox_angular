@@ -3,6 +3,7 @@
 <header data-ng-cloak data-ng-init='init(); main="inbox"; mode="box"'>
   <h1>fly[ ]</h1>
   <a data-ng-click='main="inbox";mode="box"'><button>Inbox</button></a>
+  <a data-ng-click='sync()'><button>Sync</button></a>
   <a data-ng-click='main="inbox";mode="compose";$digest()'><button>Compose</button></a>
   <p>Hello {{user.email}}</p>
   <a data-ng-click='main="account"'><button>Account</button></a>

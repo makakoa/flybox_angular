@@ -38,7 +38,7 @@ module.exports = function(app, jwtAuth, logging) {
     try {
       account.email = req.body.email;
       account.password = jwt.encode(req.body.password, secret);
-      account.lastImported = 1;
+      account.lastImported = -1; //checked for in fetcher
       if (req.body.service) {
         account.service = req.body.service;
       } else {
