@@ -38,6 +38,7 @@ module.exports = function(app) {
 
       $scope.checkIfSpace = function(event) {
         if (event === 32) {
+          if ($scope.recipient.email === '') return;
           var temp = $scope.recipient.email;
           $scope.recipient.email = '';
           $scope.checkAddress({email: temp});
