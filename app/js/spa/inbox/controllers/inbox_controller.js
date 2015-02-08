@@ -11,6 +11,7 @@ module.exports = function(app) {
           headers: {jwt: $cookies.jwt}
         })
           .success(function(data) {
+            if (data.inbox.length < 1) return;
             $scope.boxes = data.inbox;
             $scope.selectBox($scope.boxes[$scope.boxes.length - 1].boxKey);
             socket.emit('update:account', {

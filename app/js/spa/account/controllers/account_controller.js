@@ -72,7 +72,7 @@ module.exports = function(app) {
       $scope.deleteAccount = function(account) {
         $http({
           method: 'DELETE',
-          url: '/api/account/remove' + account._id,
+          url: '/api/account/remove/' + account._id,
           headers: {jwt: $cookies.jwt}
         })
         .success(function() {
