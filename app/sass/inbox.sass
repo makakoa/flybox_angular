@@ -1,18 +1,19 @@
 #inbox
   display: flex
   flex-flow: column
-  overflow: auto
+  overflow: hidden
   position: fixed
   top: 50px
   bottom: 0
   left: 0
   right: 75%
   padding: 0
-  section
+  #post-list
+    overflow: auto
+  #post-preview
     flex: 1 0 auto
     min-height: auto
-    border-bottom: 1px solid #CCCCFF
-    border-radius: 5px;
+    border-bottom: 2px solid #CCCCFF
     padding: 3%
     cursor: pointer
     overflow: hidden
