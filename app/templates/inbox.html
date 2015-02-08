@@ -1,9 +1,11 @@
 <link rel="stylesheet" type="text/css" href="CSS/inbox.css">
 <main id='inbox' data-ng-cloak data-ng-init='getInbox()'>
-  <section data-ng-repeat='box in boxes | orderBy:"date":true'>
-    <div data-ng-click='selectBox(box.boxKey)'>
-      <h3>{{box.subject}}</h3>
-      <p>{{box.email}}{{box.date | date:' | hh:mm a, MMM dd, yyyy'}}</p>
-    </div>
-  </section>
+  <div id='post-list'>
+    <section id='post-preview' data-ng-repeat='box in boxes | orderBy:"date":true'>
+      <div data-ng-click='selectBox(box.boxKey)'>
+        <h3>{{box.subject}}</h3>
+        <p>{{box.email}}{{box.date | date:' | hh:mm a, MMM dd, yyyy'}}</p>
+      </div>
+    </section>
+  </div>
 </main>

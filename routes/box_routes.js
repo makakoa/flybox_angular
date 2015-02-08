@@ -185,9 +185,11 @@ module.exports = function(app, jwtAuth, logging) {
         var mail = inbox[num];
         req.user.accounts[req.body.index].lastImported = inbox[num].number;
         req.user.save();
-        if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);
-        if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
-        if (mail.subject.indexOf('New Flybox Messages:') === 0) return saveEmail(++num);
+        if (mail.subject) {
+          if (mail.subject.indexOf('Re: ') === 0) mail.subject = mail.subject.substring(4);
+          if (mail.subject.indexOf('Fwd: ') === 0) mail.subject = mail.subject.substring(5);
+          if (mail.subject.indexOf('New Flybox Messages:') === 0) return saveEmail(++num);
+        }
         var post = new Post();
         post.content = mail.text;
         post.html = mail.html;

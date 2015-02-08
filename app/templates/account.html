@@ -24,7 +24,7 @@
       <input data-ng-show='account.editing' data-ng-model='new.account.email'>
       <h6>Password:</h6>
       <p data-ng-show='!account.editing'>********</p>
-      <input data-ng-show='account.editing' data-ng-model='new.account.password'>
+      <input type='password' data-ng-show='account.editing' data-ng-model='new.account.password'>
       <div data-ng-show='account.editing || account.service'>
         <h6>Service:</h6>
         <p data-ng-show='!account.editing'>{{account.service}}</p>
@@ -62,7 +62,7 @@
       <input data-ng-model='newAccount.email'>
       <br>
       <h6>Password:</h6>
-      <input data-ng-model='newAccount.password'>
+      <input type='password' data-ng-model='newAccount.password'>
       <br>
       <h4>and fill in either</h4>
       <h6>Service:</h6>
