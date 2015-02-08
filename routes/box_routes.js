@@ -160,7 +160,8 @@ module.exports = function(app, jwtAuth, logging) {
           name: req.user.displayName,
           to: req.body.members,
           subject: box.subject,
-          text: post.content
+          text: post.content,
+          html: post.html
         };
         mailFactory(smtp, mail, logging, function(messageId) {
           box.originalMessageId = messageId;
