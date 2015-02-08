@@ -2,13 +2,13 @@
 <article data-ng-cloak>
   <main id='login'>
     <section id='title'>
-      <h1>fly[] in dev</h1>
+      <h1>[ fly ]</h1>
       <a href='#/about'>About flybox</a>
       <p>Dev account - flyboxdev:pass</p>
     </section>
 
     <section id='buttons' data-ng-hide='signingUp || signingIn'>
-      <button id='signin' data-ng-click='signingIn = true'>Log In</button>
+      <button class='dark-button' id='signin' data-ng-click='signingIn = true'>Log In</button>
       <p>or <a id='signup' href data-ng-click='signingUp = true'>sign up</a></p>
     </section>
 
@@ -28,7 +28,7 @@
         <input type='password' data-ng-model='newUser.passwordConfirmation'>
         <br>
         <br>
-        <button id='submit' class='submit' data-ng-click='signUp()'>Sign Up</button>
+        <button class='dark-button' id='submit' class='submit' data-ng-click='signUp()'>Sign Up</button>
         <br>
       </form>
       <a id='signin' href data-ng-click='signingIn = true; signingUp = false; errors = null;'>or log In</a>
@@ -46,7 +46,7 @@
         <input type='password' data-ng-model='user.password'>
         <br>
         <br>
-        <button id='login' class='submit' data-ng-click='logIn()'>Log In</button>
+        <button class='dark-button' id='login' class='submit' data-ng-click='logIn()'>Log In</button>
         <br>
       </form>
       <a id='signin' href data-ng-click='signingUp = true; signingIn = false; errors = null;'>or sign up</a>

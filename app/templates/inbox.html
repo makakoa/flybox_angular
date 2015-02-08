@@ -3,8 +3,7 @@
   <section data-ng-repeat='box in boxes | orderBy:"date":true'>
     <div data-ng-click='selectBox(box.boxKey)'>
       <h3>{{box.subject}}</h3>
-      <p>{{box.email}}</p>
-      <p>{{box.date | date}}</p>
+      <p>{{box.email}}{{box.date | date:' | hh:mm a, MMM dd, yyyy'}}</p>
     </div>
   </section>
 </main>

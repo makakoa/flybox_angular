@@ -9,8 +9,8 @@
     <div id='members'>
       <a id='member' data-ng-show='member.email!==current' data-ng-repeat='member in box.members'>{{member.email+': '+ (online[member.email]?'online':'offline')}} </a>
       <input data-ng-model='newMember.email'/>
-      <button data-ng-click='addMember(newMember)'>Add Member</button>
-      <button data-ng-click='leaveBox()'>Leave Box</button>
+      <button class='dark-button' data-ng-click='addMember(newMember)'>Add Member</button>
+      <button class='dark-button' data-ng-click='leaveBox()'>Leave Box</button>
     </div>
   </div>
 
@@ -35,10 +35,10 @@
       </div>
 
       <div id='post-options' data-ng-show='current===post.by'>
-        <button data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
-        <button data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
+        <button class='dark-button' data-ng-click='edit(post)' data-ng-show='post.editing'>Save</button>
+        <button class='dark-button' data-ng-click='post.editing=!post.editing; post.newContent=post.content'>
           {{post.editing ? 'Cancel':'Edit'}}</button>
-        <button data-ng-click='delete(post)'>Delete</button>
+        <button class='dark-button' data-ng-click='delete(post)'>Delete</button>
       </div>
     </div>
   </div>
@@ -46,17 +46,17 @@
 
   <div id='reply-section'>
     <p id='mode' data-ng-init='replyFull=false'>{{replyFull ? 'Full Reply' : 'Quick Reply'}}</p>
-    <button id='switch' data-ng-click='replyFull=!replyFull'>{{replyFull ? 'Quick Reply': 'Full Reply'}}</button>
+    <button class='dark-button' id='switch' data-ng-click='replyFull=!replyFull'>{{replyFull ? 'Quick Reply': 'Full Reply'}}</button>
 
     <div id='reply-quick' data-ng-show='!replyFull'>
       <textarea data-ng-model='newPost.html' placeholder='Reply (hit enter to send)' data-ng-keyup='checkIfEnter($event.keyCode)'></textarea>
-      <button data-ng-click='replyFull=true' id='send'>Full</button>
-      <button data-ng-click='reply()' id='send'>Send</button>
+      <button data-ng-click='replyFull=true' class='light-button' id='send'>Full</button>
+      <button data-ng-click='reply()' class='light-button' id='send'>Send</button>
     </div>
 
     <div id='reply-full' data-ng-show='replyFull'>
       <div text-angular placeholder='Reply' name='reply-editor' data-ng-model='newPost.html'></div>
-      <button data-ng-click='reply()' id='send'>Send</button>
+      <button class='dark-button' data-ng-click='reply()' id='send'>Send</button>
       <p id='sendemail'>Send as email? {{sendEmail ? 'Yes':'No'}}</p>
       <input id='sendemail' type='checkbox' data-ng-model='sendEmail'>
     </div>
