@@ -8,7 +8,6 @@ To Do:
 - Search email
 - Variable importing
 - Change flybox username/password
-- Delete account (front end)
 - Analytics
 - Contacts
 
@@ -25,7 +24,6 @@ Debt: Things that might not work later
 Improvements: Things that could work better
 - sent emails don't have threads to them
 - box add member function needs user check + guest key
-- no am/pm on time stamps
 - error catching
 
 API Routes
