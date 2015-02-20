@@ -85,11 +85,12 @@ module.exports = function(app, jwtAuth, logging) {
   });
 
   // search boxes
-  app.get('/api/boxes/search/:keywords', jwtAuth, function(req, res) {
+  app.get('/api/boxes/search/:string', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
     if (logging) console.log('fly[b]: Getting inbox for ' + req.user.email + ' as ' + user);
     var boxes = [];
-    Box.find({members: {$elemMatch: {email: user}}}, function(err, data) {
+    var re = new RegExp(req.params.string);
+    Box.find({members: {$elemMatch: {email: user}}, thread: {$elemMatch: {html: re}}}, function(err, data) {
       if (err) handle(err, res);
       data.forEach(function(box) {
         var num;
