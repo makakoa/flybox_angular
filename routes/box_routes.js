@@ -84,6 +84,47 @@ module.exports = function(app, jwtAuth, logging) {
     });
   });
 
+  // search boxes
+  app.get('/api/boxes/search/:keywords', jwtAuth, function(req, res) {
+    var user = getCurrent(req.user);
+    if (logging) console.log('fly[b]: Getting inbox for ' + req.user.email + ' as ' + user);
+    var boxes = [];
+    Box.find({members: {$elemMatch: {email: user}}}, function(err, data) {
+      if (err) handle(err, res);
+      data.forEach(function(box) {
+        var num;
+        box.members.forEach(function(member) {
+          if (user === member.email) {
+            num = member.unread;
+            return;
+          }
+        });
+        boxes.push({
+          email: box.members[0].email,
+          subject: box.subject,
+          date: box.date,
+          boxKey: box.boxKey,
+          unread: num,
+          isBox: true
+        });
+      });
+      var accounts = [];
+      for (var i = 0; i < req.user.accounts.length; i++) {
+        accounts.push({
+          name: req.user.accounts[i].email,
+          number: i
+        });
+      }
+      var response = {
+        user: {name: user, current: req.user.current, email: req.user.email},
+        current: user,
+        accounts: accounts,
+        inbox: boxes
+      };
+      res.json(response);
+    });
+  });
+
   // get inbox
   app.get('/api/boxes', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
