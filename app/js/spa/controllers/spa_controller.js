@@ -29,6 +29,10 @@ module.exports = function(app) {
         });
       };
 
+      $scope.search = function() {
+        $scope.$broadcast('search', $scope.searchParams);
+      };
+
       $scope.sync = function() {
         $http({
           method: 'POST',

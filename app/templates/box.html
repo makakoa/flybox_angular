@@ -45,7 +45,7 @@
   <br>
 
   <div id='reply-section'>
-    <p id='mode' data-ng-init='replyFull=false'>{{replyFull ? 'Full Reply' : 'Quick Reply'}}</p>
+    <p id='mode' data-ng-init='replyFull=true'>{{replyFull ? 'Full Reply' : 'Quick Reply'}}</p>
     <button class='dark-button' id='switch' data-ng-click='replyFull=!replyFull'>{{replyFull ? 'Quick Reply': 'Full Reply'}}</button>
 
     <div id='reply-quick' data-ng-show='!replyFull'>

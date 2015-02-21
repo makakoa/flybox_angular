@@ -23,11 +23,12 @@ module.exports = function(app, jwtAuth, logging) {
 
   //Set current account
   app.put('/api/account/current', jwtAuth, function(req, res) {
-    if (logging) console.log('fly[a]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].auth.user);
-    req.user.current = req.body.number;
+    if (logging) console.log('fly[a]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].email);
+    if (req.body.number) req.user.current = req.body.number;
+    if (req.body.account) req.user.current = req.user.accounts.indexOf(req.body.account);
     req.user.save(function(err) {
       if (err) handle(err, res);
-      res.json({msg: 'switched to ' + req.user.accounts[req.user.current].auth.user});
+      res.json({msg: 'switched to ' + req.user.accounts[req.user.current].email});
     });
   });
 
