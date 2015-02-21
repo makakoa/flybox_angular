@@ -56,7 +56,8 @@ module.exports = function(app) {
             number: $scope.accounts.indexOf(account)
           }
         })
-        .success(function() {
+        .success(function(data) {
+          console.log(data.msg);
           socket.emit('account:switch', {
             token: $cookies.jwt
           });
