@@ -10,8 +10,9 @@ require('angular-socket-io');
 require('textAngular/dist/textAngular-rangy.min');
 require('textAngular/dist/textAngular-sanitize.min');
 require('textAngular/dist/textAngular.min');
+require('angular-bootstrap');
 
-var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford.socket-io', 'textAngular']);
+var app = angular.module('flyboxApp', ['ngRoute', 'ngCookies', 'base64', 'btford.socket-io', 'textAngular', 'ui.bootstrap']);
 
 require('./services/socket_service')(app);
 require('./login/login')(app);
