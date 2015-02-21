@@ -87,7 +87,7 @@ module.exports = function(app, jwtAuth, logging) {
   // search boxes
   app.get('/api/boxes/search/:string', jwtAuth, function(req, res) {
     var user = getCurrent(req.user);
-    if (logging) console.log('fly[b]: Getting inbox for ' + req.user.email + ' as ' + user);
+    if (logging) console.log('fly[b]: Searching for ' + req.params.string + ' for ' + req.user.email);
     var boxes = [];
     var re = new RegExp(req.params.string);
     Box.find({members: {$elemMatch: {email: user}}, thread: {$elemMatch: {html: re}}}, function(err, data) {
