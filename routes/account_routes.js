@@ -11,7 +11,7 @@ module.exports = function(app, jwtAuth, logging) {
     res.json(req.user);
   });
 
-  //Set current name
+  //Set display name
   app.put('/api/account/name', jwtAuth, function(req, res) {
     if (logging) console.log('fly[a]: ' + req.user.displayName + ' is now ' + req.body.newName);
     req.user.displayName = req.body.newName;
@@ -24,8 +24,7 @@ module.exports = function(app, jwtAuth, logging) {
   //Set current account
   app.put('/api/account/current', jwtAuth, function(req, res) {
     if (logging) console.log('fly[a]: ' + req.user.email + ' switching to ' + req.user.accounts[req.body.number].email);
-    if (req.body.number) req.user.current = req.body.number;
-    if (req.body.account) req.user.current = req.user.accounts.indexOf(req.body.account);
+    if (!isNaN(req.body.number)) req.user.current = req.body.number;
     req.user.save(function(err) {
       if (err) handle(err, res);
       res.json({msg: 'switched to ' + req.user.accounts[req.user.current].email});

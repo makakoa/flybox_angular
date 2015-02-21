@@ -9,16 +9,12 @@
   <p>Hello {{user.email}}</p>
   <a data-ng-click='main="account"'><button>Account</button></a>
   <button data-ng-click='logOut()'>Log out</button>
-  <p>As: {{current}}</p>
-<!--  <ul data-ng-show='(accounts.length>1)'><p>Switch to</p>
-    <button data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'>{{account.name}}</button>
-  </ul>-->
-  <div class="btn-group" data-ng-show='(accounts.length>1)'>
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-      Switch To <span class="caret"></span>
+  <div class="btn-group" dropdown is-open='status.isopen'>
+    <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+      {{current}} <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
-      <li data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'>{{account.name}}</li>
+      <li data-ng-repeat='account in accounts' data-ng-click='switchTo(account)'><a>{{account.name}}</a></li>
       <li><a data-ng-click='main="account"'>Account Settings</a></li>
     </ul>
   </div>

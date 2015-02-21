@@ -48,6 +48,7 @@ module.exports = function(app) {
       };
 
       $scope.switchTo = function(account) {
+        $scope.current = account.name;
         $http({
           method: 'PUT',
           url: '/api/account/current',
@@ -56,7 +57,9 @@ module.exports = function(app) {
             number: $scope.accounts.indexOf(account)
           }
         })
-        .success(function() {
+        .success(function(data) {
+          console.log(data.msg);
+          $scope.$broadcast('update:inbox');
           socket.emit('account:switch', {
             token: $cookies.jwt
           });
