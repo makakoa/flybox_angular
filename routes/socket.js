@@ -162,6 +162,7 @@ module.exports = function(io, secret, logging) {
       if (!socket.user) socket.disconnect();
       Post.findOne({_id: data._id}, function(err, post) {
         if (err) return console.log(err);
+        if (!post) return;
         if (post.by !== socket.as) return console.log('access error');
         if (data.delete) {
           post.by = 'deleted';
