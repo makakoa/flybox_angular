@@ -1,4 +1,6 @@
-# FLYBOX _reloaded_
+This the old angular version of flybox. The next iteration is currently under development!
+
+# FLYBOX _reloaded_ (obsolete)
 [![Build Status](https://travis-ci.org/makakoa/flybox_reloaded.svg?branch=m2_dev)](https://travis-ci.org/makakoa/flybox_reloaded)
 ##### "Next Generation Emailing"
 
